@@ -1,0 +1,6 @@
+{
+  "name": "Buusaa Gonofaa Oromiyaa Adama Branch",
+  "description": "Digital platform for Buusaa Gonofaa Oromiyaa Adama Branch, showcasing microfinance services, community support, and localized contributions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300..700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --primary-green: #039935;
+  --primary-green-hover: #027a2a;
+  --secondary-green: #22C55E;
+  --light-green: #DCFCE7;
+  --very-light-green: #F0FDF4;
+}
+
+@theme {
+  --font-sans: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+
+  /* Custom utility variables for explicit usage if needed */
+  --color-primary-green: var(--primary-green);
+  --color-primary-green-hover: var(--primary-green-hover);
+  --color-secondary-green: var(--secondary-green);
+  --color-light-green: var(--light-green);
+  --color-very-light-green: var(--very-light-green);
+
+  /* Overriding standard emerald and green colors to align with requested palette */
+  --color-emerald-50: var(--very-light-green); /* #F0FDF4 */
+  --color-emerald-100: var(--light-green); /* #DCFCE7 */
+  --color-emerald-200: #bbf7d0;
+  --color-emerald-300: #86efac;
+  --color-emerald-400: var(--secondary-green); /* #22C55E */
+  --color-emerald-500: var(--secondary-green); /* #22C55E */
+  --color-emerald-600: var(--primary-green); /* #039935 */
+  --color-emerald-700: var(--primary-green); /* #039935 */
+  --color-emerald-800: var(--primary-green-hover); /* #027a2a */
+  --color-emerald-900: #026021;
+  --color-emerald-950: #013b14;
+
+  --color-green-50: var(--very-light-green);
+  --color-green-100: var(--light-green);
+  --color-green-200: #bbf7d0;
+  --color-green-300: #86efac;
+  --color-green-400: var(--secondary-green);
+  --color-green-500: var(--secondary-green);
+  --color-green-600: var(--primary-green);
+  --color-green-700: var(--primary-green);
+  --color-green-800: var(--primary-green-hover);
+  --color-green-900: #026021;
+  --color-green-950: #013b14;
+
+  --shadow-lg: 0 10px 15px -3px rgba(3, 153, 53, 0.12), 0 4px 6px -2px rgba(3, 153, 53, 0.06);
+}
+
+/* Base resets & compliance with custom UI instructions */
+html, body {
+  background-attachment: scroll;
+  background-clip: border-box;
+  background-origin: padding-box;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--very-light-green); /* Geometric Balance Background */
+}
+
+/* WCAG high-contrast compliance resets for cleaner visual density */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* Utilities for animations in tailwind v4 context if needed */
+.animate-in {
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+}
+.fade-in {
+  animation-name: fadeIn;
+}
+.slide-in-from-top-2 {
+  animation-name: slideInFromTop2;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInFromTop2 {
+  from { transform: translateY(-8px); }
+  to { transform: translateY(0); }
+}
