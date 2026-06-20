@@ -125,7 +125,12 @@ export default function GadaaAssistant({ language }: GadaaAssistantProps) {
       });
 
       if (!res.ok) {
-        throw new Error('Server returned an error status');
+        let errDetails = '';
+        try {
+          const errData = await res.json();
+          errDetails = errData.details || errData.error || '';
+        } catch (_) {}
+        throw new Error(errDetails || 'Server returned an error status');
       }
 
       const data = await res.json();
@@ -139,12 +144,15 @@ export default function GadaaAssistant({ language }: GadaaAssistantProps) {
       };
 
       setMessages(prev => [...prev, assistantMsg]);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to get companion reply:', err);
+      const errMsg = err?.message || '';
+      const suffix = errMsg ? `\n(Error: ${errMsg})` : '';
+      
       const fallbackMsgs: Record<Language, string> = {
-        om: "Dhiifama, tajaajilri bilbilaa fi AI mijeessuun yeroof addaan citeera. Maaloo xiqqoo booda irra deebi'ii yaali.",
-        am: "ይቅርታ፣ የገዳ-AI አገልግሎት ለጊዜው አልተሳካም። እባክዎ ጥቂት ቆይተው እንደገና ይሞክሩ።",
-        en: "Apologies, the Gadaa-AI is temporarily sleeping. Please try again in a few moments."
+        om: `Dhiifama, tajaajilri bilbilaa fi AI mijeessuun yeroof addaan citeera. Maaloo xiqqoo booda irra deebi'ii yaali.${suffix}`,
+        am: `ይቅርታ፣ የገዳ-AI አገልግሎት ለጊዜው አልተሳካም። እባክዎ ጥቂት ቆይተው እንደገና ይሞክሩ።${suffix}`,
+        en: `Apologies, the Gadaa-AI is temporarily sleeping. Please try again in a few moments.${suffix}`
       };
       
       setMessages(prev => [
