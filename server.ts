@@ -5,20 +5,18 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
+export const app = express();
 
-  // Middleware
-  app.use(express.json());
+// Middleware
+app.use(express.json());
 
-  // API Health check
-  app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', time: new Date().toISOString() });
-  });
+// API Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', time: new Date().toISOString() });
+});
 
-  // API router for Gemini AI Integration
-  app.post('/api/ai/chat', async (req, res) => {
+// API router for Gemini AI Integration
+app.post('/api/ai/chat', async (req, res) => {
     try {
       const { message, history, language } = req.body;
 
@@ -129,6 +127,9 @@ async function startServer() {
     }
   });
 
+async function startServer() {
+  const PORT = 3000;
+
   // Vite development middleware vs Static serving
   if (process.env.NODE_ENV !== 'production') {
     const { createServer: createViteServer } = await import('vite');
@@ -151,4 +152,6 @@ async function startServer() {
   });
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer();
+}
