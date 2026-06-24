@@ -9,8 +9,8 @@ export const app = express();
 // Middleware
 app.use(express.json());
 
-// API Health check - support both /api/health and /health
-app.get(['/api/health', '/health'], (req, res) => {
+// API Health check - support both /api/health and /health, plus Vercel-style path rewrites
+app.get(['/api/health', '/health', '/api/index.ts', '/api', '/'], (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
@@ -150,8 +150,8 @@ How can I assist you today with cooperative savings, seasonal loans, weather-ind
   }
 }
 
-// API router for Gemini AI Integration - support both /api/ai/chat and /ai/chat
-app.post(['/api/ai/chat', '/ai/chat'], async (req, res) => {
+// API router for Gemini AI Integration - support both /api/ai/chat and /ai/chat, plus Vercel serverless rewritten paths
+app.post(['/api/ai/chat', '/ai/chat', '/api/index.ts', '/api/index.ts/ai/chat', '/api', '/'], async (req, res) => {
   try {
     const { message, history, language } = req.body;
 
