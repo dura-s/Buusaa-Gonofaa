@@ -238,9 +238,9 @@ export const translations: Record<string, Record<Language, string>> = {
     en: "Visit our executive offices in Adama or request information using the form below."
   },
   contactOfficeAddress: {
-    om: "Teessoo Biroo: Adamaa, Oromiyaa, Itoophiyaa. Fuuldura Hoteela Postaa.",
-    am: "አድራሻ አዳማ፣ ኦሮሚያ፣ ኢትዮጵያ (ፖስታ ቤት ፊት ለፊት)",
-    en: "Address: Adama, Oromia, Ethiopia (Opposite Central Post Office Area)"
+    om: "Teessoo Biroo: Adamaa, Oromiyaa, Itoophiyaa. Fuuldura Hoteela Postaa. Lakk. Postaa (P.O. Box): 20118, Addis Ababa.",
+    am: "አድራሻ አዳማ፣ ኦሮሚያ፣ ኢትዮጵያ (ፖስታ ቤት ፊት ለፊት)፤ የፖስታ ሳጥን ቁጥር (P.O. Box): 20118፣ አዲስ አበባ።",
+    en: "Address: Adama, Oromia, Ethiopia (Opposite Central Post Office Area) | P.O. Box: 20118, Addis Ababa."
   },
   contactPhoneLabel: {
     om: "Bilbila Biroo",

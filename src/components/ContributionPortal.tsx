@@ -138,6 +138,12 @@ export default function ContributionPortal({ language }: ContributionPortalProps
       accNumber: "1000293102391",
       branch: "Adama Main Branch"
     },
+    sinqe: {
+      bankName: "Siinqee Bank (Baankii Siinqee)",
+      accName: "Buusaa Gonofaa Oromiyaa - Damee Adamaa",
+      accNumber: "1019283110293",
+      branch: "Adama Main Branch"
+    },
     cbe_birr: {
       bankName: "CBE Birr Mobile Banking",
       merchantCode: "818290",
@@ -379,7 +385,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                       <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
                         {language === 'om' ? 'Karaa Kaffaltii Filadhu' : language === 'am' ? 'ለመደገፍ የሚጠቀሙበት የባንክ ሥርዓተ ሥልት ይምረጡ' : 'Select Funding Account / Payment Gateway Option'}
                       </label>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
                         {!formData.isDiaspora ? (
                           <>
                             <button
@@ -393,6 +399,19 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                             >
                               <span className="text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-orange-850 px-1.5 py-0.5 rounded text-center shrink-0">CBE</span>
                               <span className="text-[10px] font-extrabold mt-2 text-slate-800 leading-tight">CBE Bank</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'sinqe' }))}
+                              className={`p-3 rounded-xl border text-left flex flex-col justify-between h-20 transition-all ${
+                                formData.paymentMethod === 'sinqe' 
+                                  ? 'border-[#0B6B3A] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#0B6B3A]/10' 
+                                  : 'border-emerald-100 bg-white hover:border-emerald-200'
+                              }`}
+                            >
+                              <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-center shrink-0">Siinqee</span>
+                              <span className="text-[10px] font-extrabold mt-2 text-slate-800 leading-tight">Siinqee Bank</span>
                             </button>
 
                             <button
@@ -430,7 +449,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                             formData.paymentMethod === 'paypal' 
                               ? 'border-[#0B6B3A] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#0B6B3A]/10' 
                               : 'border-emerald-100 bg-white hover:border-emerald-200'
-                          } ${formData.isDiaspora ? 'col-span-4' : ''}`}
+                          } ${formData.isDiaspora ? 'col-span-full' : ''}`}
                         >
                           <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-900 px-1.5 py-0.5 rounded text-center shrink-0">PayPal</span>
                           <span className="text-[10px] font-extrabold mt-2 text-slate-800 leading-tight">PayPal</span>
@@ -466,6 +485,34 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                               className="text-[10px] text-[#0B6B3A] font-bold uppercase tracking-wider hover:text-emerald-900 inline-flex items-center gap-1 mt-1 justify-end w-full cursor-pointer"
                             >
                               {copiedText === 'cbe_acc' ? (
+                                <><Check className="w-3.5 h-3.5 text-emerald-600" /> <span>Account Copied!</span></>
+                              ) : (
+                                <><Copy className="w-3.5 h-3.5" /> <span>Click to Copy Account</span></>
+                              )}
+                            </button>
+                          </div>
+                        )}
+
+                        {formData.paymentMethod === 'sinqe' && (
+                          <div className="text-[11.5px] space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-gray-500 font-bold uppercase text-[9px]">Bank Name</span>
+                              <span className="font-bold text-emerald-950">{bankDetails.sinqe.bankName}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-500 font-bold uppercase text-[9px]">Account Name</span>
+                              <span className="font-extrabold text-emerald-950">{bankDetails.sinqe.accName}</span>
+                            </div>
+                            <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-100">
+                              <span className="text-gray-500 font-bold uppercase text-[9px]">Account Number</span>
+                              <span className="font-mono font-extrabold text-[#0B6B3A] text-xs">{bankDetails.sinqe.accNumber}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleCopyToClipboard(bankDetails.sinqe.accNumber, 'sinqe_acc')}
+                              className="text-[10px] text-[#0B6B3A] font-bold uppercase tracking-wider hover:text-emerald-900 inline-flex items-center gap-1 mt-1 justify-end w-full cursor-pointer"
+                            >
+                              {copiedText === 'sinqe_acc' ? (
                                 <><Check className="w-3.5 h-3.5 text-emerald-600" /> <span>Account Copied!</span></>
                               ) : (
                                 <><Copy className="w-3.5 h-3.5" /> <span>Click to Copy Account</span></>
@@ -626,6 +673,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                         <span className="text-[9.5px] uppercase font-bold text-gray-500 block">Sponsor Destination Account</span>
                         <span className="font-extrabold text-emerald-950">
                           {formData.paymentMethod === 'cbe' && bankDetails.cbe.bankName}
+                          {formData.paymentMethod === 'sinqe' && bankDetails.sinqe.bankName}
                           {formData.paymentMethod === 'cbe_birr' && bankDetails.cbe_birr.bankName}
                           {formData.paymentMethod === 'telebirr' && bankDetails.telebirr.bankName}
                           {formData.paymentMethod === 'paypal' && bankDetails.paypal.provider}

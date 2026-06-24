@@ -15,9 +15,9 @@ export default function Contact({ language }: ContactProps) {
     hq: {
       title: { om: "Waajira Ol’aanaa Adamaa (HQ)", am: "የአዳማ ዋና መስሪያ ቤት", en: "Adama Central Headquarters (HQ)" },
       address: {
-        om: "Zoonii daldalaa Gadaa, Gamoo B, Kella 3ffaa, Adamaa, Oromiyaa",
-        am: "ገዳ የንግድ ማዕከል፣ ፎቅ 3፣ ቢሮ ቁጥር 302፣ አዳማ፣ ኦርሚያ",
-        en: "Gadaa Trade Center, Block B, 3rd Floor, Suite 304, Adama, Oromia, Ethiopia"
+        om: "Zoonii daldalaa Gadaa, Gamoo B, Kella 3ffaa, Adamaa, Oromiyaa. Lakk. Postaa (P.O. Box): 20118, Addis Ababa.",
+        am: "ገዳ የንግድ ማዕከል፣ ፎቅ 3፣ ቢሮ ቁጥር 302፣ አዳማ፣ ኦርሚያ። የፖስታ ሳጥን ቁጥር (P.O. Box): 20118፣ አዲስ አበባ።",
+        en: "Gadaa Trade Center, Block B, 3rd Floor, Suite 304, Adama, Oromia, Ethiopia. P.O. Box: 20118, Addis Ababa."
       },
       phone: "+251 22 111 2345 / +251 911 445 667",
       email: "adama.hq@buusaagonofaa.org",

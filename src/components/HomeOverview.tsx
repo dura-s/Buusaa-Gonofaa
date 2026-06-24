@@ -502,6 +502,25 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                             {language === 'om' ? 'Dameen keenya gargaarsa dhuunfaa akkasumas marii hoggansaa bilisaan mijeessa. Nu quunnamaa.' :
                              'Connect directly with our local managers at Adama Central Post Office Area or submit a direct enquiry.'}
                           </p>
+
+                          <div className="border-t border-emerald-850 pt-3 mt-1.5 text-[10.5px] space-y-2 text-emerald-200 font-semibold font-sans">
+                            <div className="flex items-start gap-2">
+                              <span className="text-emerald-400">📌</span>
+                              <span>
+                                {language === 'om' ? 'Fuuldura Hoteela Postaa, Adamaa' :
+                                 language === 'am' ? 'ፖስታ ቤት ፊት ለፊት፣ አዳማ' :
+                                 'Opposite Central Post Office Area, Adama'}
+                              </span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="text-emerald-400">📬</span>
+                              <span>
+                                {language === 'om' ? 'Lakk. Postaa (P.O. Box): 20118' :
+                                 language === 'am' ? 'የፖስታ ሳጥን ቁጥር: 20118' :
+                                 'P.O. Box: 20118, Addis Ababa (HQ)'}
+                              </span>
+                            </div>
+                          </div>
                         </div>
 
                         <button
