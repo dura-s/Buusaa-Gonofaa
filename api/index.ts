@@ -14,6 +14,142 @@ app.get(['/api/health', '/health'], (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
+// Smart local knowledge-base fallback to ensure Gadaa-AI is robust when API keys are missing or failing
+function getLocalResponse(message: string, language: string): string {
+  const msgLower = (message || '').toLowerCase();
+  const lang = (language === 'om' || language === 'am' || language === 'en') ? language : 'en';
+
+  // Topic 3: Weather-indexed crop insurance
+  if (
+    msgLower.includes('insur') || msgLower.includes('inshur') || msgLower.includes('infir') ||
+    msgLower.includes('weather') || msgLower.includes('climate') || msgLower.includes('rain') ||
+    msgLower.includes('ongee') || msgLower.includes('roob') || msgLower.includes('crop') ||
+    msgLower.includes('midhaan') || msgLower.includes('ኢንሹራንስ') || msgLower.includes('ዋስትና') ||
+    msgLower.includes('አየር')
+  ) {
+    if (lang === 'om') {
+      return `Inshuraansii Qonnaa Haala Qilleensaa Irratti Hundaa'e (Index-Based Agricultural Insurance):
+      
+Nuyi rooba fi odeeffannoo saatelaayitii hordofuun jireenya qonnaan bultootaa gargaarra. Balaan ongee ykn rooba dhabamuu yoo uumame, adeemsa dheeraa fi herrega walxaxaa malee herrega keessan irratti kaffaltii battalaa ni goona. Kunis midhaan keessan ongee irraa ittisuuf gargaara.`;
+    } else if (lang === 'am') {
+      return `የአየር ሁኔታ ጠቋሚ የግብርና ማይክሮ-ኢንሹራንስ (Index-Based Agricultural Insurance)፦
+      
+የዝናብ መጠንን እና የሳተላይት መረጃዎችን በቅርበት በመከታተል፣ ድርቅ ወይም የዝናብ እጥረት ሲከሰት ያለምንም ቢሮክራሲና መዘግየት ክፍያዎችን በቀጥታ ለአርሶ አደሩ እናስተላልፋለን። ይህ ገበሬው ከአየር ንብረት መዛባት አደጋ እንዲጠበቅ ይረዳል።`;
+    } else {
+      return `Our Weather-Indexed Crop Insurance tracks localized rainfall and satellite precipitation indices.
+      
+If a localized drought occurs and precipitation drops below predetermined threshold indices, farmers receive automated and quick payouts directly without lengthy physical damage assessments, protecting their livelihoods from extreme climate risks.`;
+    }
+  }
+
+  // Topic 2: Loans/Credits
+  if (
+    msgLower.includes('loan') || msgLower.includes('credit') || msgLower.includes('liqii') ||
+    msgLower.includes('iyyad') || msgLower.includes('qualify') || msgLower.includes('ግብርና') ||
+    msgLower.includes('ብድር') || msgLower.includes('መመዝገብ')
+  ) {
+    if (lang === 'om') {
+      return `Dameen keenya Adamaa liqii qonnaa fi daldalaa adda addaa haala mijeessuun ni kenna:
+
+1. **Liqii Qonnaa**: Sanyii filatamaa, xaa'oo, fi meeshaalee bishaan fageessuu (drip irrigation) bituuf gargaara.
+2. **Liqii Maaykiroo Dubartootaa**: Dubartoota hojii daldala xiqqaatti jiran jajjabeessuuf haala salphaan liqii ni mijeessina.
+
+Iyyachuuf waajjira keenya Adamaa (fuuldura Hoteela Postaa) dhufuun ykn dhuunfaan nu quunnamuu dandeessu.`;
+    } else if (lang === 'am') {
+      return `ቅርንጫፋችን የሚከተሉትን የብድር አገልግሎቶች ያቀርባል፡
+
+1. **የግብርና ብድር**፦ ለምርጥ ዘር、 ማዳበሪያ እና ዘመናዊ የመስኖ እቃዎች መግዣ የሚውል ወቅታዊ ብድር።
+2. **የሴቶች ማይክሮ-ብድር**፦ አነስተኛ የንግድ ስራ ላይ ለተሰማሩ ሴቶች ያለአስቸጋሪ ዋስትና የሚሰጥ ብድር።
+
+ለመመዝገብ በአዳማ ፖስታ ቤት ፊት ለፊት በሚገኘው ቢሮአችን በአካል መምጣት ወይም በቀጥታ ማመልከቻ ማስገባት ይችላሉ።`;
+    } else {
+      return `Our Adama branch offers tailored financial credits to boost local productivity:
+
+1. **Agricultural Input Loans**: Seasonal credits for certified seeds, organic fertilizers, and ecological drip irrigation kits.
+2. **Micro-Loans for Women Merchants**: Group-guaranteed low-interest credits to boost retail businesses.
+
+To apply, visit our office opposite the Central Post Office Area in Adama.`;
+    }
+  }
+
+  // Topic 4: Location/Address/GPS/Hours
+  if (
+    msgLower.includes('location') || msgLower.includes('address') || msgLower.includes('gps') ||
+    msgLower.includes('where') || msgLower.includes('office') || msgLower.includes('hour') ||
+    msgLower.includes('teessoo') || msgLower.includes('biroo') || msgLower.includes('sa\'aatii') ||
+    msgLower.includes('adama') || msgLower.includes('wonji') || msgLower.includes('mojo') ||
+    msgLower.includes('አድራሻ') || msgLower.includes('አዳማ') || msgLower.includes('የት ነው') ||
+    msgLower.includes('ሰዓት')
+  ) {
+    if (lang === 'om') {
+      return `Teessoo fi Sa'aatii Hojii Waajjira Keenyaa (Damee Adamaa):
+
+📌 **Adama HQ**: Fuuldura Hoteela Postaa, Adamaa, Oromiyaa (GPS: 8.5414° N, 39.2689° E)
+📌 **Wonji Sub-office**: GPS: 8.4325° N, 39.2241° E
+📌 **Mojo Sub-office**: GPS: 8.5912° N, 39.1184° E
+
+🕒 **Sa'aatii Hojii**: Wiixata - Jimaata, sa'aatii 2:00 saafaa hanga 11:30 waaree boodatti (EAT). Sambataa fi Dilbata cufaadha.`;
+    } else if (lang === 'am') {
+      return `የቢሮአችን አድራሻ እና የስራ ሰዓት (አዳማ ቅርንጫፍ)፦
+
+📌 **አዳማ ዋና ቢሮ**፦ አዳማ፣ ፖስታ ቤት ፊት ለፊት (GPS: 8.5414° N, 39.2689° E)
+📌 **ወንጂ ንዑስ ቢሮ**፦ GPS: 8.4325° N, 39.2241° E
+📌 **ሞጆ ንዑስ ቢሮ**፦ GPS: 8.5912° N, 39.1184° E
+
+🕒 **የስራ ሰዓት**፦ ከሰኞ እስከ አርብ ጠዋት 2፡00 - ማታ 11፡30 (የምስራቅ አፍሪካ ሰዓት)። ቅዳሜና እሁድ ዝግ ነው።`;
+    } else {
+      return `Office Address, Locations, and Business Hours (Adama Branch):
+
+📌 **Adama main office**: Opposite Central Post Office Area, Adama, Oromia (GPS: 8.5414° N, 39.2689° E)
+📌 **Wonji sub-office**: GPS: 8.4325° N, 39.2241° E
+📌 **Mojo sub-office**: GPS: 8.5912° N, 39.1184° E
+
+🕒 **Hours**: Monday to Friday, 8:00 AM to 5:30 PM (East Africa Time). Closed on weekends and public holidays.`;
+    }
+  }
+
+  // Topic 1: What is Buusaa Gonofaa / general info
+  if (
+    msgLower.includes('buusaa') || msgLower.includes('gonofaa') || msgLower.includes('solol') ||
+    msgLower.includes('what is') || msgLower.includes('about') || msgLower.includes('who are') ||
+    msgLower.includes('maali') || msgLower.includes('ምንድን') || msgLower.includes('ነው') ||
+    msgLower.includes('coop') || msgLower.includes('walda')
+  ) {
+    if (lang === 'om') {
+      return `Buusaa Gonofaa Oromiyaa (Damee Adamaa) tajaajila maaykiroofaayinaansii fi networkii riijansii aadaa Oromoo irratti hundaa'eedha.
+
+Nuyi aadaa keenya Buusaa Gonofaa (wal-gargaarsa yeroo balaa fi rakkinaa) fi Sololiyaa (waldaa qusannoo fi dorgommii dubartootaa) maaykiroofaayinaansii ammayyaa waliin mijeessuun miseensota keenya hundaaf tajaajila qusannoo fi liqii gurgurtaa ni kennina.
+
+**Galma keenya**: Harka wal qabannee waliin guddachuu, hiyyuma balleessuu fi qonnaan bultoota keenya humneessuudha!`;
+    } else if (lang === 'am') {
+      return `ቡሳ ጎኖፋ ኦሮሚያ (የአዳማ ቅርንጫፍ) ባህላዊ እሴቶችን እና ዘመናዊ የማይክሮፋይናንስ አገልግሎትን ያቀናጀ ተቋም ነው።
+
+ባህላዊ የጋራ መረዳጃ መንገዶችን (ቡሳ ጎኖፋ - በአደጋ ጊዜ እርስ በርስ መረዳዳት) እና የሴቶች የቁጠባ ቡድኖችን (ሶሎሊያ) በመጠቀም ለአባላት፣ ለአነስተኛ ገበሬዎች እና ነጋዴዎች የቁጠባ እና የብድር አገልግሎት እናቀርባለን።
+
+**አላማችን**፦ አርሶ አደሩን እና አነስተኛ ነጋዴዎችን በጋራ በማብቃት ድህነትን መቀነስ ነው።`;
+    } else {
+      return `Buusaa Gonofaa Oromiyaa (Adama Branch) is a digital-first microfinance and Oromo-indigenous solidarity network.
+
+We blend modern microfinance safety nets with traditional Gadaa cooperative principles (like Buusaa Gonofaa for disaster relief and Sololiyaa for women-led savings clubs) to empower smallholder farmers, local merchants, and vulnerable households.`;
+    }
+  }
+
+  // General/Greeting Fallback
+  if (lang === 'om') {
+    return `Akkam jirtu! Ani GadaaAI, gargaaraa fayiinaansii fi aadaa keessan. 
+
+Miseensa Buusaa Gonofaa ta'uuf, liqii qonnaa argachuuf, inshuraansii qilleensaa ykn qusannoo irratti gaaffii qabdan hunda natti himuu dandeessu. Maal isiniif gochuu danda'a?`;
+  } else if (lang === 'am') {
+    return `ጤና ይስጥልኝ! እኔ ገዳAI ነኝ፤ የአዳማ ቅርንጫፍ የባህልና አነስተኛ ፋይናንስ አማካሪዎ።
+
+ስለ ብድር፣ ቁጠባ፣ የአየር ሁኔታ ጠቋሚ ኢንሹራንስ ወይም ስለ ቡሳ ጎኖፋ ባህላዊ መረዳጃዎች ጥያቄ ካለዎት እባክዎ ይጠይቁኝ። ምን ልርዳዎት?`;
+  } else {
+    return `Greetings! I am GadaaAI, your cultural microfinance and climatic safety-net advisor.
+
+How can I assist you today with cooperative savings, seasonal loans, weather-indexed insurance, or Buusaa Gonofaa solidarity?`;
+  }
+}
+
 // API router for Gemini AI Integration - support both /api/ai/chat and /ai/chat
 app.post(['/api/ai/chat', '/ai/chat'], async (req, res) => {
   try {
@@ -23,16 +159,13 @@ app.post(['/api/ai/chat', '/ai/chat'], async (req, res) => {
       return res.status(400).json({ error: 'Message payload is required' });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    // Check multiple potential environment variable names for maximum robustness in Vercel/AI Studio
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.VITE_GOOGLE_API_KEY;
+    
     if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
-      const errorMsg = {
-        om: 'Deeggarsi Gadaa-AI qorannoodhaaf qophaa\'aa jira. Maaloo \'Settings > Secrets\' irratti GEMINI_API_KEY sajeessi.',
-        am: 'የገዳ-AI ድጋፍ እየተዘጋጀ ነው። እባክዎ በ \'Settings > Secrets\' ውስጥ GEMINI_API_KEY ያስገቡ።',
-        en: 'Gadaa-AI is currently warming up. Please configure the GEMINI_API_KEY in the Settings > Secrets panel to activate me!'
-      };
-      const selectedLang = (language === 'om' || language === 'am' || language === 'en') ? language : 'en';
+      const localText = getLocalResponse(message, language);
       return res.json({
-        text: errorMsg[selectedLang],
+        text: localText,
         isConfigError: true
       });
     }
@@ -118,9 +251,11 @@ app.post(['/api/ai/chat', '/ai/chat'], async (req, res) => {
 
   } catch (error: any) {
     console.error('Gemini API Error:', error);
-    res.status(500).json({
-      error: 'Unable to communicate with Gadaa-AI service',
-      details: error.message || error
+    // Graceful fallback: return the smart local response instead of 500 error
+    const localText = getLocalResponse(req.body.message || '', req.body.language || 'en');
+    res.json({
+      text: localText,
+      isConfigError: true
     });
   }
 });
