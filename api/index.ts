@@ -10,7 +10,7 @@ export const app = express();
 app.use(express.json());
 
 // API Health check - support both /api/health and /health, plus Vercel-style path rewrites
-app.get(['/api/health', '/health', '/api/index.ts', '/api', '/'], (req, res) => {
+app.get(['/api/health', '/health', '/api/index.ts', '/api/index.ts/health', '/api'], (req, res) => {
   res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
@@ -235,15 +235,36 @@ app.post(['/api/ai/chat', '/ai/chat', '/api/index.ts', '/api/index.ts/ai/chat', 
       parts: [{ text: message }]
     });
 
-    // Call generateContent with recommended model
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: contentsList,
-      config: {
-        systemInstruction: systemInstruction,
-        temperature: 0.7,
+    // Call generateContent with recommended model, utilizing fallback models in case of high demand (503)
+    let response;
+    let success = false;
+    let lastError: any = null;
+    const modelsToTry = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-2.5-flash'];
+
+    for (const modelName of modelsToTry) {
+      try {
+        console.log(`Attempting to generate content using model: ${modelName}`);
+        response = await ai.models.generateContent({
+          model: modelName,
+          contents: contentsList,
+          config: {
+            systemInstruction: systemInstruction,
+            temperature: 0.7,
+          }
+        });
+        success = true;
+        console.log(`Successfully generated content using model: ${modelName}`);
+        break;
+      } catch (err: any) {
+        console.warn(`Failed to generate content with ${modelName}:`, err);
+        lastError = err;
+        // Continue to the next fallback model if 503 or server errors occur
       }
-    });
+    }
+
+    if (!success || !response) {
+      throw lastError || new Error('All fallback models failed to respond.');
+    }
 
     res.json({
       text: response.text || 'Thank you for contacting Buusaa Gonofaa Oromiyaa Adama Branch support.'
@@ -251,11 +272,13 @@ app.post(['/api/ai/chat', '/ai/chat', '/api/index.ts', '/api/index.ts/ai/chat', 
 
   } catch (error: any) {
     console.error('Gemini API Error:', error);
-    // Graceful fallback: return the smart local response instead of 500 error
+    // Graceful fallback: return the smart local response but indicate the exact error details
     const localText = getLocalResponse(req.body.message || '', req.body.language || 'en');
+    const keyToCheck = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.VITE_GOOGLE_API_KEY;
+    const isApiKeyError = !keyToCheck || keyToCheck === 'MY_GEMINI_API_KEY';
     res.json({
-      text: localText,
-      isConfigError: true
+      text: `${localText}\n\n*(Note: GadaaAI is running in local knowledge-base mode. ${error.message || error})*`,
+      isConfigError: isApiKeyError
     });
   }
 });
