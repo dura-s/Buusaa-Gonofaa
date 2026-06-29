@@ -14,6 +14,9 @@ export interface NewsItem {
   content: Record<Language, string>;
   category: string;
   imagePlaceholder: string;
+  youtubeId?: string;
+  externalLink?: string;
+  importantPhoto?: string;
 }
 
 export interface EventItem {

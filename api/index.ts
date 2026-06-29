@@ -239,7 +239,7 @@ app.post(['/api/ai/chat', '/ai/chat', '/api/index.ts', '/api/index.ts/ai/chat', 
     let response;
     let success = false;
     let lastError: any = null;
-    const modelsToTry = ['gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-2.5-flash'];
+    const modelsToTry = ['gemini-2.5-flash', 'gemini-3.1-flash-lite', 'gemini-3.5-flash', 'gemini-flash-latest'];
 
     for (const modelName of modelsToTry) {
       try {

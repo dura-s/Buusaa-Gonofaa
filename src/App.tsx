@@ -68,15 +68,15 @@ export default function App() {
                 <div className="bg-emerald-50/20 py-16 border-t border-emerald-50">
                   <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 text-center space-y-12">
                     <div className="space-y-3">
-                      <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
+                      <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">
                         {language === 'om' ? 'Finfinnii fi Adamaa' : 'Regional Protection'}
                       </span>
-                      <h3 className="text-xl md:text-2xl font-extrabold text-emerald-950 uppercase tracking-wider font-sans">
+                      <h3 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-emerald-950 uppercase tracking-wider font-sans">
                         {language === 'om' ? 'Maaliif Buusaa Gonofaa Damee Adamaa Filattu?' :
                          language === 'am' ? 'ለምን የአዳማ ቅርንጫፍን ይመርጣሉ?' :
                          'Why Partner with Buusaa Gonofaa Adama Branch?'}
                       </h3>
-                      <p className="text-xs text-emerald-800/60 font-semibold max-w-xl mx-auto leading-relaxed">
+                      <p className="text-sm md:text-base text-emerald-800/80 font-semibold max-w-2xl mx-auto leading-relaxed">
                         {language === 'om' ? 'Moodeela misooma qusachaa amansiisaa sirna aadaa herregatiin gargaarramee dhalootaaf dhiyeessuuf' :
                          language === 'am' ? 'ባህላዊ እሴቶቻችንን ከዘመናዊ የማይክሮ ፋይናንስ ዋስትና ጋር በማጣመር አስተማማኝ ድጋፍ እንሰጣለን።' :
                          'By embedding ancient Gadaa cooperative principles into indexed agricultural safety tools.'}
@@ -84,42 +84,42 @@ export default function App() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                      <div className="bg-white p-6 rounded-2xl border border-emerald-50 text-left space-y-3">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
-                          <Users className="w-5 h-5 text-emerald-600" />
+                      <div className="bg-white p-6 rounded-2xl border border-emerald-50 hover:border-emerald-200 hover:shadow-md active:scale-[0.98] transition-all duration-300 text-left space-y-3 cursor-pointer">
+                        <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+                          <Users className="w-6 h-6 text-emerald-600" />
                         </div>
-                        <h4 className="text-xs font-extrabold text-emerald-950 uppercase tracking-wider">
+                        <h4 className="text-sm md:text-base font-extrabold text-emerald-950 uppercase tracking-wider">
                           {language === 'om' ? 'Dhuunfaa fi Waliin' : 'Member Authority'}
                         </h4>
-                        <p className="text-[11px] text-emerald-800/60 font-semibold leading-relaxed">
+                        <p className="text-xs md:text-sm text-emerald-800/60 font-semibold leading-relaxed">
                           {language === 'om' ? 'Mirkaneessitoota keenya hundaaf tajaajila liqii dhalata malee safiisaan qopheessuun dhimma jalqabaati.' :
                            language === 'am' ? 'ለአባላቶች ያለ ወለድና ያለ ምንም አስተዳደራዊ ውዝግብ ፈጣን ብድሮችን እናዘጋጃለን።' :
                            'Direct participatory decisions. Fully controlled, transparent crop risk calculations for mutual growth.'}
                         </p>
                       </div>
 
-                      <div className="bg-white p-6 rounded-2xl border border-emerald-50 text-left space-y-3">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
-                          <Compass className="w-5 h-5 text-emerald-600" />
+                      <div className="bg-white p-6 rounded-2xl border border-emerald-50 hover:border-emerald-200 hover:shadow-md active:scale-[0.98] transition-all duration-300 text-left space-y-3 cursor-pointer">
+                        <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+                          <Compass className="w-6 h-6 text-emerald-600" />
                         </div>
-                        <h4 className="text-xs font-extrabold text-emerald-950 uppercase tracking-wider">
+                        <h4 className="text-sm md:text-base font-extrabold text-emerald-950 uppercase tracking-wider">
                           {language === 'om' ? 'Kallattii Misoomaa' : 'Agricultural Focus'}
                         </h4>
-                        <p className="text-[11px] text-emerald-800/60 font-semibold leading-relaxed">
+                        <p className="text-xs md:text-sm text-emerald-800/60 font-semibold leading-relaxed">
                           {language === 'om' ? 'Sanyii filatamaa, xaa\'oo fi meeshalee jallisi mijeessuun qonnaan bultootaaf tajaajila liqiin dhiheessu.' :
                            language === 'am' ? 'አንድ ለአምስት የኅብረት ዋስትናዎችን እና የምርጥ ዘር ልማት ብድሮችን ለአርሶ አደሮች እናቀርባለን።' :
                            'Specialized seasonal loans for high-grade crop strains, inputs, and advanced drip irrigation.'}
                         </p>
                       </div>
 
-                      <div className="bg-white p-6 rounded-2xl border border-emerald-50 text-left space-y-3">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
-                          <Heart className="w-5 h-5 text-emerald-600" />
+                      <div className="bg-white p-6 rounded-2xl border border-emerald-50 hover:border-emerald-200 hover:shadow-md active:scale-[0.98] transition-all duration-300 text-left space-y-3 cursor-pointer">
+                        <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center">
+                          <Heart className="w-6 h-6 text-emerald-600" />
                         </div>
-                        <h4 className="text-xs font-extrabold text-emerald-950 uppercase tracking-wider">
+                        <h4 className="text-sm md:text-base font-extrabold text-[#054823] uppercase tracking-wider">
                           {language === 'om' ? 'Wabii Hawaasummaa' : 'Cultural Solidarity'}
                         </h4>
-                        <p className="text-[11px] text-emerald-800/60 font-semibold leading-relaxed">
+                        <p className="text-xs md:text-sm text-emerald-800/60 font-semibold leading-relaxed">
                           {language === 'om' ? 'Wal-ta\'insaa aadaa Sololiyaa fi gargaarsa balaa maatii deeggaraa jiran haguuggii inshuraansii dhiyeessu.' :
                            language === 'am' ? 'በአስቸጋሪ ወቅት በአገር ውስጥና በውጭ አገር የሚኖሩ ወገኖችን በማቀናጀት ማህበራዊ ድጋፍ እንመድባለን።' :
                            'Guarding elders and ultra-poor families through local and Diaspora support solidarity resources.'}
@@ -130,7 +130,7 @@ export default function App() {
                     <div className="pt-4">
                       <button
                         onClick={() => setActiveTab('services')}
-                        className="inline-flex items-center gap-2 text-emerald-700 hover:text-emerald-900 text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-2 text-emerald-700 hover:text-emerald-950 text-sm font-bold uppercase tracking-widest transition-colors cursor-pointer active:translate-x-1"
                       >
                         {language === 'om' ? 'Tajaajila Keenya Hunda Ilaali' : 'Check All Core Services'}
                         <ArrowRight className="w-4 h-4" />

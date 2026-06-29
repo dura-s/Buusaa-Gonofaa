@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Menu, X, Globe, Heart, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
+import { Menu, X, Globe, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language, ActiveTab } from '../types';
 import { translations } from '../translations';
-import bgLogo from '../assets/images/bg_official_logo_v5_1781772416643.jpg';
+import bgLogo from '../assets/images/photo_2026-06-29_12-12-03.jpg';
 
 interface NavbarProps {
   language: Language;
@@ -73,38 +73,62 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-emerald-600 text-white border-b border-emerald-700/50 shadow-lg transition-all duration-300">
-      <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16">
-        <div className="flex items-center justify-between py-2 sm:py-3 min-h-[5.5rem]">
+    <header className="sticky top-0 z-50 w-full bg-[#CBEED4]/95 backdrop-blur-md text-[#063118] border-b border-[#0B4C28]/25 shadow-[0_4px_20px_-3px_rgba(11,76,40,0.1)] transition-all duration-300">
+      <div className="w-full px-2 sm:px-4 lg:px-6 xl:px-8">
+        <div className="flex items-center justify-between py-1.5 sm:py-2 min-h-[4rem] sm:min-h-[4.5rem]">
           
           {/* Logo Brand container */}
           <div 
             onClick={() => handleNavClick('home')} 
-            className="flex items-center gap-4 cursor-pointer group py-1"
+            className="flex items-center gap-2.5 cursor-pointer group py-1"
             id="brand-logo-container"
           >
             {/* Official Buusaa Gonofaa Oromiyaa Logo */}
-            <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-full bg-white border-2 border-emerald-400 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 overflow-hidden shrink-0 shadow-md">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-transparent flex items-center justify-center transition-transform duration-300 group-hover:scale-105 overflow-hidden shrink-0">
               <img 
                 src={bgLogo} 
                 alt="Buusaa Gonofaa Oromiyaa Logo" 
-                className="w-full h-full object-contain p-1"
+                className="w-full h-full object-cover rounded-full"
                 referrerPolicy="no-referrer"
               />
             </div>
             
-            <div className="flex flex-col">
-              <span className="text-xl font-black text-white tracking-tight leading-tight group-hover:text-emerald-100 transition-colors">
-                {translations.appName[language]}
-              </span>
-              <span className="text-xs font-semibold text-emerald-100/95 tracking-wide mt-1">
-                {translations.appSubtitle[language]}
-              </span>
+            <div className="flex flex-col text-left select-none">
+              <div className="font-display tracking-tighter leading-none flex flex-col sm:flex-row sm:items-baseline gap-x-1.5">
+                {language === 'om' ? (
+                  <>
+                    <span className="text-xl sm:text-2xl md:text-2xl lg:text-3.5xl font-black text-[#C8102E] group-hover:text-[#A50D24] transition-colors duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
+                      Buusaa Gonofaa
+                    </span>
+                    <span className="text-xs sm:text-sm md:text-base font-black text-[#0B4C28] group-hover:text-[#063118] transition-colors duration-300">
+                      Adamaa
+                    </span>
+                  </>
+                ) : language === 'en' ? (
+                  <>
+                    <span className="text-xl sm:text-2xl md:text-2xl lg:text-3.5xl font-black text-[#C8102E] group-hover:text-[#A50D24] transition-colors duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
+                      Buusaa Gonofaa
+                    </span>
+                    <span className="text-xs sm:text-sm md:text-base font-black text-[#0B4C28] group-hover:text-[#063118] transition-colors duration-300">
+                      Adama
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-lg sm:text-xl md:text-xl lg:text-2.5xl font-black text-[#C8102E] group-hover:text-[#A50D24] transition-colors duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
+                      ቡሳ ጎኖፋ
+                    </span>
+                    <span className="text-[10px] sm:text-xs md:text-sm font-black text-[#0B4C28] group-hover:text-[#063118] transition-colors duration-300">
+                      አዳማ ቅርንጫፍ
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Desktop Navigation Link Menu with Hover Dropdowns */}
-          <nav className="hidden lg:flex items-center gap-6" id="desktop-navigation">
+          <nav className="hidden lg:flex items-center gap-6 ml-auto mr-8" id="desktop-navigation">
             {navLinks.map((link) => {
               const isActive = activeTab === link.id;
               const hasSubs = submenuMap[link.id]?.length > 0;
@@ -125,12 +149,12 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
                     }}
                     className={`relative px-4 py-2 text-xs select-none transition-all duration-300 flex items-center gap-1.5 rounded-full ${
                       isActive 
-                        ? 'bg-gradient-to-r from-[#a7c957] to-[#cedf9a] text-emerald-950 font-black shadow-md border border-[#cedf9a]/50' 
-                        : 'text-emerald-100 font-bold hover:text-white hover:bg-white/10 hover:border-white/15 border border-transparent'
+                        ? 'bg-gradient-to-r from-[#0B4C28] to-[#1C733C] text-white font-extrabold shadow-sm border border-[#0B4C28]/20' 
+                        : 'text-[#063118] font-black hover:text-[#0B4C28] hover:bg-white/60 border border-transparent'
                     }`}
                   >
                     <span>{translations[link.labelKey][language]}</span>
-                    {hasSubs && <ChevronDown className={`w-3.5 h-3.5 ${isActive ? 'text-emerald-950' : 'text-emerald-200'}`} />}
+                    {hasSubs && <ChevronDown className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-[#063118]'}`} />}
                     
                     {/* Sliding active underlines using shared layout transitions */}
                     {isActive && (
@@ -178,10 +202,10 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
             <div className="relative">
               <button
                 onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/30 text-white hover:bg-white/10 transition-colors text-xs font-semibold cursor-pointer"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[#0B4C28]/25 text-[#063118] bg-white/40 hover:bg-white/80 transition-colors text-xs font-black cursor-pointer shadow-xs"
                 id="language-switcher-btn"
               >
-                <Globe className="w-4 h-4 text-emerald-100" />
+                <Globe className="w-4 h-4 text-[#063118]" />
                 <span className="uppercase">{language}</span>
               </button>
               
@@ -194,7 +218,7 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-48 rounded-lg bg-emerald-600 border border-white/25 shadow-lg py-1 z-20"
+                      className="absolute right-0 mt-2 w-48 rounded-lg bg-white border border-emerald-200 shadow-xl py-1 z-20"
                     >
                       {languages.map((lang) => (
                         <button
@@ -203,12 +227,12 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
                             setLanguage(lang.code);
                             setIsLangDropdownOpen(false);
                           }}
-                          className={`w-full text-left px-4 py-2 text-xs font-semibold hover:bg-white/10 transition-colors flex items-center justify-between ${
-                            language === lang.code ? 'text-white bg-white/20' : 'text-white/80'
+                          className={`w-full text-left px-4 py-2 text-xs font-black hover:bg-emerald-50 hover:text-[#0B4C28] transition-colors flex items-center justify-between ${
+                            language === lang.code ? 'text-[#0B4C28] bg-emerald-50/70' : 'text-slate-700'
                           }`}
                         >
                           <span>{lang.label}</span>
-                          {language === lang.code && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
+                          {language === lang.code && <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />}
                         </button>
                       ))}
                     </motion.div>
@@ -217,17 +241,7 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
               </AnimatePresence>
             </div>
 
-            {/* Core Action Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleNavClick('contribution')}
-              className="flex items-center gap-2 bg-white text-emerald-800 px-5 py-2.5 rounded-xl text-xs font-bold tracking-wider hover:bg-emerald-50 hover:text-emerald-950 transition-all shadow-md cursor-pointer uppercase"
-              id="desktop-contrib-nav-btn"
-            >
-              <Heart className="w-3.5 h-3.5 fill-current text-red-500" />
-              {translations.heroCtaPrimary[language]}
-            </motion.button>
+
           </div>
 
           {/* Mobile hamburger menu / controls */}
@@ -236,15 +250,15 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
             <div className="relative">
               <button
                 onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                className="p-2 rounded-full text-white hover:bg-white/10 border border-white/20"
+                className="p-2 rounded-full text-[#063118] hover:bg-white/60 border border-[#0B4C28]/25 bg-white/40"
                 id="mobile-lang-btn"
               >
-                <Globe className="w-4.5 h-4.5 text-emerald-100" />
+                <Globe className="w-4.5 h-4.5 text-[#063118]" />
               </button>
               {isLangDropdownOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setIsLangDropdownOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-36 rounded-lg bg-emerald-600 border border-white/25 shadow-lg py-1 z-20 text-white">
+                  <div className="absolute right-0 mt-2 w-36 rounded-lg bg-white border border-[#0B4C28]/20 shadow-xl py-1 z-20 text-slate-800">
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
@@ -252,8 +266,8 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
                           setLanguage(lang.code);
                           setIsLangDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-4 py-2 text-xs font-semibold ${
-                          language === lang.code ? 'text-white bg-white/20' : 'text-white/80'
+                        className={`w-full text-left px-4 py-2 text-xs font-black ${
+                          language === lang.code ? 'text-[#0B4C28] bg-emerald-50/80' : 'text-slate-650 hover:bg-slate-50'
                         }`}
                       >
                         {lang.label}
@@ -266,10 +280,10 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-md text-white hover:bg-white/10 focus:outline-hidden"
+              className="p-2 rounded-md text-[#063118] hover:bg-white/60 focus:outline-hidden"
               id="mobile-hamburger-btn"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <X className="w-6 h-6 text-[#063118]" /> : <Menu className="w-6 h-6 text-[#063118]" />}
             </button>
           </div>
 
@@ -284,10 +298,10 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="lg:hidden border-t border-emerald-700/50 bg-emerald-600 text-white overflow-hidden" 
+            className="lg:hidden border-t border-[#0B4C28]/25 bg-[#CBEED4]/98 text-[#063118] overflow-hidden" 
             id="mobile-expanded-menu"
           >
-            <div className="px-3 pt-3 pb-6 space-y-1 sm:px-4">
+            <div className="px-3 pt-3 pb-6 space-y-1 sm:px-4 text-left">
               {navLinks.map((link) => {
                 const isActive = activeTab === link.id;
                 const hasSubs = submenuMap[link.id]?.length > 0;
@@ -295,7 +309,7 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
 
                 return (
                   <div key={link.id} className="space-y-1">
-                    <div className="flex items-center justify-between w-full rounded-xl hover:bg-white/5 transition-all">
+                    <div className="flex items-center justify-between w-full rounded-xl hover:bg-white/40 transition-all">
                       <button
                         onClick={() => {
                           if (hasSubs) {
@@ -308,8 +322,8 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
                           textTransform: 'uppercase',
                           letterSpacing: '1px',
                         }}
-                        className={`flex-grow text-left px-4 py-3.5 text-xs font-extrabold transition-all duration-200 ${
-                          isActive ? 'text-yellow-200 drop-shadow-[0_0_6px_rgba(254,240,138,0.4)] font-black scale-[1.02]' : 'text-emerald-100 hover:text-white'
+                        className={`flex-grow text-left px-4 py-3.5 text-xs font-black transition-all duration-200 ${
+                          isActive ? 'text-[#0B4C28] font-black scale-[1.01] bg-white/50 rounded-xl' : 'text-[#063118] hover:text-black'
                         }`}
                       >
                         {translations[link.labelKey][language]}
@@ -318,15 +332,15 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
                       {hasSubs && (
                         <button
                           onClick={() => setMobileExpandedTab(isExpanded ? null : link.id)}
-                          className="px-4 py-3.5 text-white/75 hover:text-white"
+                          className="px-4 py-3.5 text-slate-800"
                         >
-                          {isExpanded ? <ChevronUp className="w-4 h-4 text-emerald-200" /> : <ChevronDown className="w-4 h-4 text-emerald-200" />}
+                          {isExpanded ? <ChevronUp className="w-4 h-4 text-slate-800" /> : <ChevronDown className="w-4 h-4 text-slate-800" />}
                         </button>
                       )}
                     </div>
 
                     {hasSubs && isExpanded && (
-                      <div className="pl-6 space-y-1 border-l border-emerald-400 ml-4 py-1">
+                      <div className="pl-6 space-y-1 border-l border-emerald-300 ml-4 py-1">
                         {submenuMap[link.id].map((sub, i) => (
                           <button
                             key={i}
@@ -334,7 +348,7 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
                               onNavigateSubItem(link.id, sub.elementId, sub.subTab);
                               setIsMobileMenuOpen(false);
                             }}
-                            className="block w-full text-left px-4 py-3 text-[10.5px] uppercase font-bold text-emerald-100 hover:text-white hover:bg-emerald-700/50 rounded-lg transition-colors cursor-pointer"
+                            className="block w-full text-left px-4 py-3 text-[10.5px] uppercase font-bold text-slate-800 hover:text-black hover:bg-emerald-100 rounded-lg transition-colors cursor-pointer"
                           >
                             &bull; {sub.label[language]}
                           </button>
@@ -345,15 +359,7 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
                 );
               })}
               
-              <div className="pt-4 border-t border-emerald-700/30 px-4">
-                <button
-                  onClick={() => handleNavClick('contribution')}
-                  className="w-full flex items-center justify-center gap-2 bg-white text-emerald-800 py-3 rounded-xl text-xs font-bold tracking-wider hover:bg-emerald-50 transition-colors uppercase cursor-pointer"
-                >
-                  <Heart className="w-3.5 h-3.5 fill-current text-red-500" />
-                  {translations.heroCtaPrimary[language]}
-                </button>
-              </div>
+
             </div>
           </motion.div>
         )}

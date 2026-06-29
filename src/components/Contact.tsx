@@ -133,10 +133,10 @@ export default function Contact({ language }: ContactProps) {
         
         {/* Title header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-20">
-          <div className="inline-block px-3.5 py-1.5 rounded-full bg-white border border-emerald-100/100 text-[#0B6B3A] text-xs font-bold uppercase tracking-widest">
+          <div className="inline-block px-3.5 py-1.5 rounded-full bg-white border border-emerald-100/100 text-[#054823] text-xs font-bold uppercase tracking-widest">
             {language === 'om' ? 'Quunnamtii Damee' : language === 'am' ? 'የቅርንጫፍ መረጃ' : 'Branch Contacts'}
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#0B6B3A] tracking-tight font-sans">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#054823] tracking-tight font-sans">
             {translations.contactHeader[language]}
           </h2>
           <p className="text-base text-gray-600 font-medium leading-relaxed">
@@ -156,7 +156,7 @@ export default function Contact({ language }: ContactProps) {
                 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-100 pb-4">
                   <div>
-                    <span className="text-[9px] font-extrabold text-[#0B6B3A] bg-emerald-100 px-2 py-0.5 rounded-full uppercase tracking-wider block w-max mb-1">
+                    <span className="text-[9px] font-extrabold text-[#054823] bg-emerald-100 px-2 py-0.5 rounded-full uppercase tracking-wider block w-max mb-1">
                       {language === 'om' ? 'DIRIIRSA HAWAASUMMAA' : language === 'am' ? 'ባለብዙ ቅርንጫፍ' : 'Branch Networks'}
                     </span>
                     <h3 className="text-sm font-black text-emerald-950 uppercase tracking-wider">
@@ -171,7 +171,7 @@ export default function Contact({ language }: ContactProps) {
                       onClick={() => setActiveMapOffice('hq')}
                       className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition cursor-pointer ${
                         activeMapOffice === 'hq' 
-                          ? 'bg-[#0B6B3A] text-white shadow-xs' 
+                          ? 'bg-[#054823] text-white shadow-xs' 
                           : 'text-emerald-800 hover:bg-emerald-100/50'
                       }`}
                     >
@@ -182,7 +182,7 @@ export default function Contact({ language }: ContactProps) {
                       onClick={() => setActiveMapOffice('wonji')}
                       className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition cursor-pointer ${
                         activeMapOffice === 'wonji' 
-                          ? 'bg-[#0B6B3A] text-white shadow-xs' 
+                          ? 'bg-[#054823] text-white shadow-xs' 
                           : 'text-emerald-800 hover:bg-emerald-100/50'
                       }`}
                     >
@@ -193,7 +193,7 @@ export default function Contact({ language }: ContactProps) {
                       onClick={() => setActiveMapOffice('lume')}
                       className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition cursor-pointer ${
                         activeMapOffice === 'lume' 
-                          ? 'bg-[#0B6B3A] text-white shadow-xs' 
+                          ? 'bg-[#054823] text-white shadow-xs' 
                           : 'text-emerald-800 hover:bg-emerald-100/50'
                       }`}
                     >
@@ -208,7 +208,7 @@ export default function Contact({ language }: ContactProps) {
                   {/* Physical address detail */}
                   <div className="flex gap-4">
                     <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
-                      <MapPin className="w-5 h-5 text-[#0B6B3A]" />
+                      <MapPin className="w-5 h-5 text-[#054823]" />
                     </div>
                     <div>
                       <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">
@@ -223,7 +223,7 @@ export default function Contact({ language }: ContactProps) {
                   {/* Office Phone Contacts */}
                   <div className="flex gap-4">
                     <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
-                      <Phone className="w-5 h-5 text-[#0B6B3A]" />
+                      <Phone className="w-5 h-5 text-[#054823]" />
                     </div>
                     <div>
                       <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">
@@ -238,7 +238,7 @@ export default function Contact({ language }: ContactProps) {
                   {/* Email Contacts */}
                   <div className="flex gap-4">
                     <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
-                      <Mail className="w-5 h-5 text-[#0B6B3A]" />
+                      <Mail className="w-5 h-5 text-[#054823]" />
                     </div>
                     <div>
                       <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">
@@ -253,7 +253,7 @@ export default function Contact({ language }: ContactProps) {
                   {/* Business Hours */}
                   <div className="flex gap-4">
                     <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
-                      <Clock className="w-5 h-5 text-[#0B6B3A]" />
+                      <Clock className="w-5 h-5 text-[#054823]" />
                     </div>
                     <div>
                       <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">
@@ -273,7 +273,7 @@ export default function Contact({ language }: ContactProps) {
                     <p className="text-emerald-950 font-bold leading-relaxed">
                       <strong>Landmark:</strong> {subOffices[activeMapOffice].landmarks[language]}
                     </p>
-                    <p className="text-[11px] text-[#0B6B3A] font-extrabold mt-1">
+                    <p className="text-[11px] text-[#054823] font-extrabold mt-1">
                       <strong>Liaison Lead:</strong> {subOffices[activeMapOffice].liaison}
                     </p>
                   </div>

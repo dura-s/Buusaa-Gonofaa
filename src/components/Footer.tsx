@@ -1,7 +1,7 @@
 import { Compass, Mail, Phone, Heart, Sprout } from 'lucide-react';
 import { Language, ActiveTab } from '../types';
 import { translations } from '../translations';
-import bgLogo from '../assets/images/bg_official_logo_v5_1781772416643.jpg';
+import bgLogo from '../assets/images/photo_2026-06-29_12-12-03.jpg';
 
 interface FooterProps {
   language: Language;
@@ -27,11 +27,11 @@ export default function Footer({ language, setActiveTab }: FooterProps) {
           {/* Col 1 Brand detail */}
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-full bg-white flex items-center justify-center border-2 border-emerald-100 overflow-hidden shrink-0 shadow-md">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-transparent flex items-center justify-center overflow-hidden shrink-0">
                 <img 
                   src={bgLogo} 
                   alt="Buusaa Gonofaa Oromiyaa Logo" 
-                  className="w-full h-full object-contain p-1"
+                  className="w-full h-full object-cover rounded-full"
                   referrerPolicy="no-referrer"
                 />
               </div>
@@ -40,10 +40,6 @@ export default function Footer({ language, setActiveTab }: FooterProps) {
               </span>
             </div>
             
-            <p className="text-[11px] font-extrabold text-[#DCFCE7] uppercase tracking-widest leading-none">
-              {translations.appSubtitle[language]}
-            </p>
-
             <p className="text-xs text-emerald-100 leading-relaxed font-sans font-semibold">
               {language === 'om' ? 'Nuyi hundaa gargaaruun tokkummaa fi misooma sirna aadaa Gadaatiin fooyya\'iinsa fiduuf hojjetna.' :
                language === 'am' ? 'በባህላዊ የገዳ መረዳዳት ህግ መሰረት ለአርሶ አደሩና አቅመ ደካማውን ለማገዝ የሚሰራ ታማኝ ተቋም።' :

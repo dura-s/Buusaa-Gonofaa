@@ -1,19 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 :root {
-  --primary-green: #039935;
-  --primary-green-hover: #027a2a;
-  --secondary-green: #22C55E;
-  --light-green: #DCFCE7;
-  --very-light-green: #F0FDF4;
+  --primary-green: #0B4C28; /* High-end prestigious royal-forest green */
+  --primary-green-hover: #063118;
+  --secondary-green: #16803E;
+  --light-green: #E2ECE5;
+  --very-light-green: #F8FAF8; /* Premium warm-tinted pure white */
 }
 
 @theme {
-  --font-sans: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Outfit', 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+ 
 
   /* Custom utility variables for explicit usage if needed */
+  --color-black-green: #0E351E;
+  --color-dark-green: #0B4C28;
   --color-primary-green: var(--primary-green);
   --color-primary-green-hover: var(--primary-green-hover);
   --color-secondary-green: var(--secondary-green);
@@ -30,8 +34,8 @@
   --color-emerald-600: var(--primary-green); /* #039935 */
   --color-emerald-700: var(--primary-green); /* #039935 */
   --color-emerald-800: var(--primary-green-hover); /* #027a2a */
-  --color-emerald-900: #026021;
-  --color-emerald-950: #013b14;
+  --color-emerald-900: #022c15;
+  --color-emerald-950: #01170a;
 
   --color-green-50: var(--very-light-green);
   --color-green-100: var(--light-green);
@@ -42,13 +46,31 @@
   --color-green-600: var(--primary-green);
   --color-green-700: var(--primary-green);
   --color-green-800: var(--primary-green-hover);
-  --color-green-900: #026021;
-  --color-green-950: #013b14;
+  --color-green-900: #022c15;
+  --color-green-950: #01170a;
 
-  --shadow-lg: 0 10px 15px -3px rgba(3, 153, 53, 0.12), 0 4px 6px -2px rgba(3, 153, 53, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(5, 72, 35, 0.12), 0 4px 6px -2px rgba(5, 72, 35, 0.06);
 }
 
 /* Base resets & compliance with custom UI instructions */
+html {
+  font-size: 112.5%; /* Scaled up by one step (18px) so all text sizes across the website are larger */
+}
+
+/* Custom pixel text overrides to convert them to rem so they scale with html font-size */
+.text-\[8px\] { font-size: 0.5rem !important; }
+.text-\[9px\] { font-size: 0.5625rem !important; }
+.text-\[10px\] { font-size: 0.625rem !important; }
+.text-\[10\.5px\] { font-size: 0.65625rem !important; }
+.text-\[11px\] { font-size: 0.6875rem !important; }
+.text-\[11\.5px\] { font-size: 0.71875rem !important; }
+.text-\[12px\] { font-size: 0.75rem !important; }
+.text-\[12\.5px\] { font-size: 0.78125rem !important; }
+.text-\[13px\] { font-size: 0.8125rem !important; }
+.text-\[14px\] { font-size: 0.875rem !important; }
+.text-\[15px\] { font-size: 0.9375rem !important; }
+.text-\[16px\] { font-size: 1rem !important; }
+
 html, body {
   background-attachment: scroll;
   background-clip: border-box;
@@ -62,9 +84,9 @@ html, body {
 
 /* WCAG high-contrast compliance resets for cleaner visual density */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 
 /* Utilities for animations in tailwind v4 context if needed */

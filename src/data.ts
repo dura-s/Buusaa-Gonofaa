@@ -1,93 +1,125 @@
 import { NewsItem, EventItem, DonationCamp } from './types';
+import latestAssemblyImage from './assets/images/photo_2026-06-25_11-53-35.jpg';
+import absSupportImage from './assets/images/photo_2026-06-25_11-53-21.jpg';
+import fbAssemblyImage from './assets/images/photo_2026-06-25_11-53-22.jpg';
 
 export const mockNews: NewsItem[] = [
   {
-    id: 'n1',
-    date: '2026-06-10',
-    category: 'Institutional Development',
-    imagePlaceholder: 'https://images.unsplash.com/photo-1590650154854-4139e557dcdb?auto=format&fit=crop&q=80&w=800',
+    id: 'n_youtube_video',
+    date: '2026-06-20',
+    category: 'Official Video Broadcast',
+    imagePlaceholder: 'https://img.youtube.com/vi/HwJf1wdU4lk/maxresdefault.jpg',
+    youtubeId: 'HwJf1wdU4lk',
+    externalLink: 'https://www.youtube.com/watch?v=HwJf1wdU4lk',
     title: {
-      om: "Dameen Adamaa Qorannoo Waloo Buusaa Eegalera",
-      am: "የአዳማው ቅርንጫፍ የኅብረት ስብሳባዎችን በይፋ ጀምሯል",
-      en: "Adama Branch Commences Cooperative Micro-insurance Assessments"
+      om: "Daawwadhaa: Gabaasa Fi Viidiyoo Buusaa Gonofaa Damee Magaalaa Adaamaa",
+      am: "ይመልከቱ፦ የአዳማ ከተማ የቡሳ ጎኖፋ ልዩ የቪዲዮ ዘገባ",
+      en: "Watch: Official Video Documentary of Buusaa Gonofaa Adama Branch"
     },
     summary: {
-      om: "Hojjettoonni damee keenyaa qonnaan bultoota hiriirsuun sirna qusannaa fi inshuraansii qonnaa irratti haasofsiisan.",
-      am: "የቅርንጫፉ የስራ ባልደረቦች ከአርሶ አደሮች ጋር በመሆን በግብርና ቁጠባና ዋስትና ዙሪያ ውይይት አካሂደዋል።",
-      en: "Our crop adaptation safety experts started training smallholders around Adama Rural and Boset on mitigating rain delay risks."
+      om: "Hojiiwwan gurguddoo fi tattaaffii buusaa gonofaa damee Magaalaa Adaamaa irratti viidiyoo gabaasa dhihaate kanaan daawwadhaa.",
+      am: "በአዳማ ከተማ ቅርንጫፍ የቡሳ ጎኖፋ ዋና ዋና ተግባራትና ህዝባዊ መረዳጃዎች ዙሪያ የተዘጋጀውን ልዩ የቪዲዮ ዘገባ እዚህ ይመልከቱ።",
+      en: "Watch the comprehensive video broadcast highlighting the official Buusaa Gonofaa operations and traditional safety nets in Adama."
     },
     content: {
-      om: "Bara daldalaa kana keessata, dameen Adamaa dhumarratti qonnaan bultoota kuma sadii ol gargaaruuf hundi danda'u irratti ragaa bahaa jira. Qorannoon kunis carraa wabii argachuu guddisa.",
-      am: "በዚህ የምርት ዘመን የአዳማው ቅርንጫፍ ከ3,000 በላይ አርሶ አደሮችን በማድረስ ለመደገፍ አቅዷል። ይህ ድጋፍ በድርቅና በአደጋ ወቅት ዋስትና የሚሰጥ ነው።",
-      en: "This season, the Buusaa Gonofaa Adama branch aims to register over 3,000 smallholder farmers into the newly subsidized climate-indexed micro-insurance schema, aligning traditional solidarity structures with dynamic rainfall analysis."
+      om: "Hojiiwwan gurguddoo, miseensummaa qusannaa fi gargaarsa namoomaa sassaabbii maallaqaa damee Magaalaa Adaamaa irratti ragaan gabaasa viidiyoo bal'aan dhihaateera. Marsariitii kanaan daawwachuun ni danda'ama.",
+      am: "በአዳማ ከተማ የቡሳ ጎኖፋ ማህበረሰብ ድጋፍ፣ መደበኛ መዋጮዎችና ሰብአዊ ረድኤቶች ዙሪያ ሰፊ መግለጫና ቃለ ምልልስ ያካተተ ቪዲዮ ነው። ይህ የገዳ ስርዓት ስራዎችን ያጎላል።",
+      en: "A fully documented broadcast of Adama branch activities showcasing community-led insurance, collective fundraising, and traditional safety nets. It perfectly demonstrates how ancient Gadaa values integrate with modern local administration."
     }
   },
   {
-    id: 'n2',
-    date: '2026-06-02',
-    category: 'Community Support',
-    imagePlaceholder: 'https://images.unsplash.com/photo-1531206715517-5c0ba140e2b8?auto=format&fit=crop&q=80&w=800',
+    id: 'n_abs_support',
+    date: '2026-06-28',
+    category: 'Humanitarian Aid',
+    imagePlaceholder: absSupportImage,
+    externalLink: 'https://abs.gov.et/waajjirri-buusaa-gonofaa-damee-adaamaa-harka-qalleeyyoota-50f-deeggarsa-midhaan-nyaataa-taasisee/',
     title: {
-      om: "Maayicroo-Fayinaansii Adamaa: Guddina Hojii Xixiqqaa Dubartootaa",
-      am: "የአነስተኛ ቢዝነስ ብድር ለሴት ድርጅቶች መበልጸግ አስገኝቷል",
-      en: "Adama Micro-Finance Fueling Female-Led Microenterprises Growth"
+      om: "Waajjirri Buusaa Gonofaa Damee Adaamaa Harka-qalleeyyoota 50f Deeggarsa Midhaan Nyaataa Taasise",
+      am: "የአዳማ ቅርንጫፍ የቡሳ ጎኖፋ ጽሕፈት ቤት ለ 50 ችግረኛ ነዋሪዎች የእህል ምግብ ድጋፍ አደረገ",
+      en: "Adama Branch Buusaa Gonofaa Office Distributed Food Grain Support to 50 Underprivileged Residents"
     },
     summary: {
-      om: "Dubartoota daldala irratti hirmaatan 120f liqiin salphaa dhibbantaa 100 milkaa'inaan raawwatameera.",
-      am: "በአዳማ ከተማና አካባቢው ላሉ 120 ሴት ስራ ፈጣሪዎች የተሰጠው ብድር የ100% እድገት አስመዝግቧል።",
-      en: "Over 120 women-led enterprise cooperatives received low-interest micro-loans, completing their expansion and starting local processing units."
+      om: "Dameen Adaamaa harka-qalleeyyoota magaalaa keessa jiraniif deeggarsa midhaan nyaataa raawwachuun gargaarsa namoomaa dhiyeesseera.",
+      am: "የአዳማ ቅርንጫፍ ጽሕፈት ቤት በከተማዋ ለሚገኙ 50 አቅመ ደካሞችና ችግረኞች የእህል ድጋፍ በማድረግ ሰብአዊ አጋርነቱን አሳይቷል።",
+      en: "Adama branch office delivered emergency grain and food packages directly to 50 highly vulnerable city resident families."
     },
     content: {
-      om: "Guddinni daldaltoota xixiqqaa dubartootaa bu'uura dinagdee magaalaa fi baadiyaa Adamaati. Liqii salphaa kanaan bu'urri daldala jireenya isaanii jijjireera.",
-      am: "የአነስተኛ የንግድ ዘርፍ መስፋፋት የከተማችንና ገጠር መንደሮች ኢኮኖሚ ምሰሶ ነው። በተሰጠው ምቹ የብድር ሥርዓት ሴቶቹ ራሳቸውን መቻል ችለዋል።",
-      en: "A newly allocated 5-million Birr fund tailored for fast collateral-free group guarantees has enabled women-led agro-dealers, local food stalls, and textile handlers in Adama to expand operations, driving household financial independence."
+      om: "Gabaasa guutuu Waajjira Buusaa Gonofaa Damee Adaamaa irraa argame kanaan, harka-qalleeyyoota humna hin qabne 50f deeggarsi midhaan nyaataa kun kennamuun jireenya maatii isaanii kan deeggaru dha. Marsariitii ABS irraa dubbisuun ni danda'ama.",
+      am: "የአዳማ ከተማ ቅርንጫፍ ባደረገው በዚህ የበጎ አድራጎት ዘመቻ፣ ለ50 ችግረኛ አባወራዎችና እማወራዎች የእህል እህል ድጋፍ በይፋ ተከፋፍሏል። ሙሉ ዘገባውን በኤቢኤስ (ABS) ድረ-ገጽ ላይ ያንብቡ።",
+      en: "Through localized resource mobilization, the Adama branch team coordinated a fast grain distribution event, assisting 50 underprivileged families facing dry climate stress in East Shewa."
     }
   },
   {
-    id: 'n3',
-    date: '2026-05-24',
-    category: 'Partnership',
-    imagePlaceholder: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=800',
+    id: 'n_fb_assembly',
+    date: '2026-06-25',
+    category: 'General Assembly',
+    imagePlaceholder: fbAssemblyImage,
+    externalLink: 'https://www.facebook.com/biru61d/posts/yaaii-buusaa-gonofaa-damee-magaalaa-adaamaa-suuraan/1300527142092755/',
     title: {
-      om: "Waliigaltee Baankiilee Hawaasaa Waliin Taasifame",
-      am: "ከኅብረት ባንኮች ጋር የተደረገው አዲስ አጋርነት",
-      en: "Strategic Collaboration Formed to Expand Diaspora Support"
+      om: "Yaa'ii Buusaa Gonofaa Damee Magaalaa Adaamaa (Suuraan)",
+      am: "የአዳማ ከተማ የቡሳ ጎኖፋ መደበኛ ጉባኤ በምስል",
+      en: "Adama City Branch Buusaa Gonofaa General Assembly (In Photos)"
     },
     summary: {
-      om: "Buusaa Gonofaa Oromiyaan baankiilee dhuunfaa waliin hojjechuun gargaarsa Diaspora mijeessaa jira.",
-      am: "የቡሳ ጎኖፋ ማኅበር ከሀገር ውስጥ ባንኮች ጋር በመተባበር የዲያስፖራውን መዋጮ ለማቀላጠፍ ውል ተፈራርሟል።",
-      en: "New secure digital integration bridges enable Diaspora donors to sponsor specific rural farming clusters directly."
+      om: "Suuraalee yaa'ii gurguddaa fi hirmaannaa abbootii Gadaa damee Magaalaa Adaamaa irratti fuula Facebook keenya irratti dhihaate daawwadhaa.",
+      am: "በአዳማ ከተማ የቡሳ ጎኖፋ አባገዳዎችና አመራሮች የተሳተፉበትን ታላቅ ጉባኤ በፌስቡክ ገጻችን ላይ ያሉትን ምስሎች ይመልከቱ።",
+      en: "Explore the full photograph collection and council decisions from the Adama City Buusaa Gonofaa assembly via Facebook."
     },
     content: {
-      om: "Sirni gumaacha Diaspora keenyaa amma caalaatti amansiisaa fi saffisaa ta'eera. Waliigalteen kun damelee hundaaf mijeessi hojii umma.",
-      am: "አዲሱ የዲያስፖራ ድጋፍ መተግበሪያ በአስተማማኝና ቀልጣፋ መንገድ መዋጮዎትን ለታለመለት የገበሬ ማኅበር እንዲያደርሱ ታስቦ የተሰራ ነው።",
-      en: "By pairing local cooperative databases with modern digital gateway interfaces, members living abroad can monitor localized contributions and witness live social protection distributions for Adama rural water rehabilitation programs."
+      om: "Yaa'ii miseensotaa fi hoggansa Buusaa Gonofaa Damee Magaalaa Adaamaa irratti suuraaleen ragaa gurguddoo hirmaannaa Abbootii Gadaa mul'isatn Facebook irratti dhihaataniiru.",
+      am: "በአዳማ ከተማ የተካሄደው የቡሳ ጎኖፋ ጠቅላላ ጉባኤ በታላቅ ድምቀት ተካሂዷል። የአባገዳዎችና የአመራሮችን ተሳትፎ የሚያሳዩ ፎቶግራፎችን በፌስቡክ ይመልከቱ።",
+      en: "A beautiful visual exhibition showing elders, local branch coordinators, and development agents discussing traditional insurance programs in central Adama."
     }
   },
   {
-    id: 'n_obn',
-    date: '2026-06-16',
-    category: 'OBN Broadcast News',
-    imagePlaceholder: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800',
+    id: 'n_assembly_3',
+    date: '2026-06-25',
+    category: 'Latest Assembly Event',
+    imagePlaceholder: latestAssemblyImage,
     title: {
-      om: "Gabaasa OBN: Buusaa Gonofaa Adamaa fi Inshuraansii Satalaayitiin deeggarame",
-      am: "የኦቢኤን (OBN) ልዩ ዘገባ፦ በሳተላይት የታገዘው የአዳማ የገበሬዎች ኢንሹራንስ ስኬት",
-      en: "OBN Broadcast: Adama Satellite-Indexed Farmers Insurance System Featured on Oromia Broadcasting Network"
+      om: "Marii Waltajjii Yaa'ii Buusaa Gonofaa Damee Adaamaa Marsaa 3ffaa Gaggeeffame",
+      am: "3ኛው ዙር የቡሳ ጎኖፋ የአዳማ ቅርንጫፍ ጉባኤ ውይይት ተካሄደ",
+      en: "3rd Round Buusaa Gonofaa Adama Branch Assembly Forum Held"
     },
     summary: {
-      om: "Tajiijilli inshuraansii satalaayitiin rooba fiduu irratti qusannoo kaffaltii Buusaa Gonofaa Adama gabaasa addaa OBN irratti dhihaate.",
-      am: "የኦቢኤን የቴሌቪዥን ቡድን በአዳማና ቦሰት ወረዳ የዝናብ እጥረትን ለመከላከል የሚረዳውን የሳተላይት መረጃ መመርመሪያ ስርዓት በትኩረት ዘግቧል።",
-      en: "Oromia Broadcasting Network (OBN) featured an in-depth news documentary on Buusaa Gonofaa Adama, tracking automated climate payout payouts."
+      om: "Marii waltajjii kanarratti hooggantoonni, Abbootiin Gadaa fi hawaasni damee Adaamaa argamuun marii bal'aa gaggeessanii jiru.",
+      am: "በዚህ ጉባኤ ላይ የአመራር አባላት፣ አባገዳዎችና የአዳማ ቅርንጫፍ ማህበረሰብ አባላት በመገኘት ሰፊ ውይይት አድርገዋል።",
+      en: "Branch leaders, Abbaa Gadaas, and community members gathered for a comprehensive general assembly discussion."
     },
     content: {
-      om: "Gabaasa addaa OBN kessatti, hoogganaan Buusaa Gonofaa damee Adamaa akka ibsetti: 'Sirni qusannaa fi inshuraansii qonnaa keenyaa aadaa Gadaatiin deeggaramee technology hammayyaa dabalatee guddina dhabu qonnaan bultootaaf guddina humna qaama hundaa ta'eera.' OBN gabaasa kana guutummaa naannichaatti dabarseera.",
-      am: "በኦቢኤን (OBN) የቀጥታ ቃለ-ምልልስ የቅርንጫፍ ኃላፊው እንደገለጹት፤ 'የእኛ የማይክሮ ኢንሹራንስና የማይክሮ ፋይናንስ ስርዓታችን የገዳ ባህላዊ ዕሴቶችን ከዘመናዊ ቴክኖሎጂ ጋር አቀናጅቶ የያዘ ስለሆነ ውጤታማነቱን አሳይቷል።' የቴሌቪዥን ጣቢያው የካሜራ ባለሙያዎች አዳማ ዙሪያ በመንቀሳቀስ የታደሉትን አርሶ አደሮች አነጋግረዋል።",
-      en: "In the OBN Broadcast special news segment, dynamic farmers illustrated how mobile signals verify rainfall index drops. The report highlighted that over 1,500 smallholder families in East Shewa zone received automatic climate shock cash guarantees within days of satellite anomaly verification, proving that coupling ancient Gadaa covenants with FinTech ledger platforms creates a world-class model for national social safety grids."
+      om: "Yaa'ii marsaa 3ffaa kanaan, hojiilee misooma hawaasummaa, inshuraansii qonnaa fi wal-gargaarsa Buusaa Gonofaa babal'isuuf xiyyeeffannoo guddaan kennameera. Waltajjichi tokkummaa fi ragaa sirna Gadaa irratti hundaa'ee milkaa'inaan xumurame.",
+      am: "በዚህ 3ኛው ዙር ጉባኤ የማህበራዊ ልማት ስራዎችን፣ የግብርና ኢንሹራንስን እና የቡሳ ጎኖፋ የጋራ መረዳጃ ስርዓትን ለማጠናከር ትኩረት ተሰጥቷል። ውይይቱ በገዳ ስርዓት እሴቶችና በአንድነት መንፈስ በተሳካ ሁኔታ ተጠናቋል።",
+      en: "During this 3rd round forum, key focus was placed on enhancing community social protection, expanding micro-insurance coverage for smallholder farmers, and strengthening the traditional Buusaa Gonofaa mutual aid mechanisms. The session successfully concluded highlighting Gadaa-led sustainability initiatives."
     }
   }
 ];
 
 export const mockEvents: EventItem[] = [
+  {
+    id: 'e_assembly_3',
+    title: {
+      om: "Marii Waltajjii Yaa'ii Marsaa 3ffaa",
+      am: "3ኛው ዙር የቡሳ ጎኖፋ ጠቅላላ ጉባኤ",
+      en: "3rd Round Buusaa Gonofaa Adama Assembly"
+    },
+    date: '2026-06-25',
+    gadaaTerm: {
+      om: "Yaa'ii Buusaa Gonofaa",
+      am: "የቡሳ ጎኖፋ ጠቅላላ ጉባኤ",
+      en: "Gadaa General Council"
+    },
+    description: {
+      om: "Marii waltajjii yaa'ii Buusaa Gonofaa Damee Adaamaa Marsaa 3ffaa adda durummaan dhimmoota misooma hawaasaa irratti xiyyeeffate.",
+      am: "በአዳማ ቅርንጫፍ የተካሄደው 3ኛው ዙር የቡሳ ጎኖፋ ጉባኤ የግብርና ኢንሹራንስንና ማህበራዊ ጥበቃን ለማስፋፋት የተዘጋጀ ትልቅ መድረክ ነው።",
+      en: "The 3rd Round Adama Branch General Assembly focused heavily on micro-insurance adaptation and local cooperative assistance mechanisms."
+    },
+    location: {
+      om: "Galma Abbaa Gadaa Adamaa",
+      am: "አዳማ አባ ገዳ አዳራሽ",
+      en: "Abbaa Gadaa Hall, Central Adama"
+    },
+    status: 'completed'
+  },
   {
     id: 'e_gadaa_social',
     title: {

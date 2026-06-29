@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, MapPin, Clock, ArrowRight, Image as ImageIcon, Sparkles, X } from 'lucide-react';
+import { Calendar, MapPin, Clock, ArrowRight, Image as ImageIcon, Sparkles, X, Play, ExternalLink, Youtube } from 'lucide-react';
 import { Language, NewsItem, EventItem } from '../types';
 import { translations } from '../translations';
 import { mockNews, mockEvents } from '../data';
+import fbAssemblyImage from '../assets/images/photo_2026-06-25_11-53-22.jpg';
+import absSupportImage from '../assets/images/photo_2026-06-25_11-53-21.jpg';
 
 interface CommunityProps {
   language: Language;
@@ -12,47 +14,55 @@ interface CommunityProps {
 export default function Community({ language }: CommunityProps) {
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   
-  // Custom dummy image gallery representing Adama and nearby farming zones
+  // Custom image gallery representing actual Adama branch activities and official sources
   const galleryPlaceholders = [
     {
-      id: 'g1',
-      title: { om: "Maatiilee Oromia deeggaramaa jiran", am: "የድጋፍ አሰጣጥ ሥነ-ሥርዓት", en: "Adama Elder Co-insurance Handouts" },
-      src: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=400"
+      id: 'g_youtube',
+      title: { om: "Vidiyoo Gabaasa Hojii Buusaa Gonofaa Magaalaa Adaamaa", am: "የአዳማ ከተማ ቡሳ ጎኖፋ ቪዲዮ መግለጫ", en: "Official Adama City Buusaa Gonofaa Video Documentary" },
+      src: "https://img.youtube.com/vi/HwJf1wdU4lk/maxresdefault.jpg",
+      link: "https://www.youtube.com/watch?v=HwJf1wdU4lk"
     },
     {
-      id: 'g2',
-      title: { om: "Misooma Sanyii Filatamaa damee qonnaa", am: "የምርጥ ዘር ልማት በአዳማ ዙሪያ", en: "Wheat Strain Adaptation Monitoring" },
-      src: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&q=80&w=400"
+      id: 'g_yt_screenshot1',
+      title: { 
+        om: "Abbootii Gadaa fi Hoggansa Yaa'ii irratti (Viidiyoo irraa)", 
+        am: "አባገዳዎችና አመራሮች በስብሰባው ላይ (ከቪዲዮው የተወሰደ)", 
+        en: "Council Elders & Branch Leaders at Assembly (Captured from Video)" 
+      },
+      src: "https://img.youtube.com/vi/HwJf1wdU4lk/hq1.jpg",
+      link: "https://www.youtube.com/watch?v=HwJf1wdU4lk"
     },
     {
-      id: 'g3',
-      title: { om: "Wal-gahi Hawaasa Wal-gargaarsaa", am: "የኅብረት ምክክር በአዳማ ቅርንጫፍ", en: "Regional Member Cooperative Assembly" },
-      src: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=400"
+      id: 'g_yt_screenshot2',
+      title: { 
+        om: "Marii Fi Hirmaannaa Hawaasa Adaamaa (Viidiyoo irraa)", 
+        am: "የአዳማ ከተማ ማህበረሰብ ውይይትና ተさとፎ (ከቪዲዮው)", 
+        en: "Adama Community Group Discussion & Mutual Support (From Video)" 
+      },
+      src: "https://img.youtube.com/vi/HwJf1wdU4lk/hq2.jpg",
+      link: "https://www.youtube.com/watch?v=HwJf1wdU4lk"
     },
     {
-      id: 'g4',
-      title: { om: "Leenjii daldala dubartootaa", am: "ለሴቶች የሚደረግ የልማት ውይይት", en: "Adama Microenterprise Training Class" },
-      src: "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=400"
+      id: 'g_yt_screenshot3',
+      title: { 
+        om: "Hark-qalleeyyoota Deeggarsa Fudhatan (Viidiyoo irraa)", 
+        am: "የእህል እርዳታና ሰብአዊ ድጋፍ ስርጭት (ከቪዲዮው)", 
+        en: "Distribution of Local Safety Net Resources (From Video)" 
+      },
+      src: "https://img.youtube.com/vi/HwJf1wdU4lk/hq3.jpg",
+      link: "https://www.youtube.com/watch?v=HwJf1wdU4lk"
     },
     {
-      id: 'g5',
-      title: { om: "Gabaasa Kaameraa OBN Adamaa", am: "የኦቢኤን ካሜራ ቡድን በአዳማ ሰብል ምርመራ", en: "OBN Broadcast Crew Capturing Crop Stories" },
-      src: "https://images.unsplash.com/photo-1492534513006-37715f336a39?auto=format&fit=crop&q=80&w=400"
+      id: 'g_fb_assembly',
+      title: { om: "Yaa'ii Buusaa Gonofaa Damee Magaalaa Adaamaa (Suuraalee)", am: "የአዳማ ከተማ የቡሳ ጎኖፋ ጠቅላላ ጉባኤ በምስል", en: "Adama City Branch General Assembly (Photo Stream)" },
+      src: fbAssemblyImage,
+      link: "https://www.facebook.com/biru61d/posts/yaaii-buusaa-gonofaa-damee-magaalaa-adaamaa-suuraan/1300527142092755/"
     },
     {
-      id: 'g6',
-      title: { om: "Oomisha Qoranii Misooma Liqii", am: "በግብርና ብድር የታገዘ የሽምብራ ምርት", en: "Wheat Harvesting Funded by Agriculture Loans" },
-      src: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&q=80&w=400"
-    },
-    {
-      id: 'g7',
-      title: { om: "Marii Abbooti Gadaa Adamaa", am: "የአዳማ አባገዳዎች ባህላዊ ምክክር ስብሰባ", en: "Gadaa Cultural General Council in Session" },
-      src: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=400"
-    },
-    {
-      id: 'g8',
-      title: { om: "Leenjii CBE Birr fi Telebirr", am: "ለአርሶ አደሮች የታሰበ ዲጂታል ቴክኖሎጂ ስልጠና", en: "Mobile Money & Premium Payout Tutorial" },
-      src: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=400"
+      id: 'g_abs_grain',
+      title: { om: "Deeggarsa Midhaan Nyaataa Harka-qalleeyyoota 50f Kennamedha", am: "የእህል ምግቦች ድጋፍ ለ 50 ችግረኛ ነዋሪዎች", en: "Adama Grain Support and Food Security Delivery" },
+      src: absSupportImage,
+      link: "https://abs.gov.et/waajjirri-buusaa-gonofaa-damee-adaamaa-harka-qalleeyyoota-50f-deeggarsa-midhaan-nyaataa-taasisee/"
     }
   ];
 
@@ -62,10 +72,10 @@ export default function Community({ language }: CommunityProps) {
         
         {/* Core Header section */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-20">
-          <div className="inline-block px-3.5 py-1.5 rounded-full bg-white border border-emerald-100/100 text-[#0B6B3A] text-xs font-bold uppercase tracking-widest">
+          <div className="inline-block px-3.5 py-1.5 rounded-full bg-white border border-emerald-100/100 text-[#054823] text-xs font-bold uppercase tracking-widest">
             {language === 'om' ? 'Aadaan Keenya Hawaasa Keenya' : language === 'am' ? 'የገዳ ባህል ዕሴቶች' : 'Gadaa Mutual Safety'}
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#0B6B3A] tracking-tight font-sans">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#054823] tracking-tight font-sans">
             {translations.communityHeader[language]}
           </h2>
           <p className="text-base text-gray-600 font-medium leading-relaxed">
@@ -78,7 +88,7 @@ export default function Community({ language }: CommunityProps) {
           
           {/* Main News flow (Left Hand Side) */}
           <div className="lg:col-span-7 space-y-8" id="news-subcontainer">
-            <h3 className="text-lg font-extrabold text-[#0B6B3A] uppercase tracking-widest flex items-center gap-2 mb-6">
+            <h3 className="text-lg font-extrabold text-[#054823] uppercase tracking-widest flex items-center gap-2 mb-6">
               <span className="w-1.5 h-3.5 rounded-sm bg-emerald-600 block" />
               <span>{translations.newsTitle[language]}</span>
             </h3>
@@ -91,17 +101,33 @@ export default function Community({ language }: CommunityProps) {
                   id={`news-item-card-${news.id}`}
                 >
                   {/* Photo Container */}
-                  <div className="w-full md:w-44 aspect-video md:aspect-square rounded-2xl bg-emerald-50 overflow-hidden shrink-0 border border-emerald-100">
+                  <div 
+                    className="w-full md:w-72 aspect-video rounded-2xl bg-[#1B5E20] overflow-hidden shrink-0 border border-emerald-900/20 shadow-sm relative group cursor-pointer"
+                    onClick={() => {
+                      if (news.youtubeId && news.externalLink) {
+                        window.open(news.externalLink, '_blank');
+                      } else {
+                        setSelectedNews(news);
+                      }
+                    }}
+                  >
                     <img 
                       src={news.imagePlaceholder} 
                       alt={news.title[language]} 
-                      className="w-full h-full object-cover grayscale-0 brightness-100"
+                      className="w-full h-full object-cover grayscale-0 brightness-100 transform transition-transform duration-300 group-hover:scale-105"
                       referrerPolicy="no-referrer"
                     />
+                    {news.youtubeId && (
+                      <div className="absolute inset-0 bg-black/35 group-hover:bg-black/45 transition-colors flex items-center justify-center">
+                        <div className="w-14 h-14 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-2xl transform transition-transform group-hover:scale-110 duration-200">
+                          <Play className="w-6 h-6 fill-current translate-x-0.5 text-white" />
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* News metadata details */}
-                  <div className="flex flex-col justify-between space-y-4">
+                  <div className="flex flex-col justify-between space-y-4 flex-grow">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
                         <span>{news.category}</span>
@@ -109,7 +135,7 @@ export default function Community({ language }: CommunityProps) {
                         <span>{news.date}</span>
                       </div>
                       
-                      <h4 className="text-sm font-bold text-[#0B6B3A] tracking-tight">
+                      <h4 className="text-sm font-bold text-[#054823] tracking-tight">
                         {news.title[language]}
                       </h4>
                       <p className="text-xs text-gray-600 font-semibold leading-relaxed">
@@ -117,14 +143,46 @@ export default function Community({ language }: CommunityProps) {
                       </p>
                     </div>
 
-                    <div>
+                    <div className="flex items-center gap-4 flex-wrap">
                       <button
-                        onClick={() => setSelectedNews(news)}
-                        className="inline-flex items-center gap-2 text-[#0B6B3A] hover:text-emerald-900 text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer"
+                        onClick={() => {
+                          if (news.youtubeId && news.externalLink) {
+                            window.open(news.externalLink, '_blank');
+                          } else {
+                            setSelectedNews(news);
+                          }
+                        }}
+                        className="inline-flex items-center gap-2 text-[#054823] hover:text-emerald-900 text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer"
                       >
-                        <span>{translations.readMore[language]}</span>
+                        <span>{news.youtubeId ? (language === 'om' ? 'Fiilmii Daawwadhu' : language === 'am' ? 'ቪዲዮውን ይመልከቱ' : 'Watch Video') : translations.readMore[language]}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
+
+                      {news.externalLink && (
+                        <a
+                          href={news.externalLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-emerald-600 hover:text-emerald-800 text-xs font-black uppercase tracking-widest transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {news.youtubeId ? (
+                            <>
+                              <Youtube className="w-4 h-4 text-red-600 shrink-0" />
+                              <span>YouTube</span>
+                            </>
+                          ) : news.externalLink.includes('facebook') ? (
+                            <>
+                              <span className="text-blue-600 font-black shrink-0">Facebook</span>
+                            </>
+                          ) : (
+                            <>
+                              <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                              <span>{language === 'om' ? 'ABS Gabaasa' : language === 'am' ? 'ኤቢኤስ ዘገባ' : 'ABS News'}</span>
+                            </>
+                          )}
+                        </a>
+                      )}
                     </div>
                   </div>
 
@@ -135,7 +193,7 @@ export default function Community({ language }: CommunityProps) {
 
           {/* Local Active Gadaa-led Safety Events list */}
           <div className="lg:col-span-5 space-y-8" id="events-subcontainer">
-            <h3 className="text-lg font-extrabold text-[#0B6B3A] uppercase tracking-widest flex items-center gap-2 mb-6">
+            <h3 className="text-lg font-extrabold text-[#054823] uppercase tracking-widest flex items-center gap-2 mb-6">
               <span className="w-1.5 h-3.5 rounded-sm bg-emerald-600 block" />
               <span>{translations.eventsTitle[language]}</span>
             </h3>
@@ -144,13 +202,13 @@ export default function Community({ language }: CommunityProps) {
               {mockEvents.map((event) => (
                 <div 
                   key={event.id}
-                  className="bg-white rounded-3xl border border-emerald-100 p-6 hover:border-[#0B6B3A] hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+                  className="bg-white rounded-3xl border border-emerald-100 p-6 hover:border-[#054823] hover:shadow-lg transition-all duration-300 relative overflow-hidden"
                   id={`event-item-card-${event.id}`}
                 >
                   
                   {/* Event active state banner */}
                   {event.status === 'ongoing' && (
-                    <div className="absolute top-0 right-0 bg-[#0B6B3A] text-white text-[9px] font-bold tracking-widest uppercase px-3.5 py-1">
+                    <div className="absolute top-0 right-0 bg-[#054823] text-white text-[9px] font-bold tracking-widest uppercase px-3.5 py-1">
                       {language === 'om' ? 'Amma' : language === 'am' ? 'በሂደት ላይ' : 'Active'}
                     </div>
                   )}
@@ -210,31 +268,43 @@ export default function Community({ language }: CommunityProps) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {galleryPlaceholders.map((img) => (
-              <div 
-                key={img.id}
-                className="group relative h-64 rounded-2xl bg-emerald-50 overflow-hidden border border-emerald-100 hover:shadow-md transition-all duration-300"
-                id={`gallery-photo-idx-${img.id}`}
-              >
-                {/* Image overlay */}
-                <img 
-                  src={img.src} 
-                  alt={img.title[language]} 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  referrerPolicy="no-referrer"
-                />
+            {galleryPlaceholders.map((img) => {
+              const CardWrapper = (img as any).link ? 'a' : 'div';
+              const extraProps = (img as any).link ? {
+                href: (img as any).link,
+                target: "_blank",
+                rel: "noopener noreferrer",
+                className: "group relative h-64 rounded-2xl bg-emerald-50 overflow-hidden border border-emerald-100 hover:border-emerald-300 hover:shadow-lg transition-all duration-300 cursor-pointer block"
+              } : {
+                className: "group relative h-64 rounded-2xl bg-emerald-50 overflow-hidden border border-emerald-100 hover:shadow-md transition-all duration-300 block"
+              };
 
-                {/* Cover label on Hover */}
-                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-emerald-950/90 to-emerald-900/20 p-4 transition-opacity duration-300">
-                  <h5 className="text-xs font-bold text-white uppercase tracking-wider">
-                    {img.title[language]}
-                  </h5>
-                  <span className="text-[10px] font-semibold text-emerald-300 uppercase tracking-widest mt-1 block">
-                    Buusaa Gonofaa Adama
-                  </span>
-                </div>
-              </div>
-            ))}
+              return (
+                <CardWrapper 
+                  key={img.id}
+                  id={`gallery-photo-idx-${img.id}`}
+                  {...extraProps}
+                >
+                  {/* Image overlay */}
+                  <img 
+                    src={img.src} 
+                    alt={img.title[language]} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    referrerPolicy="no-referrer"
+                  />
+
+                  {/* Cover label on Hover */}
+                  <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-emerald-950/90 to-emerald-900/20 p-4 transition-opacity duration-300">
+                    <h5 className="text-xs font-bold text-white uppercase tracking-wider line-clamp-2">
+                      {img.title[language]}
+                    </h5>
+                    <span className="text-[10px] font-semibold text-emerald-300 uppercase tracking-widest mt-1 block">
+                      {(img as any).link ? (img.id === 'g_youtube' ? 'Watch Documentary ↗' : 'Official Page ↗') : 'Buusaa Gonofaa Adama'}
+                    </span>
+                  </div>
+                </CardWrapper>
+              );
+            })}
           </div>
         </div>
 
@@ -264,13 +334,24 @@ export default function Community({ language }: CommunityProps) {
                 </button>
 
                 <div className="space-y-6">
-                  <div className="aspect-video w-full rounded-2xl bg-emerald-100 overflow-hidden border border-emerald-100">
-                    <img 
-                      src={selectedNews.imagePlaceholder} 
-                      alt={selectedNews.title[language]} 
-                      className="w-full h-full object-cover"
-                      referrerPolicy="no-referrer"
-                    />
+                  <div className="aspect-video w-full rounded-2xl bg-black overflow-hidden border border-emerald-900/20 relative">
+                    {selectedNews.youtubeId ? (
+                      <iframe 
+                        src={`https://www.youtube.com/embed/${selectedNews.youtubeId}?autoplay=1`} 
+                        title={selectedNews.title[language]}
+                        frameBorder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowFullScreen
+                        className="w-full h-full"
+                      ></iframe>
+                    ) : (
+                      <img 
+                        src={selectedNews.imagePlaceholder} 
+                        alt={selectedNews.title[language]} 
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    )}
                   </div>
 
                   <div className="space-y-4">
@@ -293,10 +374,31 @@ export default function Community({ language }: CommunityProps) {
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-emerald-50 flex justify-end">
+                  <div className="pt-4 border-t border-emerald-50 flex justify-between items-center">
+                    {selectedNews.externalLink ? (
+                      <a
+                        href={selectedNews.externalLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 font-black text-xs px-5 py-2.5 rounded-xl transition-colors"
+                      >
+                        {selectedNews.youtubeId ? (
+                          <>
+                            <Youtube className="w-4 h-4 text-red-600" />
+                            <span>{language === 'om' ? 'YouTube irratti Ilaali' : language === 'am' ? 'በዩቲዩብ ይመልከቱ' : 'Watch on YouTube'}</span>
+                          </>
+                        ) : (
+                          <>
+                            <ExternalLink className="w-4 h-4 text-emerald-600" />
+                            <span>{language === 'om' ? 'Madda Guutuu Dubbisi' : language === 'am' ? 'ሙሉውን ምንጭ አንብብ' : 'Read Full Original Article'}</span>
+                          </>
+                        )}
+                      </a>
+                    ) : <div />}
+
                     <button
                       onClick={() => setSelectedNews(null)}
-                      className="bg-emerald-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl hover:bg-emerald-700 transition"
+                      className="bg-[#0B4C28] text-white font-bold text-xs px-6 py-2.5 rounded-xl hover:bg-[#063118] transition"
                     >
                       {language === 'om' ? 'Cufi' : language === 'am' ? 'ዝጋ' : 'Close Article'}
                     </button>

@@ -186,10 +186,10 @@ export default function ContributionPortal({ language }: ContributionPortalProps
         
         {/* Module title header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-14">
-          <div className="inline-block px-3.5 py-1.5 rounded-full bg-white border border-emerald-100/100 text-[#0B6B3A] text-xs font-bold uppercase tracking-widest">
+          <div className="inline-block px-3.5 py-1.5 rounded-full bg-white border border-emerald-100/100 text-[#054823] text-xs font-bold uppercase tracking-widest">
             {language === 'om' ? 'Mootii Gumaachaa' : language === 'am' ? 'የዲያስፖራ ፈንድ' : 'Solidarity Funds'}
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#0B6B3A] tracking-tight font-sans">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#054823] tracking-tight font-sans">
             {translations.contribTitle[language]}
           </h2>
           <p className="text-base text-gray-600 font-medium leading-relaxed">
@@ -208,7 +208,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
               </h3>
 
               {/* Micro security assurance badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white rounded-full border border-emerald-105 border-emerald-100 text-[11px] font-bold text-[#0B6B3A]">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white rounded-full border border-emerald-105 border-emerald-100 text-[11px] font-bold text-[#054823]">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>{language === 'om' ? 'Mirkaneessaa Wabii Adamaa' : language === 'am' ? 'የቅርንጫፉ ህጋዊ ደህንነት ዋስትና' : 'Secured Administrative Routing'}</span>
               </div>
@@ -230,7 +230,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                       paymentStep !== 'form' ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'
                     } ${
                       isSelected 
-                        ? 'border-[#0B6B3A] bg-white ring-4 ring-[#0B6B3A]/5 shadow-md font-bold' 
+                        ? 'border-[#054823] bg-white ring-4 ring-[#054823]/5 shadow-md font-bold' 
                         : 'border-emerald-100 bg-white hover:border-emerald-200'
                     }`}
                     id={`camp-card-${camp.id}`}
@@ -238,11 +238,11 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                     <div className="space-y-3">
                       
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-[10px] font-extrabold text-[#0B6B3A] bg-emerald-50 px-2.5 py-1 rounded-md uppercase tracking-wide">
+                        <span className="text-[10px] font-extrabold text-[#054823] bg-emerald-50 px-2.5 py-1 rounded-md uppercase tracking-wide">
                           {camp.badge[language]}
                         </span>
                         {isSelected && (
-                          <span className="w-2.5 h-2.5 rounded-full bg-[#0B6B3A]" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-[#054823]" />
                         )}
                       </div>
 
@@ -254,7 +254,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                         {camp.description[language]}
                       </p>
 
-                      <div className="flex items-center gap-2 pt-1 text-[11px] font-extrabold text-[#0B6B3A] uppercase tracking-wider">
+                      <div className="flex items-center gap-2 pt-1 text-[11px] font-extrabold text-[#054823] uppercase tracking-wider">
                         <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
                         <span>{language === 'om' ? 'Duula Gumaachaa Banamaa' : language === 'am' ? 'ንቁ የልገሳ ዘመቻ' : 'Active Solidarity Sector'}</span>
                       </div>
@@ -280,10 +280,10 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                   exit={{ opacity: 0, y: -15 }}
                 >
                   <div className="space-y-1">
-                    <span className="text-[10px] font-extrabold text-[#0B6B3A] uppercase tracking-widest">
+                    <span className="text-[10px] font-extrabold text-[#054823] uppercase tracking-widest">
                       {language === 'om' ? 'Oduu Deeggarsaa Mirkaneessi' : language === 'am' ? 'የዕርዳታ ቅጽ ማውጫ' : 'Sponsor Information Portal'}
                     </span>
-                    <h3 className="text-lg font-bold text-[#0B6B3A] font-sans tracking-tight">
+                    <h3 className="text-lg font-bold text-[#054823] font-sans tracking-tight">
                       {language === 'om' ? 'Gumaacha Garee: ' : language === 'am' ? 'የተመረጠው የድጋፍ መስክ፡ ' : 'Target Category: '} {activeCamp.title[language]}
                     </h3>
                   </div>
@@ -373,7 +373,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                             paymentMethod: e.target.checked ? 'paypal' : 'cbe' 
                           }));
                         }}
-                        className="w-4 h-4 rounded-xs border-emerald-200 text-[#0B6B3A] focus:ring-[#0B6B3A]"
+                        className="w-4 h-4 rounded-xs border-emerald-200 text-[#054823] focus:ring-[#054823]"
                       />
                       <label htmlFor="isDiaspora" className="text-xs font-bold text-emerald-950 cursor-pointer select-none">
                         {language === 'om' ? 'Ani Hawaasa Diaspora dha (Biyya alaa jiru)' : language === 'am' ? 'እኔ የውጭ አካል ነኝ (ዲያስፖራ/Diaspora)' : 'Sponsoring from another country (Diaspora)?'}
@@ -393,7 +393,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                               onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'cbe' }))}
                               className={`p-3 rounded-xl border text-left flex flex-col justify-between h-20 transition-all ${
                                 formData.paymentMethod === 'cbe' 
-                                  ? 'border-[#0B6B3A] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#0B6B3A]/10' 
+                                  ? 'border-[#054823] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#054823]/10' 
                                   : 'border-emerald-100 bg-white hover:border-emerald-200'
                               }`}
                             >
@@ -406,7 +406,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                               onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'sinqe' }))}
                               className={`p-3 rounded-xl border text-left flex flex-col justify-between h-20 transition-all ${
                                 formData.paymentMethod === 'sinqe' 
-                                  ? 'border-[#0B6B3A] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#0B6B3A]/10' 
+                                  ? 'border-[#054823] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#054823]/10' 
                                   : 'border-emerald-100 bg-white hover:border-emerald-200'
                               }`}
                             >
@@ -419,7 +419,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                               onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'cbe_birr' }))}
                               className={`p-3 rounded-xl border text-left flex flex-col justify-between h-20 transition-all ${
                                 formData.paymentMethod === 'cbe_birr' 
-                                  ? 'border-[#0B6B3A] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#0B6B3A]/10' 
+                                  ? 'border-[#054823] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#054823]/10' 
                                   : 'border-emerald-100 bg-white hover:border-emerald-200'
                               }`}
                             >
@@ -432,7 +432,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                               onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'telebirr' }))}
                               className={`p-3 rounded-xl border text-left flex flex-col justify-between h-20 transition-all ${
                                 formData.paymentMethod === 'telebirr' 
-                                  ? 'border-[#0B6B3A] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#0B6B3A]/10' 
+                                  ? 'border-[#054823] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#054823]/10' 
                                   : 'border-emerald-100 bg-white hover:border-emerald-200'
                               }`}
                             >
@@ -447,7 +447,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                           onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'paypal' }))}
                           className={`p-3 rounded-xl border text-left flex flex-col justify-between h-20 transition-all ${
                             formData.paymentMethod === 'paypal' 
-                              ? 'border-[#0B6B3A] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#0B6B3A]/10' 
+                              ? 'border-[#054823] bg-emerald-50/40 text-emerald-950 ring-2 ring-[#054823]/10' 
                               : 'border-emerald-100 bg-white hover:border-emerald-200'
                           } ${formData.isDiaspora ? 'col-span-full' : ''}`}
                         >
@@ -459,8 +459,8 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                       {/* IMMEDIATE DISPLAY: Visual display of official bank account info of Buusaa Gonofaa BEFORE funding */}
                       <div className="bg-emerald-50/50 rounded-2xl p-5 border border-emerald-100/100 mt-2 space-y-3">
                         <div className="flex items-center gap-2 border-b border-emerald-100 pb-2">
-                          <Landmark className="w-4 h-4 text-[#0B6B3A]" />
-                          <span className="text-[10px] font-extrabold text-[#0B6B3A] uppercase tracking-wider">
+                          <Landmark className="w-4 h-4 text-[#054823]" />
+                          <span className="text-[10px] font-extrabold text-[#054823] uppercase tracking-wider">
                             {language === 'om' ? 'Teessoo Mirkaneessa Herrega Saanduuqa' : language === 'am' ? 'የተመረጠው ኦፊሴላዊ የክፍያ ሂሳብ መረጃ' : 'Active Settlement Bank Account Details'}
                           </span>
                         </div>
@@ -477,12 +477,12 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                             </div>
                             <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-100">
                               <span className="text-gray-500 font-bold uppercase text-[9px]">Account Number</span>
-                              <span className="font-mono font-extrabold text-[#0B6B3A] text-xs">{bankDetails.cbe.accNumber}</span>
+                              <span className="font-mono font-extrabold text-[#054823] text-xs">{bankDetails.cbe.accNumber}</span>
                             </div>
                             <button
                               type="button"
                               onClick={() => handleCopyToClipboard(bankDetails.cbe.accNumber, 'cbe_acc')}
-                              className="text-[10px] text-[#0B6B3A] font-bold uppercase tracking-wider hover:text-emerald-900 inline-flex items-center gap-1 mt-1 justify-end w-full cursor-pointer"
+                              className="text-[10px] text-[#054823] font-bold uppercase tracking-wider hover:text-emerald-900 inline-flex items-center gap-1 mt-1 justify-end w-full cursor-pointer"
                             >
                               {copiedText === 'cbe_acc' ? (
                                 <><Check className="w-3.5 h-3.5 text-emerald-600" /> <span>Account Copied!</span></>
@@ -505,12 +505,12 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                             </div>
                             <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-100">
                               <span className="text-gray-500 font-bold uppercase text-[9px]">Account Number</span>
-                              <span className="font-mono font-extrabold text-[#0B6B3A] text-xs">{bankDetails.sinqe.accNumber}</span>
+                              <span className="font-mono font-extrabold text-[#054823] text-xs">{bankDetails.sinqe.accNumber}</span>
                             </div>
                             <button
                               type="button"
                               onClick={() => handleCopyToClipboard(bankDetails.sinqe.accNumber, 'sinqe_acc')}
-                              className="text-[10px] text-[#0B6B3A] font-bold uppercase tracking-wider hover:text-emerald-900 inline-flex items-center gap-1 mt-1 justify-end w-full cursor-pointer"
+                              className="text-[10px] text-[#054823] font-bold uppercase tracking-wider hover:text-emerald-900 inline-flex items-center gap-1 mt-1 justify-end w-full cursor-pointer"
                             >
                               {copiedText === 'sinqe_acc' ? (
                                 <><Check className="w-3.5 h-3.5 text-emerald-600" /> <span>Account Copied!</span></>
@@ -533,7 +533,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                             </div>
                             <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-100">
                               <span className="text-gray-500 font-bold uppercase text-[9px]">Merchant Code</span>
-                              <span className="font-mono font-extrabold text-[#0B6B3A] text-xs">{bankDetails.cbe_birr.merchantCode}</span>
+                              <span className="font-mono font-extrabold text-[#054823] text-xs">{bankDetails.cbe_birr.merchantCode}</span>
                             </div>
                             <div className="flex flex-wrap gap-1.5 justify-end mt-2">
                               <button
@@ -553,7 +553,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                               <button
                                 type="button"
                                 onClick={() => setShowQrModal(true)}
-                                className="text-[10px] text-[#0B6B3A] font-black hover:text-emerald-900 flex items-center gap-1 bg-[#0B6B3A] text-white px-2.5 py-1.5 rounded-lg cursor-pointer"
+                                className="text-[10px] text-[#054823] font-black hover:text-emerald-900 flex items-center gap-1 bg-[#054823] text-white px-2.5 py-1.5 rounded-lg cursor-pointer"
                               >
                                 <QrCode className="w-3 h-3" /> Scan QR
                               </button>
@@ -573,7 +573,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                             </div>
                             <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-100">
                               <span className="text-gray-500 font-bold uppercase text-[9px]">Merchant ID</span>
-                              <span className="font-mono font-extrabold text-[#0B6B3A] text-xs">{bankDetails.telebirr.merchantId}</span>
+                              <span className="font-mono font-extrabold text-[#054823] text-xs">{bankDetails.telebirr.merchantId}</span>
                             </div>
                             <div className="flex flex-wrap gap-1.5 justify-end mt-2">
                               <button
@@ -593,7 +593,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                               <button
                                 type="button"
                                 onClick={() => setShowQrModal(true)}
-                                className="text-[10px] text-[#0B6B3A] font-black hover:text-emerald-900 flex items-center gap-1 bg-[#0B6B3A] text-white px-2.5 py-1.5 rounded-lg cursor-pointer"
+                                className="text-[10px] text-[#054823] font-black hover:text-emerald-900 flex items-center gap-1 bg-[#054823] text-white px-2.5 py-1.5 rounded-lg cursor-pointer"
                               >
                                 <QrCode className="w-3 h-3" /> Scan QR
                               </button>
@@ -609,12 +609,12 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                             </div>
                             <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-100 shrink-0 overflow-hidden">
                               <span className="text-gray-500 font-bold uppercase text-[9px]">PayPal Email</span>
-                              <span className="font-mono font-extrabold text-[#0B6B3A] text-[10px] truncate max-w-[190px]">{bankDetails.paypal.account}</span>
+                              <span className="font-mono font-extrabold text-[#054823] text-[10px] truncate max-w-[190px]">{bankDetails.paypal.account}</span>
                             </div>
                             <button
                               type="button"
                               onClick={() => handleCopyToClipboard(bankDetails.paypal.account, 'pp_email')}
-                              className="text-[10px] text-[#0B6B3A] font-bold uppercase tracking-wider hover:text-emerald-900 inline-flex items-center gap-1 mt-1 justify-end w-full cursor-pointer"
+                              className="text-[10px] text-[#054823] font-bold uppercase tracking-wider hover:text-emerald-900 inline-flex items-center gap-1 mt-1 justify-end w-full cursor-pointer"
                             >
                               {copiedText === 'pp_email' ? (
                                 <><Check className="w-3.5 h-3.5 text-emerald-600" /> <span>Email Copied!</span></>
@@ -637,7 +637,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                     {/* Action Step Submit securely */}
                     <button
                       type="submit"
-                      className="w-full bg-[#0B6B3A] hover:bg-[#0A7A41] text-white font-extrabold text-xs py-4 rounded-xl shadow-md tracking-widest hover:shadow-lg transition-all cursor-pointer uppercase mt-6 flex offset items-center justify-center gap-2"
+                      className="w-full bg-[#054823] hover:bg-[#022b14] text-white font-extrabold text-xs py-4 rounded-xl shadow-md tracking-widest hover:shadow-lg transition-all cursor-pointer uppercase mt-6 flex offset items-center justify-center gap-2"
                     >
                       <Lock className="w-4 h-4" />
                       <span>{language === 'om' ? 'Gumaachaa fi Gara Mirkaneessaatti Darbi' : language === 'am' ? 'ሂሳቡን ልኬያለሁ (ወደ ማረጋገጫ ይለፉ)' : 'Proceed to Verification ID receipt'}</span>
@@ -660,7 +660,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                     <span className="text-[10px] font-extrabold text-red-500 uppercase tracking-widest block">
                       {language === 'om' ? 'TARKANFII 2: MIRKANEESSA DABARSA HERREGA' : language === 'am' ? 'ደረጃ 2፡ የገንዘብ ማስተላለፊያ ማረጋገጫ ማስገቢያ ቅጽ' : 'STEP 2: TRANSACTION VERIFICATION'}
                     </span>
-                    <h3 className="text-lg font-bold text-[#0B6B3A] font-sans tracking-tight">
+                    <h3 className="text-lg font-bold text-[#054823] font-sans tracking-tight">
                       {language === 'om' ? 'Mirkaneessa Koodii ykn Kaffaltii Herregaa' : language === 'am' ? 'የደረሰኝ እና የማስተላለፊያ ሃሽ መረጃ' : 'Transfer Reference & Receipt Upload'}
                     </h3>
                   </div>
@@ -679,7 +679,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                           {formData.paymentMethod === 'paypal' && bankDetails.paypal.provider}
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono font-bold bg-[#0B6B3A] text-white px-2 py-0.5 rounded-md uppercase">
+                      <span className="text-[10px] font-mono font-bold bg-[#054823] text-white px-2 py-0.5 rounded-md uppercase">
                         {formData.paymentMethod.replace('_', ' ')}
                       </span>
                     </div>
@@ -744,7 +744,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
 
                       <button
                         type="submit"
-                        className="w-2/3 bg-[#0B6B3A] hover:bg-[#0A7A41] text-white font-extrabold text-xs py-4 rounded-xl shadow-md tracking-widest hover:shadow-lg transition-all cursor-pointer uppercase flex items-center justify-center gap-2"
+                        className="w-2/3 bg-[#054823] hover:bg-[#022b14] text-white font-extrabold text-xs py-4 rounded-xl shadow-md tracking-widest hover:shadow-lg transition-all cursor-pointer uppercase flex items-center justify-center gap-2"
                       >
                         <Send className="w-4 h-4 font-bold" />
                         <span>{language === 'om' ? 'Mirkaneessi & Gumaachi' : language === 'am' ? 'ማረጋገጫ ይላኩ' : 'Submit for Verification'}</span>
@@ -763,7 +763,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <Loader2 className="w-16 h-16 text-[#0B6B3A] animate-spin" />
+                  <Loader2 className="w-16 h-16 text-[#054823] animate-spin" />
                   <div className="space-y-3">
                     <h3 className="text-lg font-bold text-emerald-950 font-sans tracking-tight">
                       {language === 'om' ? 'Ragaa Kaffaltii Mirkaneessa Jira...' : 'Verifying Transaction Credentials securely...'}
@@ -795,20 +795,20 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                   </div>
 
                   <div className="space-y-3">
-                    <span className="text-[9.5px] font-extrabold text-[#0B6B3A] bg-emerald-100 px-3.5 py-1 rounded-full uppercase tracking-wider">
+                    <span className="text-[9.5px] font-extrabold text-[#054823] bg-emerald-100 px-3.5 py-1 rounded-full uppercase tracking-wider">
                       {language === 'om' ? 'MILKAA\'EERA' : language === 'am' ? 'በስኬት ተጠናቋል' : 'SUCCESSFULLY COMPLETED'}
                     </span>
-                    <h3 className="text-2xl font-black text-[#0B6B3A] font-sans tracking-tight">
+                    <h3 className="text-2xl font-black text-[#054823] font-sans tracking-tight">
                       {motivations[language].thankYou}
                     </h3>
                   </div>
 
                   {/* Beautiful motivational Quote Box */}
-                  <div className="bg-emerald-50/50 p-6 rounded-2xl italic text-xs font-semibold text-[#0B6B3A] border-l-4 border-[#0B6B3A]/100 text-left leading-relaxed">
+                  <div className="bg-emerald-50/50 p-6 rounded-2xl italic text-xs font-semibold text-[#054823] border-l-4 border-[#054823]/100 text-left leading-relaxed">
                     &ldquo;{motivations[language].motivate}&rdquo;
                   </div>
 
-                  <div className="p-4 bg-emerald-50/30 rounded-2xl border border-emerald-100 text-[10.5px] font-bold text-[#0B6B3A] flex items-start gap-2 text-left">
+                  <div className="p-4 bg-emerald-50/30 rounded-2xl border border-emerald-100 text-[10.5px] font-bold text-[#054823] flex items-start gap-2 text-left">
                     <Lock className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{motivations[language].secureMsg}</span>
                   </div>
@@ -829,7 +829,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                           receiptFile: null
                         });
                       }}
-                      className="w-full bg-[#0B6B3A] hover:bg-[#0A7A41] text-white font-bold text-xs py-4 rounded-xl hover:shadow-md transition uppercase tracking-wider cursor-pointer"
+                      className="w-full bg-[#054823] hover:bg-[#022b14] text-white font-bold text-xs py-4 rounded-xl hover:shadow-md transition uppercase tracking-wider cursor-pointer"
                     >
                       {language === 'om' ? 'Kaffaltii Gumaachaa Haaraya' : language === 'am' ? 'አዲስ ድጋፍ ይጀምሩ' : 'Initiate Another Contribution'}
                     </button>
@@ -870,7 +870,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
 
               <div className="space-y-4">
                 <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-center mx-auto">
-                  <QrCode className="w-6 h-6 text-[#0B6B3A]" />
+                  <QrCode className="w-6 h-6 text-[#054823]" />
                 </div>
                 
                 <div>
@@ -907,7 +907,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                     </div>
                   </div>
                   
-                  <span className="text-[9px] font-bold text-[#0B6B3A] bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider mt-4 block">
+                  <span className="text-[9px] font-bold text-[#054823] bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider mt-4 block">
                     {formData.paymentMethod === 'cbe_birr' ? 'Merchant Code: 818290' : 'Merchant ID: BG-992811'}
                   </span>
                 </div>
@@ -921,7 +921,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                 <button
                   type="button"
                   onClick={() => setShowQrModal(false)}
-                  className="w-full bg-[#0b6b3a]/15 hover:bg-[#0b6b3a]/20 text-[#0B6B3A] font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-widest transition cursor-pointer"
+                  className="w-full bg-[#054823]/15 hover:bg-[#054823]/20 text-[#054823] font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-widest transition cursor-pointer"
                 >
                   {language === 'om' ? 'Cufi' : language === 'am' ? 'ዝጋ' : 'Close Helper'}
                 </button>
@@ -956,7 +956,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
 
               <div className="space-y-4">
                 <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-center">
-                  <Smartphone className="w-6 h-6 text-[#0B6B3A]" />
+                  <Smartphone className="w-6 h-6 text-[#054823]" />
                 </div>
                 
                 <div>
@@ -973,15 +973,15 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                     <div className="space-y-2 text-xs text-slate-850 font-semibold">
                       <div className="flex gap-2 items-start">
                         <span className="font-mono bg-emerald-200 text-emerald-900 w-5 h-5 rounded-full flex items-center justify-center shrink-0">1</span>
-                        <span>Dial <strong className="font-mono text-[#0B6B3A] bg-emerald-100/60 px-1.5 py-0.5 rounded">*889#</strong> on your phone</span>
+                        <span>Dial <strong className="font-mono text-[#054823] bg-emerald-100/60 px-1.5 py-0.5 rounded">*889#</strong> on your phone</span>
                       </div>
                       <div className="flex gap-2 items-start">
                         <span className="font-mono bg-emerald-200 text-emerald-900 w-5 h-5 rounded-full flex items-center justify-center shrink-0">2</span>
-                        <span>Select option <strong className="text-[#0B6B3A]">3</strong> (Pay Merchant)</span>
+                        <span>Select option <strong className="text-[#054823]">3</strong> (Pay Merchant)</span>
                       </div>
                       <div className="flex gap-2 items-start">
                         <span className="font-mono bg-emerald-200 text-emerald-900 w-5 h-5 rounded-full flex items-center justify-center shrink-0">3</span>
-                        <span>Enter Merchant Code: <strong className="font-mono text-[#0B6B3A] bg-emerald-100/60 px-1.5 py-0.5 rounded">818290</strong></span>
+                        <span>Enter Merchant Code: <strong className="font-mono text-[#054823] bg-emerald-100/60 px-1.5 py-0.5 rounded">818290</strong></span>
                       </div>
                       <div className="flex gap-2 items-start">
                         <span className="font-mono bg-emerald-200 text-emerald-900 w-5 h-5 rounded-full flex items-center justify-center shrink-0">4</span>
@@ -999,10 +999,10 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                       <div className="space-y-1">
                         <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">Step-By-Step Standard</span>
                         <div className="space-y-1.5 text-[11.5px] leading-relaxed text-slate-700 font-semibold">
-                          <p className="flex gap-1.5 items-center"><span className="w-4 h-4 bg-emerald-100 text-[#0B6B3A] text-[10px] flex items-center justify-center rounded-full">1</span> Dial *127# on your mobile</p>
-                          <p className="flex gap-1.5 items-center"><span className="w-4 h-4 bg-emerald-100 text-[#0B6B3A] text-[10px] flex items-center justify-center rounded-full">2</span> Choose Option 1 (Pay Merchant)</p>
-                          <p className="flex gap-1.5 items-center"><span className="w-4 h-4 bg-emerald-100 text-[#0B6B3A] text-[10px] flex items-center justify-center rounded-full">3</span> Enter Merchant ID: <strong className="font-mono text-[#0B6B3A]">BG-992811</strong></p>
-                          <p className="flex gap-1.5 items-center"><span className="w-4 h-4 bg-emerald-100 text-[#0B6B3A] text-[10px] flex items-center justify-center rounded-full">4</span> Type Amount and input telebirr account PIN.</p>
+                          <p className="flex gap-1.5 items-center"><span className="w-4 h-4 bg-emerald-100 text-[#054823] text-[10px] flex items-center justify-center rounded-full">1</span> Dial *127# on your mobile</p>
+                          <p className="flex gap-1.5 items-center"><span className="w-4 h-4 bg-emerald-100 text-[#054823] text-[10px] flex items-center justify-center rounded-full">2</span> Choose Option 1 (Pay Merchant)</p>
+                          <p className="flex gap-1.5 items-center"><span className="w-4 h-4 bg-emerald-100 text-[#054823] text-[10px] flex items-center justify-center rounded-full">3</span> Enter Merchant ID: <strong className="font-mono text-[#054823]">BG-992811</strong></p>
+                          <p className="flex gap-1.5 items-center"><span className="w-4 h-4 bg-emerald-100 text-[#054823] text-[10px] flex items-center justify-center rounded-full">4</span> Type Amount and input telebirr account PIN.</p>
                         </div>
                       </div>
                     </div>
@@ -1016,7 +1016,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                 <button
                   type="button"
                   onClick={() => setShowUssdModal(false)}
-                  className="w-full bg-[#0b6b3a] text-white font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-widest transition cursor-pointer"
+                  className="w-full bg-[#054823] text-white font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-widest transition cursor-pointer"
                 >
                   {language === 'om' ? 'Hubadheera' : language === 'am' ? 'ተረድቻለሁ' : 'Acknowledged'}
                 </button>

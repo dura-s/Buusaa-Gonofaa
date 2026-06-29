@@ -111,13 +111,13 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
         
         {/* Header Title block */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-          <div className="inline-block px-3.5 py-1.5 rounded-full bg-white border border-emerald-100/100 text-[#0B6B3A] text-xs font-bold uppercase tracking-widest">
+          <div className="inline-block px-3.5 py-1.5 rounded-full bg-white border border-emerald-100 text-[#0B4C28] text-xs font-bold uppercase tracking-widest shadow-xs">
             {language === 'om' ? 'Tajaajila Misoomaa' : language === 'am' ? 'ባለሙያ ድጋፎች' : 'Social Microfinance'}
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#0B6B3A] tracking-tight font-sans">
+          <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4C28] tracking-tight font-display">
             {translations.servicesTitle[language]}
           </h2>
-          <p className="text-base text-gray-600 font-medium leading-relaxed">
+          <p className="text-sm md:text-base text-gray-500 font-semibold leading-relaxed">
             {translations.servicesSubtitle[language]}
           </p>
         </div>
@@ -166,10 +166,10 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
                     textTransform: 'uppercase',
                     letterSpacing: '1px',
                   }}
-                  className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white font-bold text-xs py-3.5 px-4 rounded-xl hover:bg-emerald-700 transition-colors cursor-pointer uppercase"
+                  className="w-full flex items-center justify-center gap-2 bg-[#0B4C28] hover:bg-[#063118] text-white font-extrabold text-xs py-3.5 px-4 rounded-xl transition-all shadow-sm cursor-pointer uppercase border border-transparent"
                 >
                   <span>{translations.serviceApplyBtn[language]}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 text-yellow-400" />
                 </button>
               </div>
 
@@ -178,11 +178,11 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
         </div>
 
         {/* 2. Detailed Technical specifications and terms tabs */}
-        <div className="mt-20 bg-white rounded-3xl border border-emerald-100 p-8 md:p-10 space-y-8" id="product-blueprints-section">
+        <div className="mt-20 bg-white rounded-3xl border border-slate-200/60 p-8 md:p-10 space-y-8" id="product-blueprints-section">
           
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-emerald-50 pb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-slate-100 pb-6">
             <div className="space-y-1.5 text-left">
-              <span className="text-[10px] font-extrabold text-[#0B6B3A] bg-emerald-50 px-3 py-1 rounded-md uppercase tracking-wider inline-block">
+              <span className="text-[10px] font-extrabold text-[#0B4C28] bg-emerald-50 px-3 py-1 rounded-md uppercase tracking-wider inline-block">
                 {language === 'om' ? 'Oddeeffannoo Gadi Fageenyaa' : language === 'am' ? 'ዝርዝር መግለጫዎች' : 'Institutional Specifications'}
               </span>
               <h3 className="text-xl font-black text-emerald-950 font-sans uppercase tracking-wide">
@@ -201,8 +201,8 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
                 onClick={() => setActiveSpecTab('savings')}
                 className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition ${
                   activeSpecTab === 'savings' 
-                    ? 'bg-[#0B6B3A] text-white shadow-xs' 
-                    : 'bg-emerald-50 text-[#0B6B3A] hover:bg-emerald-100'
+                    ? 'bg-[#0B4C28] text-white shadow-sm' 
+                    : 'bg-emerald-50/60 text-[#0B4C28] hover:bg-emerald-100'
                 }`}
               >
                 <Coins className="w-4.5 h-4.5" />
@@ -213,8 +213,8 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
                 onClick={() => setActiveSpecTab('loans')}
                 className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition ${
                   activeSpecTab === 'loans' 
-                    ? 'bg-[#0B6B3A] text-white shadow-xs' 
-                    : 'bg-emerald-50 text-[#0B6B3A] hover:bg-emerald-100'
+                    ? 'bg-[#0B4C28] text-white shadow-sm' 
+                    : 'bg-emerald-50/60 text-[#0B4C28] hover:bg-emerald-100'
                 }`}
               >
                 <Sprout className="w-4.5 h-4.5" />
@@ -225,8 +225,8 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
                 onClick={() => setActiveSpecTab('insurance')}
                 className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition ${
                   activeSpecTab === 'insurance' 
-                    ? 'bg-[#0B6B3A] text-white shadow-xs' 
-                    : 'bg-emerald-50 text-[#0B6B3A] hover:bg-emerald-100'
+                    ? 'bg-[#0B4C28] text-white shadow-sm' 
+                    : 'bg-emerald-50/60 text-[#0B4C28] hover:bg-emerald-100'
                 }`}
               >
                 <ShieldCheck className="w-4.5 h-4.5" />
@@ -267,7 +267,7 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
 
                 <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="p-6 bg-emerald-50/40 rounded-2xl border border-emerald-100 space-y-3">
-                    <h5 className="text-xs font-black uppercase tracking-wider text-[#0B6B3A]">
+                    <h5 className="text-xs font-black uppercase tracking-wider text-[#054823]">
                       {language === 'om' ? '1. Qusannoo Dirqamaa' : language === 'am' ? '፩. የግዴታ ቁጠባ (Compulsory)' : '1. Compulsory Savings Plan'}
                     </h5>
                     <ul className="space-y-2 text-xs text-gray-700 font-semibold">
@@ -287,7 +287,7 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
                   </div>
 
                   <div className="p-6 bg-emerald-50/40 rounded-2xl border border-emerald-100 space-y-3">
-                    <h5 className="text-xs font-black uppercase tracking-wider text-[#0B6B3A]">
+                    <h5 className="text-xs font-black uppercase tracking-wider text-[#054823]">
                       {language === 'om' ? '2. Qusannoo Fedhii' : language === 'am' ? '፪. የፈቃደኝነት ቁጠባ (Voluntary)' : '2. Voluntary Savings Plan'}
                     </h5>
                     <ul className="space-y-2 text-xs text-gray-700 font-semibold">
@@ -307,7 +307,7 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
                   </div>
 
                   <div className="p-6 bg-emerald-50/40 rounded-2xl border border-emerald-100 space-y-3 sm:col-span-2 text-left">
-                    <h5 className="text-xs font-black uppercase tracking-wider text-[#0B6B3A] flex items-center gap-1.5">
+                    <h5 className="text-xs font-black uppercase tracking-wider text-[#054823] flex items-center gap-1.5">
                       <Users className="w-4 h-4" />
                       <span>{language === 'om' ? '3. Qusannoo Garee (Cooperative Cluster Ledgers)' : language === 'am' ? '፫. የኅብረት ቁጠባ (Cluster Savings)' : '3. Group & Cluster Ledger Solutions'}</span>
                     </h5>
@@ -355,7 +355,7 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
 
                 <div className="md:col-span-8 space-y-6">
                   <div className="bg-emerald-50/30 p-6 rounded-2xl border border-emerald-100">
-                    <h5 className="text-xs font-black uppercase tracking-wider text-[#0B6B3A] mb-4">
+                    <h5 className="text-xs font-black uppercase tracking-wider text-[#054823] mb-4">
                       {language === 'om' ? 'Sgantaa Liqii Misoomaa (Loan Specifications & Limits)' : language === 'am' ? 'የብድር አይነቶችና ክፍያ ዝርዝር መመሪያ' : 'Specific Micro-Credit Packages'}
                     </h5>
                     
@@ -376,7 +376,7 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
                             </td>
                             <td className="py-3 text-center font-mono text-emerald-800">10,000 - 30,000 ETB</td>
                             <td className="py-3 text-center">3.0% admin charge</td>
-                            <td className="py-3 text-right text-[#0B6B3A]">
+                            <td className="py-3 text-right text-[#054823]">
                               {language === 'om' ? 'Harvest aligned (Ji\'a 6-9)' : 'Aligned with Harvest (6-9 Mo.)'}
                             </td>
                           </tr>
@@ -386,7 +386,7 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
                             </td>
                             <td className="py-3 text-center font-mono text-emerald-800">30,000 - 80,000 ETB</td>
                             <td className="py-3 text-center">4.5% admin charge</td>
-                            <td className="py-3 text-right text-[#0B6B3A]">
+                            <td className="py-3 text-right text-[#054823]">
                               {language === 'om' ? 'Ji\'a 12-18 dhufe' : 'Cycle monthly (12-18 Mo.)'}
                             </td>
                           </tr>
@@ -396,7 +396,7 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
                             </td>
                             <td className="py-3 text-center font-mono text-emerald-800">5,000 - 25,000 ETB</td>
                             <td className="py-3 text-center">0.0% (Zero-Fee option)</td>
-                            <td className="py-3 text-right text-[#0B6B3A]">
+                            <td className="py-3 text-right text-[#054823]">
                               {language === 'om' ? 'Salphaan (Ji\'a 3-6)' : 'Flexible grace (3-6 Mo.)'}
                             </td>
                           </tr>
@@ -406,7 +406,7 @@ export default function Services({ language, initialInquiryActive }: ServicesPro
                   </div>
 
                   <div className="bg-emerald-50/20 p-4 rounded-xl border border-emerald-100 flex items-center gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-[#0B6B3A] shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-[#054823] shrink-0" />
                     <p className="text-[11px] text-gray-700 font-semibold leading-relaxed text-left">
                       <strong>{language === 'om' ? 'Heera Maraaf Ta\'u:' : language === 'am' ? 'ወቅታዊ ክፍያ ማመቻቸት፡' : 'Climate Risk Grace Adaptability:'}</strong><br />
                       {language === 'om' ? 'Yoo beelli ykn gogiinsi hammaate, kaffaltiin liqii dafqa malee gara fulduraatti dabarsama (freeze program).' :
