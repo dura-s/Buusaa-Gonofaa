@@ -3,7 +3,7 @@ import { Menu, X, Globe, ChevronDown, ChevronUp, ArrowRight } from 'lucide-react
 import { motion, AnimatePresence } from 'motion/react';
 import { Language, ActiveTab } from '../types';
 import { translations } from '../translations';
-import bgLogo from '../assets/images/photo_2026-06-29_12-12-03.jpg';
+import bgLogo from '../assets/images/photo_2026-06-30_10-48-38.jpg';
 
 interface NavbarProps {
   language: Language;
@@ -97,28 +97,28 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
               <div className="font-display tracking-tighter leading-none flex flex-col sm:flex-row sm:items-baseline gap-x-1.5">
                 {language === 'om' ? (
                   <>
-                    <span className="text-xl sm:text-2xl md:text-2xl lg:text-3.5xl font-black text-[#C8102E] group-hover:text-[#A50D24] transition-colors duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
+                    <span className="text-xl sm:text-2xl md:text-2xl lg:text-3.5xl font-black bg-gradient-to-r from-[#0B4C28] to-[#D4AF37] bg-clip-text text-transparent transition-all duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
                       Buusaa Gonofaa
                     </span>
-                    <span className="text-xs sm:text-sm md:text-base font-black text-[#0B4C28] group-hover:text-[#063118] transition-colors duration-300">
+                    <span className="text-xl sm:text-2xl md:text-2xl lg:text-3.5xl font-black bg-gradient-to-r from-[#0B4C28] to-[#D4AF37] bg-clip-text text-transparent transition-all duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
                       Adamaa
                     </span>
                   </>
                 ) : language === 'en' ? (
                   <>
-                    <span className="text-xl sm:text-2xl md:text-2xl lg:text-3.5xl font-black text-[#C8102E] group-hover:text-[#A50D24] transition-colors duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
+                    <span className="text-xl sm:text-2xl md:text-2xl lg:text-3.5xl font-black bg-gradient-to-r from-[#0B4C28] to-[#D4AF37] bg-clip-text text-transparent transition-all duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
                       Buusaa Gonofaa
                     </span>
-                    <span className="text-xs sm:text-sm md:text-base font-black text-[#0B4C28] group-hover:text-[#063118] transition-colors duration-300">
+                    <span className="text-xl sm:text-2xl md:text-2xl lg:text-3.5xl font-black bg-gradient-to-r from-[#0B4C28] to-[#D4AF37] bg-clip-text text-transparent transition-all duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
                       Adama
                     </span>
                   </>
                 ) : (
                   <>
-                    <span className="text-lg sm:text-xl md:text-xl lg:text-2.5xl font-black text-[#C8102E] group-hover:text-[#A50D24] transition-colors duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
+                    <span className="text-lg sm:text-xl md:text-xl lg:text-2.5xl font-black bg-gradient-to-r from-[#0B4C28] to-[#D4AF37] bg-clip-text text-transparent transition-all duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
                       ቡሳ ጎኖፋ
                     </span>
-                    <span className="text-[10px] sm:text-xs md:text-sm font-black text-[#0B4C28] group-hover:text-[#063118] transition-colors duration-300">
+                    <span className="text-lg sm:text-xl md:text-xl lg:text-2.5xl font-black bg-gradient-to-r from-[#0B4C28] to-[#D4AF37] bg-clip-text text-transparent transition-all duration-300 drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
                       አዳማ ቅርንጫፍ
                     </span>
                   </>

@@ -769,7 +769,7 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                               <span>
                                 {language === 'om' ? 'Lakk. Postaa (P.O. Box): 20118' :
                                  language === 'am' ? 'የፖስታ ሳጥን ቁጥር: 20118' :
-                                 'P.O. Box: 20118, Addis Ababa (HQ)'}
+                                 'P.O. Box: 20118, Adama (HQ)'}
                               </span>
                             </div>
                           </div>

@@ -1,7 +1,7 @@
 import { Compass, Mail, Phone, Heart, Sprout } from 'lucide-react';
 import { Language, ActiveTab } from '../types';
 import { translations } from '../translations';
-import bgLogo from '../assets/images/photo_2026-06-29_12-12-03.jpg';
+import bgLogo from '../assets/images/photo_2026-06-30_10-48-38.jpg';
 
 interface FooterProps {
   language: Language;

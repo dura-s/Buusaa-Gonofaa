@@ -8,7 +8,7 @@ import {
 import { Language, ActiveTab } from '../types';
 import { translations } from '../translations';
 import { branchStatistics } from '../data';
-import bgLogo from '../assets/images/photo_2026-06-29_12-12-03.jpg';
+import bgLogo from '../assets/images/photo_2026-06-30_10-48-38.jpg';
 import wadooImage from '../assets/images/photo_2026-06-25_11-35-11.jpg';
 import latestAssemblyImage from '../assets/images/photo_2026-06-25_11-53-35.jpg';
 import img_20_1 from '../assets/images/photo_2026-06-25_11-53-20.jpg';
@@ -441,19 +441,7 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
                 </button>
               </motion.div>
 
-              {/* Small trust indicator under action buttons */}
-              <motion.div
-                variants={itemVariants}
-                className="flex items-center gap-3 pt-4 text-xs text-slate-500 font-semibold"
-              >
-                <div className="flex -space-x-2">
-                  <div className="w-7 h-7 rounded-full bg-emerald-600 border-2 border-white flex items-center justify-center text-[10px] text-white font-bold">10k+</div>
-                  <div className="w-7 h-7 rounded-full bg-yellow-500 border-2 border-white flex items-center justify-center text-[10px] text-white font-bold">★</div>
-                </div>
-                <span>
-                  {language === 'om' ? 'Mirkaneessitoota hundaaf wabii amansiisaa' : 'Trusted by thousands across East Shewa region'}
-                </span>
-              </motion.div>
+
             </motion.div>
 
             {/* Right Column: Automated Interactive Slideshow */}
