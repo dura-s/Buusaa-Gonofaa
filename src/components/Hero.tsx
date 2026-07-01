@@ -573,11 +573,6 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
             {/* Right side: Prestige Welcome message */}
             <div className="md:col-span-7 space-y-6">
               <div className="flex flex-wrap items-center gap-3">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs md:text-sm font-bold uppercase tracking-wider w-fit">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                  {language === 'om' ? 'Grootii fi Deeggarsa Hawaasummaa' : language === 'am' ? 'የቅርንጫፍ መልእክት' : 'Branch Welcome Statement'}
-                </div>
-                
                 {/* Cultural digital seal */}
                 <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-emerald-800 font-bold uppercase tracking-widest border border-emerald-100 bg-[#F4F9F5] px-3 py-1.5 rounded-lg w-fit">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
