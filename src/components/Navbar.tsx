@@ -31,7 +31,6 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
     { id: 'community', labelKey: 'navCommunity' },
     { id: 'contribution', labelKey: 'navContribution' },
     { id: 'contact', labelKey: 'navContact' },
-    { id: 'admin', labelKey: 'navAdmin' },
   ];
 
   const submenuMap: Record<ActiveTab, SubItem[]> = {
@@ -57,8 +56,7 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
       { label: { om: "Gumaacha gochuuf", am: "ድጋፍ መመስረቻ", en: "Initiate Secured Contribution" }, elementId: "form-contribute-column" },
       { label: { om: "Sagantaa Diaspora", am: "የዲያስፖራ ማህደር", en: "Diaspora Network Hub" }, elementId: "contributions-portal-section" }
     ],
-    contact: [],
-    admin: []
+    contact: []
   };
 
   const handleNavClick = (tabId: ActiveTab) => {
