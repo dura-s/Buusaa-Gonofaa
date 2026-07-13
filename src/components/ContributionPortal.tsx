@@ -4,6 +4,8 @@ import { Heart, ShieldCheck, CheckCircle2, Users, CreditCard, DollarSign, ArrowR
 import { Language } from '../types';
 import { translations } from '../translations';
 import { mockCampaigns } from '../data';
+import { db } from '../lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 interface ContributionPortalProps {
   language: Language;
@@ -24,6 +26,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
 
   const [paymentStep, setPaymentStep] = useState<'form' | 'verification' | 'submitting' | 'success'>('form');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
 
   // Advanced digital tool states
@@ -88,8 +91,9 @@ export default function ContributionPortal({ language }: ContributionPortalProps
     }
   };
 
-  const handleVerificationSubmit = (e: React.FormEvent) => {
+  const handleVerificationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmissionError(null);
     if (!formData.transactionId.trim()) {
       setErrors({ transactionId: language === 'om' ? 'Koodii Dabarsaa (Transaction ID) galchuun dirqama' : language === 'am' ? 'እባክዎ የማስተላለፊያ መለያ ቁጥር (Transaction ID) ያስገቡ' : 'Please enter your Transaction Reference ID / Reference Number' });
       return;
@@ -97,9 +101,32 @@ export default function ContributionPortal({ language }: ContributionPortalProps
 
     setErrors({});
     setPaymentStep('submitting');
-    setTimeout(() => {
+    
+    try {
+      await addDoc(collection(db, 'contributions'), {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        reason: formData.reason,
+        paymentMethod: formData.paymentMethod,
+        isDiaspora: formData.isDiaspora,
+        selectedCampaignId: formData.selectedCampaignId,
+        transactionId: formData.transactionId,
+        receiptFileName: formData.receiptFile ? formData.receiptFile.name : null,
+        timestamp: serverTimestamp()
+      });
       setPaymentStep('success');
-    }, 1800);
+    } catch (err) {
+      console.error("Error saving contribution: ", err);
+      setSubmissionError(
+        language === 'om' 
+          ? "Gumaacha keessan galmeessuun hin danda'amne. Maaloo irra deebi'aa yaalaa." 
+          : language === 'am' 
+            ? 'ያደረጉትን የድጋፍ መረጃ ለመመዝገብ አልተቻለም። እባክዎ እንደገና ይሞክሩ።' 
+            : 'Unable to save contribution record. Please try again later.'
+      );
+      setPaymentStep('verification');
+    }
   };
 
   // Drag and drop receipt upload
@@ -732,6 +759,12 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                         </label>
                       </div>
                     </div>
+
+                    {submissionError && (
+                      <p className="text-xs text-red-600 font-bold bg-red-50 p-3 rounded-xl border border-red-100 uppercase tracking-wide text-center">
+                        ⚠️ {submissionError}
+                      </p>
+                    )}
 
                     <div className="flex gap-4 pt-2">
                       <button

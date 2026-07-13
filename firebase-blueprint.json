@@ -1,0 +1,27 @@
+{
+  "collections": {
+    "contacts": {
+      "fields": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "timestamp": { "type": "timestamp" }
+      }
+    },
+    "contributions": {
+      "fields": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "reason": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "isDiaspora": { "type": "boolean" },
+        "selectedCampaignId": { "type": "string" },
+        "transactionId": { "type": "string" },
+        "receiptFileName": { "type": "string" },
+        "timestamp": { "type": "timestamp" }
+      }
+    }
+  }
+}

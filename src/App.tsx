@@ -9,6 +9,7 @@ import Services from './components/Services';
 import Community from './components/Community';
 import ContributionPortal from './components/ContributionPortal';
 import Contact from './components/Contact';
+import AdminDashboard from './components/AdminDashboard';
 import Footer from './components/Footer';
 import HomeOverview from './components/HomeOverview';
 import GadaaAssistant from './components/GadaaAssistant';
@@ -160,6 +161,7 @@ export default function App() {
             {activeTab === 'community' && <Community language={language} />}
             {activeTab === 'contribution' && <ContributionPortal language={language} />}
             {activeTab === 'contact' && <Contact language={language} />}
+            {activeTab === 'admin' && <AdminDashboard language={language} />}
           </motion.div>
         </AnimatePresence>
       </main>

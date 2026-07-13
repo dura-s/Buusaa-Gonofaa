@@ -234,10 +234,10 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
   };
 
   const subTabsList = [
-    { id: 'mission' as const, label: { om: "Ergama & Mul'ata", am: "ተልዕኮ እና ራዕይ", en: "Mission & Vision" }, icon: <Compass className="w-4 h-4" /> },
-    { id: 'history' as const, label: { om: "Seenaa & Guddina", am: "ታሪካዊ ጉዞ", en: "History & Timeline" }, icon: <History className="w-4 h-4" /> },
-    { id: 'structure' as const, label: { om: "Caasaa Bulchiinsaa", am: "የመዋቅር ገበታ", en: "Corporate Structure" }, icon: <Workflow className="w-4 h-4" /> },
-    { id: 'management' as const, label: { om: "Qaama Hoggansaa", am: "የማኔጅመንት አካል", en: "Management & Team" }, icon: <UserCheck className="w-4 h-4" /> }
+    { id: 'mission' as const, label: { om: "Ergama & Mul'ata", am: "ተልዕኮ እና ራዕይ", en: "Mission & Vision" }, icon: <Compass className="w-5.5 h-5.5" /> },
+    { id: 'history' as const, label: { om: "Seenaa & Guddina", am: "ታሪካዊ ጉዞ", en: "History & Timeline" }, icon: <History className="w-5.5 h-5.5" /> },
+    { id: 'structure' as const, label: { om: "Caasaa Bulchiinsaa", am: "የመዋቅር ገበታ", en: "Corporate Structure" }, icon: <Workflow className="w-5.5 h-5.5" /> },
+    { id: 'management' as const, label: { om: "Qaama Hoggansaa", am: "የማኔጅመንት አካል", en: "Management & Team" }, icon: <UserCheck className="w-5.5 h-5.5" /> }
   ];
 
   return (
@@ -329,30 +329,30 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
         <div className="space-y-8">
           
           {/* Header titles */}
-          <div className="text-center max-w-3xl mx-auto space-y-3">
+          <div className="text-center max-w-4xl mx-auto space-y-4">
             <span className="text-xs font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 border border-emerald-100 rounded-full px-4 py-1.5 inline-block">
               {language === 'om' ? 'Wabii fi Seenaa Keenya' : language === 'am' ? 'ስለ ቅርሳችንና አስተዳደራችን' : 'Our Identity & Governance'}
             </span>
-            <h3 className="text-2xl md:text-3xl font-black text-emerald-950 uppercase tracking-wider font-sans">
+            <h3 className="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-950 uppercase tracking-wider font-sans leading-tight">
               {aboutHeadings.title[language]}
             </h3>
-            <p className="text-sm md:text-base text-gray-600 font-semibold leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-gray-650 font-semibold leading-relaxed">
               {aboutHeadings.subtitle[language]}
             </p>
           </div>
 
           {/* Sub Navigation Selectors */}
-          <div className="flex flex-wrap justify-center gap-2 border-b border-emerald-100 pb-2">
+          <div className="flex flex-wrap justify-center gap-3 border-b border-emerald-100 pb-4">
             {subTabsList.map((tab) => {
               const isSelected = activeSubTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveSubTab(tab.id)}
-                  className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider transition-all duration-300 cursor-pointer active:scale-95 ${
+                  className={`flex items-center gap-3 px-6 py-4 rounded-xl text-sm sm:text-base md:text-lg lg:text-xl font-black uppercase tracking-wider transition-all duration-300 cursor-pointer active:scale-95 ${
                     isSelected 
-                      ? 'bg-emerald-600 text-white shadow-md' 
-                      : 'bg-white hover:bg-emerald-50 text-slate-650 hover:text-emerald-950 border border-emerald-100'
+                      ? 'bg-emerald-600 text-white shadow-md scale-105' 
+                      : 'bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-950 border border-emerald-100'
                   }`}
                 >
                   {tab.icon}
@@ -377,29 +377,29 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                   <div className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {/* Mission Card */}
-                      <div className="bg-emerald-50/20 border border-emerald-100 p-8 rounded-2xl space-y-4 flex flex-col justify-between hover:border-emerald-300 hover:shadow-xs transition-all duration-300">
-                        <div className="space-y-4">
-                          <div className="w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-md">
-                            <Sprout className="w-6 h-6" />
+                      <div className="bg-emerald-50/20 border border-emerald-100 p-8 rounded-2xl space-y-5 flex flex-col justify-between hover:border-emerald-300 hover:shadow-xs transition-all duration-300">
+                        <div className="space-y-5">
+                          <div className="w-14 h-14 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-md">
+                            <Sprout className="w-7 h-7" />
                           </div>
-                          <h4 className="text-lg font-black text-emerald-950 uppercase tracking-wider">
+                          <h4 className="text-xl md:text-2xl font-black text-emerald-950 uppercase tracking-wider">
                             {language === 'om' ? 'Kaayyoo Buusaa Gonofaa Oromiyaa' : language === 'am' ? 'የቡሳ ጎኖፋ ዓላማ' : 'Our Objectives'}
                           </h4>
-                          <div className="text-sm text-slate-850 font-medium leading-relaxed space-y-3">
+                          <div className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed space-y-4">
                             {language === 'om' ? (
-                              <ul className="list-disc pl-4 space-y-2.5 font-semibold">
+                              <ul className="list-disc pl-5 space-y-3.5">
                                 <li><strong>Duudhaa Cimsuu:</strong> Aadaa fi duudhaa walgargaarsa Ummata Oromoo jabeessee dagaagsuu.</li>
                                 <li><strong>Dhaloota Of-Eeggannoo:</strong> Dhaloota jaalala hojii, aadaa qusannaa qabu fi quuqama namoomaa qabu uumuu.</li>
                                 <li><strong>Gargaarsa Yeroo Balaa:</strong> Hawaasa balaa uumamaa ykn nam-tolcheen miidhame gargaaruu, fayyisuu fi dandamachiisuu.</li>
                               </ul>
                             ) : language === 'am' ? (
-                              <ul className="list-disc pl-4 space-y-2.5 font-semibold">
+                              <ul className="list-disc pl-5 space-y-3.5">
                                 <li><strong>እሴቶችን ማጠናከር፦</strong> የኦሮሞን ሕዝብ የመረዳዳትና የመደጋገፍ በጎ ታሪካዊ ባህል ይበልጥ ማጠናከርና ማስፋፋት።</li>
                                 <li><strong>ስራ-ወዳድ ትውልድ፦</strong> ስራን፣ ቁጠባንና ሰብአዊ ርህራሄን የተላበሰ ንቁ የህብረተሰብ ትውልድ መፍጠር።</li>
                                 <li><strong>የአደጋ ጊዜ ዕርዳታ፦</strong> በተፈጥሮ ወይም በሰው ሰራሽ አደጋዎች የተጎዱ ወገኖችን መርዳት፣ ማዳንና መልሶ ማቋቋም።</li>
                               </ul>
                             ) : (
-                              <ul className="list-disc pl-4 space-y-2.5">
+                              <ul className="list-disc pl-5 space-y-3.5">
                                 <li><strong>Reinforcing Cultural Values:</strong> To strengthen and promote the culture and values of mutual aid among the Oromo people.</li>
                                 <li><strong>Prudent Generation:</strong> To cultivate a generation that values labor, possesses a strong savings culture, and harbors human empathy.</li>
                                 <li><strong>Disaster Response:</strong> To assist, rescue, and rehabilitate communities affected by natural or man-made disasters.</li>
@@ -409,53 +409,39 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                         </div>
                         
                         <div className="pt-4 border-t border-emerald-100">
-                          <span className="text-xs font-bold text-emerald-600 block uppercase tracking-widest">
+                          <span className="text-sm font-extrabold text-emerald-700 block uppercase tracking-widest">
                             {language === 'om' ? 'Labsii fi Qajeelfama Gargaarsaa' : 'Statutory Assistance Guidelines'}
                           </span>
                         </div>
                       </div>
- 
+
                       {/* Vision Card */}
-                      <div className="bg-amber-50/25 border border-amber-200 p-8 rounded-2xl space-y-4 flex flex-col justify-between hover:border-amber-300 hover:shadow-md transition-all duration-300">
-                        <div className="space-y-4">
-                          <div className="w-12 h-12 bg-amber-600 text-white rounded-xl flex items-center justify-center shadow-md">
-                            <Compass className="w-6 h-6" />
+                      <div className="bg-amber-50/25 border border-amber-200 p-8 rounded-2xl space-y-5 flex flex-col justify-between hover:border-amber-300 hover:shadow-md transition-all duration-300">
+                        <div className="space-y-5">
+                          <div className="w-14 h-14 bg-amber-600 text-white rounded-xl flex items-center justify-center shadow-md">
+                            <Compass className="w-7 h-7" />
                           </div>
-                          <h4 className="text-lg font-black text-amber-950 uppercase tracking-wider">
-                            {language === 'om' ? 'Mul’ata Buusaa Gonofaa Oromiyaa' : language === 'am' ? 'የቡሳ ጎኖፋ ራእይ' : 'Our Vision'}
+                          <h4 className="text-xl md:text-2xl font-black text-amber-950 uppercase tracking-wider">
+                            {language === 'om' ? 'Mul\'ata Buusaa Gonofaa Oromiyaa' : language === 'am' ? 'የቡሳ ጎኖፋ ራዕይ' : 'Our Vision'}
                           </h4>
-                          <div className="text-sm text-amber-900/90 font-semibold leading-relaxed space-y-3">
+                          <p className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed">
                             {language === 'om' ? (
-                              <ul className="list-disc pl-4 space-y-2.5">
-                                <li>Hawaasa balaawwan addaddaa ofirraa qolachuufi humna ofiitiin dandamachuu danda'e uumuu.</li>
-                                <li>Aadaa walgargaarsaa aadaa godhachuudhaan dhaloota quuqama namoomaa qabu horachuu.</li>
-                                <li>Hawaasa misoomaa fi gargaarsa walii galaan tasgabbaa'e ijaaruu.</li>
-                              </ul>
+                              "Milkaa'ina sirna liqii fi qusannoo naannoo Oromiyaatti mirkaneessuun, hawaasa hiyyummaarraa walaba ta'e, of-danda'ee fi dinagdeen jabaate uumuu dha."
                             ) : language === 'am' ? (
-                              <ul className="list-disc pl-4 space-y-2.5">
-                                <li>ማንኛውንም የተፈጥሮና ሰው ሰራሽ አደጋዎች በራሱ አቅም መቋቋምና መከላከል የሚችል ህብረተሰብ መፍጠር።</li>
-                                <li>የመደጋገፍና የመረዳዳት ባህልን የስራ መመሪያ በማድረግ ሰብአዊነት የተሞላበትን ዜጋ ማፍራት።</li>
-                                <li>በተቀናጀ ልማትና በጋራ ትብብር የተረጋጋና የበለፀገ ማህበረሰብ መገንባት።</li>
-                              </ul>
+                              "የፋይናንስና የቁጠባ ተደራሽነትን በማረጋገጥ፣ ከድህነት ነጻ የሆነ፣ ራሱን የቻለና በኢኮኖሚ የጎለበተ ማህበረሰብ በኦሮሚያ ክልል መፍጠር ነው።"
                             ) : (
-                              <ul className="list-disc pl-4 space-y-2.5">
-                                <li>To create a community capable of resisting various disasters and adapting through its own resilient capacity.</li>
-                                <li>To foster a generation with deep human empathy by institutionalizing mutual assistance as a standard way of life.</li>
-                                <li>To build a secure and socio-economically stable society through comprehensive development and collective support.</li>
-                              </ul>
+                              "To secure a successful microfinance and saving ecosystem in Oromia, fostering a poverty-free, self-reliant, and economically resilient society."
                             )}
-                          </div>
+                          </p>
                         </div>
- 
-                        <div className="pt-4 border-t border-amber-200">
-                          <span className="text-xs font-bold text-amber-800 block uppercase tracking-widest">
-                            {language === 'om' ? 'Aadaa fi Walgargaarsa Hawaasummaa' : 'Cooperative Resilience'}
+                        
+                        <div className="pt-4 border-t border-amber-100">
+                          <span className="text-sm font-extrabold text-amber-700 block uppercase tracking-widest">
+                            {language === 'om' ? 'Mul\'ata Guddina Hawaasaa' : 'Social Progress Vision'}
                           </span>
                         </div>
                       </div>
                     </div>
-
-
                   </div>
                 )}
 
@@ -463,17 +449,17 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                 {activeSubTab === 'history' && (
                   <div className="space-y-8">
                     <div className="border-b border-emerald-50 pb-4">
-                      <h4 className="text-base font-black text-emerald-950 uppercase tracking-widest flex items-center gap-2">
-                        <History className="w-5 h-5 text-emerald-600" />
+                      <h4 className="text-xl md:text-2xl font-black text-emerald-950 uppercase tracking-widest flex items-center gap-2">
+                        <History className="w-6 h-6 text-emerald-600" />
                         <span>{language === 'om' ? 'Seenaa Buusaa Gonofaa' : language === 'am' ? 'የቡሳ ጎኖፋ ታሪካዊ አመጣጥ' : 'History of Buusaa Gonofaa'}</span>
                       </h4>
-                      <p className="text-xs text-gray-500 font-bold uppercase mt-1">
+                      <p className="text-sm sm:text-base text-gray-500 font-bold uppercase mt-1">
                         {language === 'om' ? 'Maalummaa duudhaa fi aadaa walgargaarsa Oromoo' : 'Indigenous Oromo mutual aid traditions and chronological timeline'}
                       </p>
                     </div>
 
-                    <div className="p-6 bg-emerald-50/20 border border-emerald-100 rounded-2xl">
-                      <p className="text-xs text-slate-800 font-bold leading-relaxed">
+                    <div className="p-8 bg-emerald-50/20 border border-emerald-100 rounded-2xl">
+                      <p className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed">
                         {language === 'om' ? (
                           "Buusaa Gonofaan duudhaa aadaa Oromoo kan yeroo rakkinaa (balaawwan uumamaa fi nam-tolchee) waliin gargaaramanii ittiin waliin dhaabbatan yoo ta'u, kaayyoon isaa inni guddaan hawaasa balaaf saaxilame ofirraa qolachuu, dandamachiisuu, deeggaruu fi deebisanii dhaabuudha."
                         ) : language === 'am' ? (
@@ -490,16 +476,16 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                       {/* milestone 1 */}
                       <div className="relative">
                         <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-emerald-600 border-4 border-white shadow-xs" />
-                        <div className="space-y-1">
-                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 font-mono text-[10px] font-extrabold uppercase tracking-widest">
+                        <div className="space-y-1.5">
+                          <span className="inline-block px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 font-mono text-xs sm:text-sm md:text-base font-extrabold uppercase tracking-widest">
                             {language === 'om' ? 'Bara 1999 - Hundeeffama' : '1999 - Founded'}
                           </span>
-                          <h5 className="text-xs font-black text-emerald-950 uppercase tracking-tight">
+                          <h5 className="text-lg sm:text-xl md:text-2xl font-black text-emerald-950 uppercase tracking-tight">
                             {language === 'om' ? 'Hundeeffama Jalqabaa HUNDEE NGO dhaan' : 'Established by Ethiopian NGO Hundee'}
                           </h5>
-                          <p className="text-xs text-slate-700 font-semibold leading-relaxed max-w-3xl">
+                          <p className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed max-w-4xl">
                             {language === 'om' ? "Buusaa Gonofaa NGO biyya keessaa 'Hundee' jedhamuun hundeeffamee tajaajila liqii dhiyeessuu jalqabe. Hundeeffamni isaa aadaa fi wal-gargaarsa miidhamtootaa 'Buusaa Gonofaa' Oromoo irratti hundaa'e." :
-                             language === 'am' ? "የኢትዮጵያ መንግስታዊ ያልሆነ ድርጅት ሁንዴ (Hundee) በኦሮሚያ ክልል የብድር ፕሮግራሞችን ለማስተዳደር በ1999 ዓ.ም የጀመረው ባህላዊ የቡሳ ጎኖፋ ማህበራዊ ጥበቃን መሠረት በማድረግ ነው።" :
+                             language === 'am' ? "የአትዮጵያ መንግስታዊ ያልሆነ ድርጅት ሁንዴ (Hundee) በኦሮሚያ ክልል የብድር ፕሮግራሞችን ለማስተዳደር በ1999 ዓ.ም የጀመረው ባህላዊ የቡሳ ጎኖፋ ማህበራዊ ጥበቃን መሠረት በማድረግ ነው።" :
                              "Buusaa Gonofaa was established by the Ethiopian NGO Hundee to manage credit programs in the Oromia region, drawing inspiration from the indigenous Buusaa Gonofaa social protection mechanism."}
                           </p>
                         </div>
@@ -508,14 +494,14 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                       {/* milestone 2 */}
                       <div className="relative">
                         <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-emerald-600 border-4 border-white shadow-xs" />
-                        <div className="space-y-1">
-                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 font-mono text-[10px] font-extrabold uppercase tracking-widest">
+                        <div className="space-y-1.5">
+                          <span className="inline-block px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 font-mono text-xs sm:text-sm md:text-base font-extrabold uppercase tracking-widest">
                             {language === 'om' ? 'Babal\'ina fi Guddina' : 'Early Growth'}
                           </span>
-                          <h5 className="text-xs font-black text-emerald-950 uppercase tracking-tight">
+                          <h5 className="text-lg sm:text-xl md:text-2xl font-black text-emerald-950 uppercase tracking-tight">
                             {language === 'om' ? 'Babal\'ina Gara Baadiyyaa fi Magaalaa' : 'Reach Expansion & Diverse Products'}
                           </h5>
-                          <p className="text-xs text-slate-700 font-semibold leading-relaxed max-w-3xl">
+                          <p className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed max-w-4xl">
                             {language === 'om' ? "Dhaabbatichi dafnaan tajaajila isaa guutuu Oromiyaa keessatti babal'ise; meeshaalee faayinaansii qonnatotaaf, dubartoota gurmaa'aniif, fi maatii galii dadhaboo ta'aniif kan mijeessan kalaqe." :
                              language === 'am' ? "ተቋሙ በኦሮሚያ የገጠርና የከተማ አካባቢዎች ተደራሽነቱን በማስፋት ለአነስተኛ አርሶ አደሮች፣ ለሴት ስራ ፈጣሪዎች እና ዝቅተኛ ገቢ ላላቸው አባላት የተበጁ ልዩ ልዩ የፋይናንስ ምርቶችን አስተዋውቋል።" :
                              "The institution expanded its reach across rural and urban areas of Oromia, introducing diverse financial products tailored to the needs of smallholder farmers, women entrepreneurs, and low-income households."}
@@ -526,14 +512,14 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                       {/* milestone 3 */}
                       <div className="relative">
                         <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-emerald-600 border-4 border-white shadow-xs" />
-                        <div className="space-y-1">
-                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-755 font-mono text-[10px] font-extrabold uppercase tracking-widest">
+                        <div className="space-y-1.5">
+                          <span className="inline-block px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 font-mono text-xs sm:text-sm md:text-base font-extrabold uppercase tracking-widest">
                             {language === 'om' ? 'Bara 2010 - Kalaqa Wabii' : '2010 - Weather Insurance'}
                           </span>
-                          <h5 className="text-xs font-black text-emerald-950 uppercase tracking-tight">
+                          <h5 className="text-lg sm:text-xl md:text-2xl font-black text-emerald-950 uppercase tracking-tight">
                             {language === 'om' ? 'Inshuraansii Roobaa Jalqabsiisuu' : 'Rainfall-Based Crop Insurance Pioneered'}
                           </h5>
-                          <p className="text-xs text-slate-700 font-semibold leading-relaxed max-w-3xl">
+                          <p className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed max-w-4xl">
                             {language === 'om' ? "Bara 2010 keessa, Buusaa Gonofaa inshuraansii oomisha qonnaa balaa roobaa irratti hundaa'e EFPRI waliin mijeessuun Adamaa, Baako, fi Shashemene keessatti jalqabe." :
                              language === 'am' ? "በ2010 ዓ.ም ቡሳ ጎኖፋ በኢትዮጵያ ለመጀመሪያ ጊዜ በዝናብ ጠብታ መለኪያ ላይ የተመሰረተ የሰብል ዋስትና በAdama፣ Bako እና Shashamane ከአለም አቀፍ ድርጅት (EFPRI) ጋር በመተባበር ፈጠራን አስመዝግቧል።" :
                              "In 2010, Buusaa Gonofaa pioneered rainfall-based crop insurance in collaboration with IFPRI/EFPRI, first introducing the product in Adama, Bako, and Shashamane."}
@@ -544,16 +530,16 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                       {/* milestone 4 */}
                       <div className="relative">
                         <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-emerald-600 border-4 border-white shadow-xs" />
-                        <div className="space-y-1">
-                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 font-mono text-[10px] font-extrabold uppercase tracking-widest">
+                        <div className="space-y-1.5">
+                          <span className="inline-block px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 font-mono text-xs sm:text-sm md:text-base font-extrabold uppercase tracking-widest">
                             {language === 'om' ? 'Bara 2020 - Beekamtii' : '2020 - European Award Finalist'}
                           </span>
-                          <h5 className="text-xs font-black text-emerald-950 uppercase tracking-tight">
+                          <h5 className="text-lg sm:text-xl md:text-2xl font-black text-emerald-950 uppercase tracking-tight">
                             {language === 'om' ? 'Leenjii fi Gudiina Dinagdee Addunyaa' : 'Finalist: European Microfinance Award 2020'}
                           </h5>
-                          <p className="text-xs text-slate-700 font-semibold leading-relaxed max-w-3xl">
+                          <p className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed max-w-4xl">
                             {language === 'om' ? "Dhaabbatichi gumaacha gamtaa qusannoo ijaaruu fi maatiilee dadhaboo tajaajiluuf hojjeteef 'European Microfinance Award 2020' irratti finalist ta'uun addunyaatti adda bahe." :
-                             language === 'am' ? "ተቋሙ እ.ኤ.አ. በ2020 የቁጠባ አሰባሰብ እና ተጋላጭ የሆኑ የህብረተሰብ ክፍሎችን በመደገፍ ላሳየው ልዩ ስራ ለታዋቂው የአውሮፓ ማይክሮ ፋይናንስ ሽልማት (European Microfinance Award) የመጨረሻ እጩ ተወዳዳሪ ሆኖ እውቅና አግኝቷል።" :
+                             language === 'am' ? "ተቋሙ እ.እ.አ. በ2020 የቁጠባ አሰባሰብ እና ተጋላጭ የሆኑ የህብረተሰብ ክፍሎችን በመደገፍ ላሳየው ልዩ ስራ ለታዋቂው የአውሮፓ ማይክሮ ፋይናንስ ሽልማት (European Microfinance Award) የመጨረሻ እጩ ተወዳዳሪ ሆኖ እውቅና አግኝቷል።" :
                              "The institution was recognized as a finalist for the European Microfinance Award 2020 for its exceptional work in mobilizing savings and serving vulnerable populations."}
                           </p>
                         </div>
@@ -562,14 +548,14 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                       {/* milestone 5 */}
                       <div className="relative">
                         <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-emerald-600 border-4 border-white shadow-xs" />
-                        <div className="space-y-1">
-                          <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-105 text-[#054823] font-mono text-[10px] font-extrabold uppercase tracking-widest">
-                            {language === 'om' ? 'Har\'a - Guddina Guutuu' : 'Today - Robust Standing'}
+                        <div className="space-y-1.5">
+                          <span className="inline-block px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-105 text-[#054823] font-mono text-xs sm:text-sm md:text-base font-extrabold uppercase tracking-widest">
+                            {language === 'om' ? "Har'a - Guddina Guutuu" : 'Today - Robust Standing'}
                           </span>
-                          <h5 className="text-xs font-black text-emerald-950 uppercase tracking-tight">
+                          <h5 className="text-lg sm:text-xl md:text-2xl font-black text-emerald-950 uppercase tracking-tight">
                             {language === 'om' ? 'Miseensota Kuma 110 fi Damee Adamaa' : '110,000+ Active Savers Regionwide'}
                           </h5>
-                          <p className="text-xs text-slate-700 font-semibold leading-relaxed max-w-3xl">
+                          <p className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed max-w-4xl">
                             {language === 'om' ? "Miseensota qusattuota kuma dhibba fi kumi kudhan (110,000) fi caasaa damee cimaa to'achuun, Buusaa Gonofaa har'as humneessuu faayinaansii fi wal-gargaarsaa Gadaa naannoo keenyaatti ifa godhaa jira." :
                              language === 'am' ? "በአሁኑ ጊዜ በአጠቃላይ ከ110,000 በላይ ንቁ ቆጣቢዎችን በመያዝ እና በመላው ኦሮሚያ ጠንካራ መገኘትን በመፍጠር የፋይናንስ ተደራሽነት እና የማህበረሰብ ማብቂያ ፋና ወጊ ሆኖ ቀጥሏል።" :
                              "With approximately 110,000 active savers and a strong presence across Oromia, Buusaa Gonofaa continues to be a beacon of financial inclusion and community empowerment."}
@@ -581,21 +567,22 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                   </div>
                 )}
 
+
                 {/* 3. CORPORATE STRUCTURE SUBTAB PANEL */}
                 {activeSubTab === 'structure' && (
                   <div className="space-y-8">
                     <div className="border-b border-emerald-50 pb-4">
-                      <h4 className="text-base font-black text-emerald-950 uppercase tracking-widest flex items-center gap-2">
-                        <Workflow className="w-5 h-5 text-emerald-600" />
+                      <h4 className="text-xl md:text-2xl font-black text-emerald-950 uppercase tracking-widest flex items-center gap-2">
+                        <Workflow className="w-6 h-6 text-emerald-600" />
                         <span>{language === 'om' ? 'Caasaa Hojii' : 'Organizational Governance Structure'}</span>
                       </h4>
-                      <p className="text-xs text-gray-500 font-bold uppercase mt-1">
+                      <p className="text-sm sm:text-base text-gray-500 font-bold uppercase mt-1">
                         {language === 'om' ? 'Odeeffannoo hoggansa waajjira damee Adaamaa' : 'Accountable chains rendering professional community support'}
                       </p>
                     </div>
 
-                    <div className="p-6 bg-emerald-50/20 border border-emerald-100 rounded-2xl">
-                      <p className="text-xs text-slate-800 font-semibold leading-relaxed">
+                    <div className="p-8 bg-emerald-50/20 border border-emerald-100 rounded-2xl">
+                      <p className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed">
                         {language === 'om' ? (
                           "Caasaa Hojii Buusaa Gonofaa Oromiyaa caasaa itti gaafatamummaa fi hojii qajeelfamoota, labsiilee fi dambiilee adda addaa (keessattuu Labsii Buusaa Gonofaa fi Dambii Lak. 235/2015) irratti hundaa'uun diriiredha. Manni hojii kun balaawwan uumamaa fi nam-tolchee ittisuu, ittisa deebii hatattamaa kennuu fi kutaalee hawaasaa miidhamoo ta'an gargaaruuf caasame."
                         ) : language === 'am' ? (
@@ -608,32 +595,32 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
                       {/* Quadrant 1: Caasaa Gurguddoo */}
-                      <div className="p-6 rounded-2xl bg-emerald-50/30 border border-emerald-100/80 space-y-4">
-                        <h5 className="text-xs font-black text-[#054823] uppercase tracking-wider border-b border-emerald-100 pb-2 flex items-center gap-2">
-                          <Building className="w-4 h-4" />
+                      <div className="p-8 rounded-2xl bg-emerald-50/30 border border-emerald-100/80 space-y-6">
+                        <h5 className="text-base sm:text-lg md:text-xl font-black text-[#054823] uppercase tracking-wider border-b border-emerald-100 pb-3 flex items-center gap-2">
+                          <Building className="w-5 h-5" />
                           <span>{language === 'om' ? "Caasaa Gurguddoo Gurmaa'insa Keessaa" : language === 'am' ? 'ዋና የውስጥ መዋቅር' : 'Core Internal Structure'}</span>
                         </h5>
-                        <ul className="space-y-3 text-xs text-slate-700 font-semibold">
+                        <ul className="space-y-4 text-sm sm:text-base text-slate-850 font-semibold leading-relaxed text-slate-800">
                           <li>
-                            <strong className="text-emerald-950 block font-bold text-[11px] uppercase tracking-wide">
+                            <strong className="text-emerald-950 block font-bold text-xs sm:text-sm uppercase tracking-wide">
                               {language === 'om' ? '1. Koreewwan Daayirektarootaa' : '1. Board of Directors / Central Committee'}
                             </strong>
                             {language === 'om' ? 'Sadarkaa naannoo gubbaatti dhimmoota tarsiimoo fi murteewwan gurguddoo deeggarsaa ni murteessu.' : 'Provides strategic oversight and critical resource allocation decisions at the highest level.'}
                           </li>
                           <li>
-                            <strong className="text-emerald-950 block font-bold text-[11px] uppercase tracking-wide">
+                            <strong className="text-emerald-950 block font-bold text-xs sm:text-sm uppercase tracking-wide">
                               {language === 'om' ? '2. Hoogganaa Buusaa Gonofaa' : '2. General Leader / Managing Director'}
                             </strong>
                             {language === 'om' ? 'Karoora hojii, baajata waggaa gopheessuu fi hoggansa olaanaa manneen hojichaa ni hordofa.' : 'Directs operational targets, formulates annual budgets, and oversees regional progress.'}
                           </li>
                           <li>
-                            <strong className="text-emerald-950 block font-bold text-[11px] uppercase tracking-wide">
+                            <strong className="text-emerald-950 block font-bold text-xs sm:text-sm uppercase tracking-wide">
                               {language === 'om' ? '3. Waajjiraalee Sadarkaan Jiran' : '3. Regional & Zonal Office Networks'}
                             </strong>
                             {language === 'om' ? 'Caasaan kun irra jireessan sadarkaa Naannoo, Godinaa fi Aanaa (amma tokko tokkos ganda) irratti diriirfamee jira.' : 'Decentralized layout branching from Regional HQ to Zonal, Woreda, and Kebele support units.'}
                           </li>
                           <li>
-                            <strong className="text-emerald-950 block font-bold text-[11px] uppercase tracking-wide">
+                            <strong className="text-emerald-950 block font-bold text-xs sm:text-sm uppercase tracking-wide">
                               {language === 'om' ? '4. Miseensota fi Gurmaa\'insa Hojjettootaa' : '4. Employee & Member Mobilization'}
                             </strong>
                             {language === 'om' ? 'Hojjettoonni manneen hojii mootummaa naannichaa keessa jiran ijaarama kanaan walitti qabamuun ni hirmaatu.' : 'Engaging public and community stakeholders to organize active village committees and savings associations.'}
@@ -642,20 +629,20 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                       </div>
 
                       {/* Quadrant 2: Bulchiinsa Fandii */}
-                      <div className="p-6 rounded-2xl bg-emerald-950 text-white space-y-4 shadow-xl">
-                        <h5 className="text-xs font-black text-emerald-300 uppercase tracking-wider border-b border-emerald-800 pb-2 flex items-center gap-2">
-                          <Shield className="w-4 h-4" />
+                      <div className="p-8 rounded-2xl bg-emerald-950 text-white space-y-6 shadow-xl">
+                        <h5 className="text-base sm:text-lg md:text-xl font-black text-emerald-300 uppercase tracking-wider border-b border-emerald-800 pb-3 flex items-center gap-2">
+                          <Shield className="w-5 h-5" />
                           <span>{language === 'om' ? 'Xiyyeeffannoo Bulchiinsaa' : language === 'am' ? 'የበጀትና የድጋፍ ትኩረት' : 'Administrative Mandates'}</span>
                         </h5>
-                        <ul className="space-y-4 text-xs text-emerald-100 font-semibold">
+                        <ul className="space-y-5 text-sm sm:text-base text-emerald-100 font-semibold leading-relaxed">
                           <li>
-                            <strong className="text-white block font-bold text-[11px] uppercase tracking-wide">
+                            <strong className="text-white block font-bold text-xs sm:text-sm uppercase tracking-wide">
                               {language === 'om' ? 'Bulchiinsa Fandii' : 'Fund Administration'}
                             </strong>
                             {language === 'om' ? 'Fandiin sassaabamu akkaataa Qajeelfama Buusaa Gonofaa irratti ibsametti, itti gaafatamaa waajjira maallaqaa fi bulchiinsa Buusaa Gonofaa qofaan socho\'a.' : 'All collected public or institutional funds are administered and disbursed in strict compliance with the statutory Buusaa Gonofaa Guidelines.'}
                           </li>
                           <li>
-                            <strong className="text-white block font-bold text-[11px] uppercase tracking-wide">
+                            <strong className="text-white block font-bold text-xs sm:text-sm uppercase tracking-wide">
                               {language === 'om' ? 'Gaaddisa Buusaa Gonofaa' : 'Gaaddisa Support Shelters'}
                             </strong>
                             {language === 'om' ? 'Sadarkaa naannootiin dhimma tajaajila bishaanii, midhaan gargaarsaa fi wantoota hatattamaa deeggaruuf dhimma raawwatu dha.' : 'Handles the emergency dispatch of clean water, relief grains, and relief supplies at the regional scale.'}
@@ -665,14 +652,14 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
 
 
                       {/* Quadrant 3 */}
-                      <div className="p-6 rounded-2xl bg-emerald-50/30 border border-emerald-100/80 space-y-3">
-                        <div className="w-10 h-10 rounded-xl bg-white border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-xs">
-                          <UserCheck className="w-5 h-5" />
+                      <div className="p-8 rounded-2xl bg-emerald-50/30 border border-emerald-100/80 space-y-4">
+                        <div className="w-12 h-12 rounded-xl bg-white border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-xs">
+                          <UserCheck className="w-6 h-6" />
                         </div>
-                        <h5 className="text-xs font-black text-emerald-950 uppercase tracking-wider">
+                        <h5 className="text-base sm:text-lg md:text-xl font-black text-emerald-950 uppercase tracking-wider">
                           {language === 'om' ? 'Hojii Damee Adamaa' : language === 'am' ? 'የቅርንጫፍ ስራዎች' : 'Branch Operations'}
                         </h5>
-                        <p className="text-xs text-slate-700 font-semibold leading-relaxed">
+                        <p className="text-sm sm:text-base text-slate-800 font-semibold leading-relaxed">
                           {language === 'om' ? "Dameen keenya Adamaa hawaasa naannoo gargaarsa dhuunfaa bilisa ta'ee fi hordoffi faayinaansii gaariin hojjetoota dedicated ta'aniin kenna." :
                            language === 'am' ? "የአዳማ ቅርንጫፍ የወሰኑ ሰራተኞችን በመመደብ ግላዊ አገልግሎት እና የፋይናንስ መመሪያዎችን ለአካባቢው ማህበረሰብ ያቀርባል።" :
                            "The Adama branch serves the local community with dedicated staff providing personalized service and financial guidance."}
@@ -680,14 +667,14 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                       </div>
 
                       {/* Quadrant 4 */}
-                      <div className="p-6 rounded-2xl bg-emerald-50/30 border border-emerald-100/80 space-y-3">
-                        <div className="w-10 h-10 rounded-xl bg-white border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-xs">
-                          <Shield className="w-5 h-5" />
+                      <div className="p-8 rounded-2xl bg-emerald-50/30 border border-emerald-100/80 space-y-4">
+                        <div className="w-12 h-12 rounded-xl bg-white border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-xs">
+                          <Shield className="w-6 h-6" />
                         </div>
-                        <h5 className="text-xs font-black text-emerald-950 uppercase tracking-wider">
+                        <h5 className="text-base sm:text-lg md:text-xl font-black text-emerald-950 uppercase tracking-wider">
                           {language === 'om' ? 'Gareewwan Deggartootaa' : language === 'am' ? 'የድጋፍ ሰጪ ክፍሎች' : 'Support Functions'}
                         </h5>
-                        <p className="text-xs text-slate-700 font-semibold leading-relaxed">
+                        <p className="text-sm sm:text-base text-slate-800 font-semibold leading-relaxed">
                           {language === 'om' ? "Faayinaansii, HR, IT, fi gareewwan compliance gahumsa hojii guddina tarsiimo fi tikisii seeraa dhaabbatichaa hunda eeyyamu." :
                            language === 'am' ? "ፋይናንስ፣ የሰው ኃይል፣ የአይቲ እና የህግ ተገዢነት ቡድኖች በተቋሙ ውስጥ የስራ ዝግጅትን እና የህግ ተገዢነትን ያረጋግጣል።" :
                            "Finance, HR, IT, and compliance teams ensure operational excellence and regulatory compliance across the organization."}
@@ -701,11 +688,11 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                 {activeSubTab === 'management' && (
                   <div className="space-y-8">
                     <div className="border-b border-emerald-50 pb-4">
-                      <h4 className="text-base font-black text-emerald-950 uppercase tracking-widest flex items-center gap-2">
-                        <UserCheck className="w-5 h-5 text-emerald-600" />
+                      <h4 className="text-xl md:text-2xl font-black text-emerald-950 uppercase tracking-widest flex items-center gap-2">
+                        <UserCheck className="w-6 h-6 text-emerald-600" />
                         <span>{language === 'om' ? 'Qaama Hoggansaa fi Bulchiinsaa' : 'Management Bodies & Leadership'}</span>
                       </h4>
-                      <p className="text-xs text-gray-500 font-bold uppercase mt-1">
+                      <p className="text-sm sm:text-base text-gray-500 font-bold uppercase mt-1">
                         {language === 'om' ? 'Hoggantoota muuxannoo qaban damee qusannootiin' : 'Accomplished professionals managing grassroots microfinance channels'}
                       </p>
                     </div>
@@ -713,25 +700,33 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       {/* Left: statements */}
                       <div className="lg:col-span-2 space-y-6">
-                        <div className="p-6 bg-slate-55 bg-emerald-50/20 border border-emerald-100/50 rounded-2xl space-y-4">
-                          <p className="text-xs text-slate-800 font-medium leading-relaxed">
-                            {language === 'om' ? "Hoggansi keenya ogeessota dhuunfaa muuxannoo dheeraa maayicroofayinaansii, misooma hawaasummaa, fi tajaajila faayinaansii qaban irraa ijaarame. Yaadi adda addaa fi kutannoon isaanii ergama keenya guddisuuf furtuudha." :
-                             language === 'am' ? "የእኛ የአመራር አካላት በማይክሮ ፋይናንስ፣ በማህበረሰብ ልማት እና በፋይናንስ አገልግሎት ጥልቅ እውቀት ያላቸው ልምድ ያላቸው ባለሙያዎችን ያቀፈ ነው። ተልእኮአችንን ለማራመድ የተለያዩ አመለካከቶችን እና ቁርጠኝነትን ያመጣሉ።" :
-                             "Our management bodies are composed of experienced professionals with deep expertise in microfinance, community development, and financial services. They bring diverse perspectives and commitment to advancing our mission."}
+                        <div className="p-8 bg-emerald-50/20 border border-emerald-100/50 rounded-2xl space-y-6">
+                          <p className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed">
+                            {language === 'om' ? (
+                              "Hoggansi keenya ogeessota dhuunfaa muuxannoo dheeraa maayicroofayinaansii, misooma hawaasummaa, fi tajaajila faayinaansii qaban irraa ijaarame. Yaadi adda addaa fi kutannoon isaanii ergama keenya guddisuuf furtuudha."
+                            ) : language === 'am' ? (
+                              "የአመራር አካላት በደረጃ ማይክሮ ፋይናንስ፣ በማህበረሰብ ልማት እና በፋይናንስ አገልግሎት ጥልቅ እውቀት ያላቸው ልምድ ያላቸው ባለሙያዎችን ያቀፈ ነው። ተልእኮአችንን ለማራመድ የተለያዩ አመለካከቶችን እና ቁርጠኝነትን ያመጣሉ።"
+                            ) : (
+                              "Our management bodies are composed of experienced professionals with deep expertise in microfinance, community development, and financial services. They bring diverse perspectives and commitment to advancing our mission."
+                            )}
                           </p>
 
-                          <p className="text-xs text-slate-800 font-medium leading-relaxed">
-                            {language === 'om' ? "Dameen Adamaa hoggantoota damee, ofisara liqii fi deggartoota miseensota keenyaa kallattiin gargaaranii fi furmaata mijeessaniin durfama." :
-                             language === 'am' ? "የአዳማ ቅርንጫፍ የማህበረሰቡን የፋይናንስ ፍላጎት ለመረዳት እና ተስማሚ መፍትሄዎችን ለመስጠት በቀጥታ ከህብረተሰቡ ጋር በሚሰሩ ቅርንጫፍ ስራ አስኪያጆች፣ የብድር መኮንኖች እና የደንበኞች አገልግሎት ተወካዮች ይመራል።" :
-                             "The Adama branch is led by a dedicated team of branch managers, loan officers, and customer service representatives who work directly with community members to understand their financial needs and provide tailored solutions."}
+                          <p className="text-base sm:text-lg md:text-xl text-slate-900 font-bold leading-relaxed">
+                            {language === 'om' ? (
+                              "Dameen Adamaa hoggantoota damee, ofisara liqii fi deggartoota miseensota keenyaa kallattiin gargaaranii fi furmaata mijeessaniin durfama."
+                            ) : language === 'am' ? (
+                              "የአዳማ ቅርንጫፍ የማህበረሰቡን የፋይናንስ ፍላጎት ለመረዳት እና ተስማሚ መፍትሄዎችን ለመስጠት በቀጥታ ከህብረተሰቡ ጋር በሚሰሩ ቅርንጫፍ ስራ አስኪያጆች፣ የብድር መኮንኖች እና የደንበኞች አገልግሎት ተወካዮች ይመራል።"
+                            ) : (
+                              "The Adama branch is led by a dedicated team of branch managers, loan officers, and customer service representatives who work directly with community members to understand their financial needs and provide tailored solutions."
+                            )}
                           </p>
                         </div>
 
-                        <div className="p-6 border border-emerald-100/70 bg-emerald-50/10 rounded-2xl">
-                          <h5 className="text-xs font-black text-emerald-950 uppercase tracking-wider mb-2">
+                        <div className="p-8 border border-emerald-100/70 bg-emerald-50/10 rounded-2xl">
+                          <h5 className="text-base sm:text-lg md:text-xl font-black text-emerald-950 uppercase tracking-wider mb-2">
                             {language === 'om' ? 'Oddeeffannoo Dabalataa' : language === 'am' ? 'ቢሮአችንን ያግኙ' : 'Administrative Transparency'}
                           </h5>
-                          <p className="text-xs text-gray-650 font-semibold leading-relaxed">
+                          <p className="text-sm sm:text-base text-gray-700 font-semibold leading-relaxed">
                             {language === 'om' ? "Waa'ee hoggantoota keenyaa dabalataan argachuuf, desk kora Adamaa keenya kallattiin quunnamuu dandeessu." :
                              language === 'am' ? "ስለ ወቅታዊ አመራራችን እና የአስተዳደር መዋቅራችን ዝርዝር መረጃ ለማግኘት እባክዎን የአዳማ ቅርንጫፍን በቀጥታ ያነጋግሩ።" :
                              "For detailed information about our current leadership, curriculum vitae, and management structure, please contact our Adama branch administrative desk directly."}
@@ -740,22 +735,22 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                       </div>
 
                       {/* Right: Contact Call-Out card */}
-                      <div className="bg-emerald-950 text-white rounded-2xl p-6 flex flex-col justify-between shadow-xl border border-emerald-900">
+                      <div className="bg-emerald-950 text-white rounded-2xl p-8 flex flex-col justify-between shadow-xl border border-emerald-900 space-y-6">
                         <div className="space-y-4">
-                          <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-emerald-300">
-                            <Users className="w-5 h-5" />
+                          <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-emerald-300">
+                            <Users className="w-6 h-6" />
                           </div>
                           
-                          <h4 className="text-sm font-black uppercase tracking-wider text-emerald-300">
+                          <h4 className="text-base sm:text-lg md:text-xl font-black uppercase tracking-wider text-emerald-300">
                             {language === 'om' ? 'Damee Adamaa Quunnamtuu' : 'Get in Touch Directly'}
                           </h4>
 
-                          <p className="text-[11px] text-emerald-100 font-medium leading-relaxed">
+                          <p className="text-xs sm:text-sm text-emerald-100 font-semibold leading-relaxed">
                             {language === 'om' ? 'Dameen keenya gargaarsa dhuunfaa akkasumas marii hoggansaa bilisaan mijeessa. Nu quunnamaa.' :
                              'Connect directly with our local managers at Adama Central Post Office Area or submit a direct enquiry.'}
                           </p>
 
-                          <div className="border-t border-emerald-850 pt-3 mt-1.5 text-[10.5px] space-y-2 text-emerald-200 font-semibold font-sans">
+                          <div className="border-t border-emerald-850 pt-4 mt-3 text-xs sm:text-sm space-y-2.5 text-emerald-200 font-semibold font-sans">
                             <div className="flex items-start gap-2">
                               <span className="text-emerald-400">📌</span>
                               <span>
@@ -777,10 +772,10 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
 
                         <button
                           onClick={() => setActiveTab('contact')}
-                          className="w-full text-center bg-white hover:bg-emerald-50 text-emerald-800 hover:text-emerald-950 font-extrabold text-xs py-3 rounded-xl transition-all uppercase tracking-wider mt-6 inline-flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                          className="w-full text-center bg-white hover:bg-emerald-50 text-emerald-800 hover:text-emerald-950 font-extrabold text-xs sm:text-sm py-3.5 rounded-xl transition-all uppercase tracking-wider mt-6 inline-flex items-center justify-center gap-2 cursor-pointer shadow-md"
                         >
                           <span>{language === 'om' ? 'Quunnamtii Amma' : 'Navigate to Contact'}</span>
-                          <ArrowUpRight className="w-3.5 h-3.5" />
+                          <ArrowUpRight className="w-4 h-4" />
                         </button>
                       </div>
                     </div>

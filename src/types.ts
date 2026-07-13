@@ -4,7 +4,7 @@
 
 export type Language = 'om' | 'am' | 'en';
 
-export type ActiveTab = 'home' | 'services' | 'community' | 'contribution' | 'contact';
+export type ActiveTab = 'home' | 'services' | 'community' | 'contribution' | 'contact' | 'admin';
 
 export interface NewsItem {
   id: string;

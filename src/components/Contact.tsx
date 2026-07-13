@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Phone, Mail, Clock, CheckCircle2, Send, Lock } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, CheckCircle2, Send, Lock, Loader2 } from 'lucide-react';
 import { Language } from '../types';
 import { translations } from '../translations';
+import { db } from '../lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 interface ContactProps {
   language: Language;
@@ -88,6 +90,8 @@ export default function Contact({ language }: ContactProps) {
   });
   
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -119,11 +123,33 @@ export default function Contact({ language }: ContactProps) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmissionError(null);
     if (validateForm()) {
-      setFormSubmitted(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setIsSubmitting(true);
+      try {
+        await addDoc(collection(db, 'contacts'), {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          timestamp: serverTimestamp()
+        });
+        setFormSubmitted(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } catch (err) {
+        console.error("Error submitting contact inquiry: ", err);
+        setSubmissionError(
+          language === 'om' 
+            ? "Ergaa erguun hin danda'amne. Maaloo booda irra deebi'aa yaalaa." 
+            : language === 'am' 
+              ? 'መልዕክቱን መላክ አልተቻለም። እባክዎ ቆይተው እንደገና ይሞክሩ።' 
+              : 'Failed to send message. Please try again later.'
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -431,16 +457,33 @@ export default function Contact({ language }: ContactProps) {
 
                   {/* Submission Secure action */}
                   <div className="space-y-3 pt-4 border-t border-emerald-50">
+                    {submissionError && (
+                      <p className="text-xs text-red-600 font-bold bg-red-50 p-3 rounded-xl border border-red-100 uppercase tracking-wide text-center">
+                        ⚠️ {submissionError}
+                      </p>
+                    )}
                     <button
                       type="submit"
+                      disabled={isSubmitting}
                       style={{
                         textTransform: 'uppercase',
                         letterSpacing: '1.5px',
                       }}
-                      className="w-full inline-flex items-center justify-center gap-2 bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold text-xs py-4 px-6 rounded-xl hover:shadow-lg transition-all cursor-pointer uppercase"
+                      className={`w-full inline-flex items-center justify-center gap-2 text-white font-extrabold text-xs py-4 px-6 rounded-xl hover:shadow-lg transition-all cursor-pointer uppercase ${
+                        isSubmitting ? 'bg-emerald-400 cursor-not-allowed' : 'bg-[#16A34A] hover:bg-[#15803D]'
+                      }`}
                     >
-                      <Send className="w-4 h-4" />
-                      <span>{translations.contactFormSubmit[language]}</span>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>{language === 'om' ? 'Ergamaa Jira...' : language === 'am' ? 'እየተላከ ነው...' : 'Transmitting...'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>{translations.contactFormSubmit[language]}</span>
+                        </>
+                      )}
                     </button>
                     
                     <div className="flex items-center justify-center gap-1.5 text-[10px] text-emerald-800/100 uppercase tracking-widest font-extrabold">

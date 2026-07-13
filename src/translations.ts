@@ -37,6 +37,11 @@ export const translations: Record<string, Record<Language, string>> = {
     am: "ግንኙነት",
     en: "Contact Us"
   },
+  navAdmin: {
+    om: "Bulchiinsa DB",
+    am: "የዳታቤዝ አስተዳዳሪ",
+    en: "Database Admin"
+  },
 
   // Hero Section
   heroTitle: {
