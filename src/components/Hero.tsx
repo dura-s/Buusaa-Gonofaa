@@ -8,7 +8,7 @@ import {
 import { Language, ActiveTab } from '../types';
 import { translations } from '../translations';
 import { branchStatistics } from '../data';
-import bgLogo from '../assets/images/photo_2026-06-30_10-48-38.jpg';
+import bgLogo from '../assets/images/bg_logo.jpeg';
 import wadooImage from '../assets/images/photo_2026-06-25_11-35-11.jpg';
 import latestAssemblyImage from '../assets/images/photo_2026-06-25_11-53-35.jpg';
 import img_20_1 from '../assets/images/photo_2026-06-25_11-53-20.jpg';

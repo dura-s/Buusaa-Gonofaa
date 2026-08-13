@@ -217,7 +217,14 @@ export const mockCampaigns: DonationCamp[] = [
       om: "Duula Balaa Gargaaruu",
       am: "የአደጋ ጊዜ ፈንድ",
       en: "Emergency Relief Campaign"
-    }
+    },
+    givers: [
+      { id: 'g1', name: 'Anonymous Giver', isAnonymous: true, amount: 15000, date: '2026-08-07', paymentMethod: 'cbe' },
+      { id: 'g2', name: 'Secret Community Donor', isAnonymous: true, amount: 50000, date: '2026-08-06', paymentMethod: 'cbe' },
+      { id: 'g3', name: 'Anonymous Giver', isAnonymous: true, amount: 5000, date: '2026-08-05', paymentMethod: 'telebirr' },
+      { id: 'g4', name: 'Secret Contributor', isAnonymous: true, amount: 20000, date: '2026-08-04', paymentMethod: 'sinqe' },
+      { id: 'g5', name: 'Anonymous Giver', isAnonymous: true, amount: 35000, date: '2026-08-02', paymentMethod: 'cbe_birr' }
+    ]
   },
   {
     id: 'c2',
@@ -238,7 +245,13 @@ export const mockCampaigns: DonationCamp[] = [
       om: "Gargaarsa Fayyaa Hawaasaa",
       am: "ጤናና ደህንነት",
       en: "Health Mutual Coverage"
-    }
+    },
+    givers: [
+      { id: 'g6', name: 'Secret Contributor', isAnonymous: true, amount: 25000, date: '2026-08-07', paymentMethod: 'sinqe' },
+      { id: 'g7', name: 'Anonymous Giver', isAnonymous: true, amount: 10000, date: '2026-08-06', paymentMethod: 'telebirr' },
+      { id: 'g8', name: 'Secret Diaspora Supporter', isAnonymous: true, amount: 18000, date: '2026-08-05', paymentMethod: 'paypal' },
+      { id: 'g9', name: 'Anonymous Giver', isAnonymous: true, amount: 3000, date: '2026-08-03', paymentMethod: 'cbe' }
+    ]
   }
 ];
 

@@ -283,7 +283,11 @@ export default function GadaaAssistant({ language }: GadaaAssistantProps) {
                       <div className="mt-3 p-2 bg-amber-100/60 rounded-xl border border-amber-200/50 flex items-start gap-1.5 text-[10px] text-amber-950 font-bold leading-normal" id="gadaa-config-error-hint">
                         <HelpCircle className="w-4 h-4 shrink-0 text-amber-800 mt-0.5" />
                         <span>
-                          {window.location.hostname.includes('vercel.app') ? (
+                          {window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? (
+                            <span>
+                              For <strong>VS Code / Local Dev</strong>: Create a <code>.env</code> file in your project root, add <code>GEMINI_API_KEY=your_key_here</code>, save it, and restart <code>npm run dev</code> in your terminal.
+                            </span>
+                          ) : window.location.hostname.includes('vercel.app') ? (
                             <span>
                               For Vercel deployment: Go to your <strong>Vercel Dashboard</strong>, open <strong>Project Settings &gt; Environment Variables</strong>, add <code>GEMINI_API_KEY</code> with your valid Google Gemini API Key, and redeploy.
                             </span>

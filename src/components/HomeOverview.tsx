@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Compass, Calendar, ArrowRight, Sprout, Heart, Users, ShieldAlert, Award, 
   History, Workflow, Building, UserCheck, Shield, HelpCircle, CheckCircle, ArrowUpRight,
-  Play, Youtube
+  Play, Youtube, CheckCircle2, X, Gift, Plus, Sparkles, DollarSign, Wallet
 } from 'lucide-react';
-import { Language, ActiveTab } from '../types';
+import { Language, ActiveTab, DonationCamp, Giver } from '../types';
 import { translations } from '../translations';
 import { mockNews, mockCampaigns } from '../data';
 
@@ -14,12 +14,24 @@ interface HomeOverviewProps {
   setActiveTab: (tab: ActiveTab) => void;
   aboutSubTab?: 'mission' | 'history' | 'structure' | 'management';
   setAboutSubTab?: (tab: 'mission' | 'history' | 'structure' | 'management') => void;
+  campaigns?: DonationCamp[];
+  onContribute?: (campaignId: string, amount: number, giverName: string, paymentMethod?: string) => void;
 }
 
-export default function HomeOverview({ language, setActiveTab, aboutSubTab, setAboutSubTab }: HomeOverviewProps) {
+export default function HomeOverview({ language, setActiveTab, aboutSubTab, setAboutSubTab, campaigns, onContribute }: HomeOverviewProps) {
   const [localSubTab, setLocalSubTab] = useState<'mission' | 'history' | 'structure' | 'management'>('mission');
   const activeSubTab = aboutSubTab || localSubTab;
   const setActiveSubTab = setAboutSubTab || setLocalSubTab;
+
+  const activeCampaigns = campaigns || mockCampaigns;
+
+  // Interactive quick modal state for direct contribution from Home Page
+  const [quickContribCamp, setQuickContribCamp] = useState<DonationCamp | null>(null);
+  const [giverName, setGiverName] = useState('');
+  const [selectedPresetAmount, setSelectedPresetAmount] = useState<number>(1000);
+  const [customAmountInput, setCustomAmountInput] = useState<string>('1000');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'cbe' | 'sinqee' | 'telebirr' | 'cbe_birr' | 'paypal'>('cbe');
+  const [contributionSuccess, setContributionSuccess] = useState<{ name: string; amount: number; campTitle: string } | null>(null);
 
   // Format currency helpers for Ethiopian Birr
   const formatBirr = (amount: number) => {
@@ -972,12 +984,13 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {mockCampaigns.map((camp) => {
+          {activeCampaigns.map((camp) => {
             const progress = getCampaignProgress(camp.raisedAmount, camp.goalAmount);
+
             return (
               <div 
                 key={camp.id}
-                className="bg-white rounded-3xl border border-emerald-100 p-6 sm:p-8 space-y-6 hover:border-emerald-300 hover:shadow-md hover:shadow-emerald-500/5 active:scale-[0.99] transition-all duration-300 flex flex-col justify-between cursor-pointer"
+                className="bg-white rounded-3xl border border-emerald-100 p-6 sm:p-8 space-y-6 hover:border-emerald-300 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
                 id={`urgent-camp-card-${camp.id}`}
               >
                 <div className="space-y-4">
@@ -985,9 +998,9 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                     <span className="text-xs font-extrabold text-[#054823] bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full uppercase tracking-widest">
                       {camp.badge[language]}
                     </span>
-                    <span className="text-xs font-bold text-[#054823] uppercase tracking-widest flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-[#054823] uppercase tracking-widest flex items-center gap-1.5 bg-emerald-50/80 px-3 py-1 rounded-full border border-emerald-100/60">
                       <Heart className="w-4 h-4 fill-current text-red-500" />
-                      <span>{camp.contributorsCount} {language === 'om' ? 'Hirmaattota' : 'Givers'}</span>
+                      <span>{camp.contributorsCount} {language === 'om' ? 'Arjoomtota (Givers)' : language === 'am' ? 'ለጋሾች' : 'Givers'}</span>
                     </span>
                   </div>
 
@@ -1000,45 +1013,271 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                   </p>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-emerald-50">
-                  {/* Progress Bar Container */}
-                  <div className="space-y-1.5">
+                <div className="space-y-5 pt-4 border-t border-emerald-50">
+                  
+                  {/* Highlighted Progress Bar & Percent Metric */}
+                  <div className="space-y-2 bg-emerald-50/40 p-4 rounded-2xl border border-emerald-100/80">
                     <div className="flex justify-between items-center text-xs sm:text-sm font-extrabold uppercase">
-                      <span className="text-gray-500">{language === 'om' ? 'Deeggarsa Argame' : 'Raised'}</span>
-                      <span className="text-emerald-700 font-mono font-black">{progress}%</span>
+                      <span className="text-emerald-950 flex items-center gap-1.5">
+                        <Sparkles className="w-4 h-4 text-emerald-600" />
+                        <span>{language === 'om' ? 'Baha Gumaachaa (%)' : language === 'am' ? 'የተሰበሰበ መጠን (%)' : 'Progress Raised'}</span>
+                      </span>
+                      <span className="text-emerald-700 font-mono font-black text-base sm:text-lg bg-emerald-100 px-2.5 py-0.5 rounded-md">
+                        {progress}%
+                      </span>
                     </div>
 
-                    <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden border border-gray-50">
+                    <div className="w-full h-3.5 bg-gray-200/80 rounded-full overflow-hidden border border-gray-100 shadow-inner">
                       <div 
-                        className="bg-emerald-600 h-full rounded-full transition-all duration-1000"
+                        className="bg-gradient-to-r from-emerald-600 to-emerald-500 h-full rounded-full transition-all duration-1000"
                         style={{ width: `${progress}%` }}
                       />
                     </div>
+
+                    {/* Birr Raised vs Goal Display */}
+                    <div className="grid grid-cols-2 gap-2 pt-1 text-xs font-extrabold border-t border-emerald-100/60 mt-2">
+                      <div>
+                        <span className="block text-[10px] text-gray-400 uppercase tracking-wider">{language === 'om' ? 'Kan Funaaname (Birr)' : 'Raised Amount'}</span>
+                        <span className="text-emerald-800 font-mono font-black text-sm sm:text-base">{formatBirr(camp.raisedAmount)}</span>
+                      </div>
+                      
+                      <div className="text-right">
+                        <span className="block text-[10px] text-gray-400 uppercase tracking-wider">{language === 'om' ? 'Galma (Birr)' : 'Target Goal'}</span>
+                        <span className="text-gray-700 font-mono font-bold text-sm sm:text-base">{formatBirr(camp.goalAmount)}</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex justify-between items-center text-sm font-extrabold">
-                    <div className="space-y-0.5">
-                      <span className="block text-xs text-gray-400 uppercase">{language === 'om' ? 'Hamma Waliigalaa' : 'Goal'}</span>
-                      <span className="text-gray-800 font-mono font-bold">{formatBirr(camp.goalAmount)}</span>
-                    </div>
-                    
-                    <div className="text-right space-y-0.5">
-                      <span className="block text-xs text-gray-400 uppercase">{language === 'om' ? 'Kan Funaaname' : 'Current Raised'}</span>
-                      <span className="text-emerald-700 font-mono font-black">{formatBirr(camp.raisedAmount)}</span>
-                    </div>
+                  {/* Actions Bar: Quick Contribute & View Portal */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    <button
+                      onClick={() => {
+                        setQuickContribCamp(camp);
+                        setSelectedPresetAmount(1000);
+                        setCustomAmountInput('1000');
+                        setGiverName('');
+                      }}
+                      className="w-full text-center bg-[#054823] hover:bg-[#022b14] text-white font-black text-xs py-3.5 rounded-xl transition shadow-sm active:scale-95 uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>{language === 'om' ? 'Gumaacha Kee Add' : language === 'am' ? 'አሁን ይለግሱ' : 'Contribute Now'}</span>
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab('contribution')}
+                      className="w-full text-center bg-emerald-50 hover:bg-emerald-100 text-[#054823] border border-emerald-200 font-bold text-xs py-3.5 rounded-xl transition active:scale-95 uppercase tracking-wider cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <span>{language === 'om' ? 'Poortaalii Guutuu' : language === 'am' ? 'ሙሉ ፖርታል' : 'Full Portal'}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
 
-                  <button
-                    onClick={() => setActiveTab('contribution')}
-                    className="w-full text-center bg-gray-50 hover:bg-emerald-50 text-[#054823] hover:text-emerald-950 border border-emerald-100 font-black text-xs sm:text-sm py-3.5 rounded-xl transition-all active:scale-95 uppercase tracking-wider cursor-pointer"
-                  >
-                    {language === 'om' ? 'Gumaacha Kee Kenni' : language === 'am' ? 'አሁን ድጋፍ ያድርጉ' : 'Sponsor This Campaign'}
-                  </button>
                 </div>
               </div>
             );
           })}
         </div>
+
+        {/* Quick Contribution Interactive Modal on Home Page */}
+        <AnimatePresence>
+          {quickContribCamp && (
+            <motion.div 
+              className="fixed inset-0 bg-[#06180e]/70 backdrop-blur-xs z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div 
+                className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-emerald-100 shadow-2xl relative text-left"
+                initial={{ scale: 0.95, y: 15 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 15 }}
+              >
+                <button 
+                  type="button"
+                  onClick={() => setQuickContribCamp(null)}
+                  className="absolute top-4 right-4 p-2 text-gray-400 hover:text-emerald-950 hover:bg-emerald-50 rounded-full transition cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                <div className="space-y-5">
+                  <div className="flex items-center gap-3 border-b border-emerald-100 pb-4">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-[#054823]">
+                      <Gift className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        {language === 'om' ? 'Gumaacha Ariifachiisaa' : 'Quick Contribution'}
+                      </span>
+                      <h4 className="text-base sm:text-lg font-black text-emerald-950 uppercase tracking-tight mt-0.5 line-clamp-1">
+                        {quickContribCamp.title[language]}
+                      </h4>
+                    </div>
+                  </div>
+
+                  {/* Secret Privacy Notice */}
+                  <div className="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-start gap-3">
+                    <Shield className="w-5 h-5 text-emerald-800 shrink-0 mt-0.5" />
+                    <div className="text-xs text-emerald-950 font-medium leading-snug">
+                      <strong className="font-extrabold uppercase tracking-wide block text-[#054823]">
+                        {language === 'om' ? '🔒 Maqaan Arjoomsaa Dhoksaadha' : language === 'am' ? '🔒 የለጋሹ ስም ሚስጥራዊ ነው' : '🔒 100% Secret & Confidential Contribution'}
+                      </strong>
+                      {language === 'om' 
+                        ? 'Gumaachi keessan maallaqaa (%) fi Birr qofa irratti dabalama. Eenyummaan arjoomsaa sirna Buusaa Gonofaan dhoksaa ta\'ee eegama.' 
+                        : language === 'am'
+                          ? 'መዋጮዎ በመቶኛ (%) እና በብር መጠን ላይ ይደመራል። የለጋሹ ማንነት በቡሳ ጎኖፋ ስርዓት በጥብቅ ሚስጥር ይያዛል።'
+                          : 'Your contribution updates the percentage (%) and Birr raised instantly. Donor identity is kept 100% secret and anonymous.'
+                      }
+                    </div>
+                  </div>
+
+                  {/* Step 2: Preset Birr Amounts */}
+                  <div className="space-y-2">
+                    <label className="block text-xs font-black uppercase text-emerald-950 tracking-wider">
+                      {language === 'om' ? 'Hamma Maallaqaa (Birr)' : 'Select Contribution Amount (ETB)'}
+                    </label>
+
+                    <div className="grid grid-cols-4 gap-2">
+                      {[500, 1000, 2500, 5000].map((amt) => (
+                        <button
+                          key={amt}
+                          type="button"
+                          onClick={() => {
+                            setSelectedPresetAmount(amt);
+                            setCustomAmountInput(amt.toString());
+                          }}
+                          className={`py-2.5 px-2 rounded-xl font-mono text-xs font-black transition border cursor-pointer ${
+                            selectedPresetAmount === amt && customAmountInput === amt.toString()
+                              ? 'bg-[#054823] text-white border-[#054823] shadow-xs'
+                              : 'bg-emerald-50/50 hover:bg-emerald-100/60 text-emerald-950 border-emerald-200'
+                          }`}
+                        >
+                          {amt} ETB
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="pt-1">
+                      <div className="relative">
+                        <input 
+                          type="number" 
+                          value={customAmountInput}
+                          onChange={(e) => {
+                            setCustomAmountInput(e.target.value);
+                            setSelectedPresetAmount(Number(e.target.value) || 0);
+                          }}
+                          placeholder="Enter custom Birr amount"
+                          className="w-full bg-emerald-50/40 border border-emerald-200 rounded-xl px-4 py-3 text-xs sm:text-sm font-mono font-bold text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-600 pl-16"
+                        />
+                        <span className="absolute left-4 top-3 text-xs font-black text-emerald-700 font-mono">
+                          ETB
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step 3: Payment Method Selection */}
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-black uppercase text-emerald-950 tracking-wider">
+                      {language === 'om' ? 'Karaa Kaffaltii / Gateway' : 'Payment Method'}
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { id: 'cbe', name: 'CBE Bank' },
+                        { id: 'sinqee', name: 'Siinqee Bank' },
+                        { id: 'telebirr', name: 'telebirr' },
+                        { id: 'cbe_birr', name: 'CBE Birr' },
+                        { id: 'paypal', name: 'PayPal' },
+                      ].map((pm) => (
+                        <button
+                          key={pm.id}
+                          type="button"
+                          onClick={() => setSelectedPaymentMethod(pm.id as any)}
+                          className={`py-2 px-2 rounded-xl text-[11px] font-extrabold transition border cursor-pointer ${
+                            selectedPaymentMethod === pm.id
+                              ? 'bg-emerald-700 text-white border-emerald-700'
+                              : 'bg-gray-50 hover:bg-emerald-50 text-gray-700 border-gray-200'
+                          }`}
+                        >
+                          {pm.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const amount = Number(customAmountInput) || 1000;
+                      const secretLabel = language === 'om' ? 'Arjoomaa Dhoksaa' : language === 'am' ? 'ሚስጥራዊ ለጋሽ' : 'Secret Giver';
+                      if (onContribute) {
+                        onContribute(quickContribCamp.id, amount, secretLabel, selectedPaymentMethod);
+                      }
+                      setContributionSuccess({
+                        name: secretLabel,
+                        amount: amount,
+                        campTitle: quickContribCamp.title[language]
+                      });
+                      setQuickContribCamp(null);
+                    }}
+                    className="w-full bg-[#054823] hover:bg-[#022b14] text-white font-black text-xs sm:text-sm py-4 rounded-xl uppercase tracking-wider transition shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-2 mt-2"
+                  >
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                    <span>{language === 'om' ? 'Mirkaneessi & Gumaachi' : 'Confirm Contribution'}</span>
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Celebration Toast Modal */}
+        <AnimatePresence>
+          {contributionSuccess && (
+            <motion.div 
+              className="fixed inset-0 bg-[#06180e]/70 backdrop-blur-xs z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div 
+                className="bg-white rounded-3xl p-8 max-w-md w-full border border-emerald-100 shadow-2xl text-center space-y-6"
+                initial={{ scale: 0.9, y: 15 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 15 }}
+              >
+                <div className="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                  <Sparkles className="w-8 h-8 animate-bounce" />
+                </div>
+
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">
+                    {language === 'om' ? 'Galatoomaa!' : 'Thank You!'}
+                  </span>
+                  <h3 className="text-xl font-black text-emerald-950 uppercase tracking-tight">
+                    {language === 'om' ? 'Gumaachi Keessan Galmeeffameera!' : 'Contribution Successfully Added!'}
+                  </h3>
+                  <p className="text-xs text-gray-600 font-semibold leading-relaxed">
+                    <strong>{contributionSuccess.name}</strong>, {language === 'om' ? 'gumaachi maallaqaa keessan ' : 'your contribution of '}
+                    <strong className="text-emerald-800 font-mono font-black">{formatBirr(contributionSuccess.amount)}</strong>
+                    {language === 'om' ? ' duula gumaachaa ' : ' to campaign '}
+                    &ldquo;{contributionSuccess.campTitle}&rdquo; {language === 'om' ? ' irratti dabalameera. Dhibbeentaan (%), birr, fi tarreen arjoomtotaa haaromfameera!' : ' has been registered. The percentage, Birr raised, and givers list updated in real-time!'}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setContributionSuccess(null)}
+                  className="w-full bg-[#054823] text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider transition hover:bg-[#022b14] cursor-pointer"
+                >
+                  {language === 'om' ? 'Cufi & Ilaali' : 'Done & View Update'}
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
       </section>
 
       {/* 3. Latest Branch News / Announcements */}

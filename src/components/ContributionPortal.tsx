@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Heart, ShieldCheck, CheckCircle2, Users, CreditCard, DollarSign, ArrowRight, Lock, Loader2, Landmark, FileText, Send, Copy, QrCode, RefreshCw, Smartphone, Coins, Check, HelpCircle, X } from 'lucide-react';
-import { Language } from '../types';
+import { Heart, ShieldCheck, CheckCircle2, Users, CreditCard, DollarSign, ArrowRight, Lock, Loader2, Landmark, FileText, Send, Copy, QrCode, RefreshCw, Smartphone, Coins, Check, HelpCircle, X, Download, Sparkles } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
+import { Language, DonationCamp } from '../types';
 import { translations } from '../translations';
 import { mockCampaigns } from '../data';
 import { db } from '../lib/firebase';
@@ -9,17 +10,22 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 interface ContributionPortalProps {
   language: Language;
+  campaigns?: DonationCamp[];
+  onContribute?: (campaignId: string, amount: number, giverName: string, paymentMethod?: string) => void;
 }
 
-export default function ContributionPortal({ language }: ContributionPortalProps) {
+export default function ContributionPortal({ language, campaigns, onContribute }: ContributionPortalProps) {
+  const activeCampaigns = campaigns || mockCampaigns;
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     reason: '',
-    paymentMethod: 'cbe', // 'cbe_birr', 'cbe', 'telebirr', 'paypal'
+    amount: '1000',
+    paymentMethod: 'cbe', // 'cbe_birr', 'cbe', 'telebirr', 'sinqe', 'paypal'
     isDiaspora: false,
-    selectedCampaignId: mockCampaigns[0].id,
+    selectedCampaignId: activeCampaigns[0]?.id || mockCampaigns[0].id,
     transactionId: '',
     receiptFile: null as File | null
   });
@@ -33,11 +39,117 @@ export default function ContributionPortal({ language }: ContributionPortalProps
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [showQrModal, setShowQrModal] = useState<boolean>(false);
   const [showUssdModal, setShowUssdModal] = useState<boolean>(false);
+  const [qrModalPlatform, setQrModalPlatform] = useState<string>('telebirr');
+  const [qrModalAmount, setQrModalAmount] = useState<string>('1000');
 
   const handleCopyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
     setCopiedText(field);
     setTimeout(() => setCopiedText(null), 2000);
+  };
+
+  // Helper to generate real dynamic QR payloads for local mobile payment platforms
+  const getDynamicQrPayload = (method: string, amountStr: string | number, campaignId: string) => {
+    const numAmount = Number(amountStr) || 1000;
+    const refCode = `BG-ADAMA-${campaignId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase()}-${numAmount}`;
+    
+    switch (method) {
+      case 'telebirr':
+        return {
+          platformName: 'telebirr Quick Pay',
+          merchantId: 'BG-992811',
+          accountName: 'Buusaa Gonofaa Oromiyaa',
+          payload: `telebirr://pay?merchant=BG-992811&amount=${numAmount}&currency=ETB&ref=${refCode}&title=Buusaa%20Gonofaa%20Adamaa`,
+          color: '#0284c7', // telebirr cyan-blue
+          bgColor: '#e0f2fe',
+          badgeText: 'Ethio Telecom telebirr',
+          ussdCode: `*127*1*1*BG-992811*${numAmount}#`
+        };
+      case 'cbe_birr':
+      case 'cbe':
+        return {
+          platformName: 'CBE Birr Mobile',
+          merchantId: '818290',
+          accountName: 'Buusaa Gonofaa Adama',
+          payload: `cbebirr://pay?merchant=818290&amount=${numAmount}&currency=ETB&ref=${refCode}&title=Buusaa%20Gonofaa%20Adamaa`,
+          color: '#054823', // CBE green
+          bgColor: '#dcfce7',
+          badgeText: 'Commercial Bank of Ethiopia',
+          ussdCode: `*889# -> Merchant: 818290 -> ${numAmount} ETB`
+        };
+      case 'sinqe':
+        return {
+          platformName: 'Siinqee Pay (Baankii Siinqee)',
+          merchantId: '1019283110293',
+          accountName: 'Buusaa Gonofaa - Siinqee',
+          payload: `sinqee://pay?account=1019283110293&amount=${numAmount}&currency=ETB&ref=${refCode}`,
+          color: '#b45309', // Siinqee amber
+          bgColor: '#fef3c7',
+          badgeText: 'Siinqee Bank',
+          ussdCode: `*869# -> Account: 1019283110293 -> ${numAmount} ETB`
+        };
+      case 'awash':
+        return {
+          platformName: 'Awash Birr',
+          merchantId: '99281',
+          accountName: 'Buusaa Gonofaa Adama',
+          payload: `awashbirr://pay?merchant=99281&amount=${numAmount}&currency=ETB&ref=${refCode}`,
+          color: '#7c3aed', // Awash purple
+          bgColor: '#f3e8ff',
+          badgeText: 'Awash Bank',
+          ussdCode: `*901# -> Merchant: 99281 -> ${numAmount} ETB`
+        };
+      case 'boa':
+        return {
+          platformName: 'BOA Mobile (Abyssinia)',
+          merchantId: '0029381',
+          accountName: 'Buusaa Gonofaa Branch',
+          payload: `boamobile://pay?merchant=0029381&amount=${numAmount}&currency=ETB&ref=${refCode}`,
+          color: '#2563eb', // BOA blue
+          bgColor: '#dbeafe',
+          badgeText: 'Bank of Abyssinia',
+          ussdCode: `*815# -> Merchant: 0029381 -> ${numAmount} ETB`
+        };
+      default:
+        return {
+          platformName: 'telebirr Quick Pay',
+          merchantId: 'BG-992811',
+          accountName: 'Buusaa Gonofaa Oromiyaa',
+          payload: `telebirr://pay?merchant=BG-992811&amount=${numAmount}&currency=ETB&ref=${refCode}`,
+          color: '#0284c7',
+          bgColor: '#e0f2fe',
+          badgeText: 'telebirr',
+          ussdCode: `*127*1*1*BG-992811*${numAmount}#`
+        };
+    }
+  };
+
+  const downloadQrCode = () => {
+    const svgElement = document.getElementById('dynamic-qr-code-svg');
+    if (!svgElement) return;
+    try {
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.onload = () => {
+        canvas.width = img.width + 40;
+        canvas.height = img.height + 40;
+        if (ctx) {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 20, 20);
+          const pngFile = canvas.toDataURL('image/png');
+          const downloadLink = document.createElement('a');
+          downloadLink.download = `Buusaa_Gonofaa_QR_${qrModalPlatform}_${qrModalAmount}ETB.png`;
+          downloadLink.href = pngFile;
+          downloadLink.click();
+        }
+      };
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    } catch (err) {
+      console.error("Failed to download QR image", err);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -108,6 +220,7 @@ export default function ContributionPortal({ language }: ContributionPortalProps
         email: formData.email,
         phone: formData.phone,
         reason: formData.reason,
+        amount: Number(formData.amount) || 1000,
         paymentMethod: formData.paymentMethod,
         isDiaspora: formData.isDiaspora,
         selectedCampaignId: formData.selectedCampaignId,
@@ -115,6 +228,18 @@ export default function ContributionPortal({ language }: ContributionPortalProps
         receiptFileName: formData.receiptFile ? formData.receiptFile.name : null,
         timestamp: serverTimestamp()
       });
+
+      if (onContribute) {
+        const numericAmount = Number(formData.amount) || 1000;
+        const secretLabel = language === 'om' ? 'Arjoomaa Dhoksaa' : language === 'am' ? 'ሚስጥራዊ ለጋሽ' : 'Secret Donor';
+        onContribute(
+          formData.selectedCampaignId, 
+          numericAmount, 
+          secretLabel,
+          formData.paymentMethod
+        );
+      }
+
       setPaymentStep('success');
     } catch (err) {
       console.error("Error saving contribution: ", err);
@@ -226,6 +351,51 @@ export default function ContributionPortal({ language }: ContributionPortalProps
 
         <div className="space-y-10">
           
+          {/* Top Feature Banner: Donate via Dynamic QR Code */}
+          <div className="bg-gradient-to-r from-[#054823] via-[#095c2e] to-[#054823] text-white p-6 md:p-7 rounded-3xl shadow-lg border border-emerald-400/20 flex flex-col lg:flex-row items-center justify-between gap-5 relative overflow-hidden">
+            <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none" />
+            
+            <div className="flex items-center gap-4 text-left z-10">
+              <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
+                <QrCode className="w-7 h-7 text-emerald-300 animate-pulse" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-black uppercase tracking-widest bg-emerald-400/20 text-emerald-200 px-3 py-0.5 rounded-full border border-emerald-300/30">
+                    {language === 'om' ? 'Kaffaltii QR Saffisaa' : language === 'am' ? 'ፈጣን የኪውአር ክፍያ' : 'Dynamic QR Code Payment'}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[10px] text-amber-300 font-bold">
+                    <Sparkles className="w-3 h-3" />
+                    <span>CBE Birr • telebirr • Siinqee</span>
+                  </span>
+                </div>
+                <h3 className="text-base md:text-xl font-black tracking-tight text-white font-sans">
+                  {language === 'om' ? 'CBE Birr, telebirr fi Siinqee Pay\'n QR Koodiin Gumaachi' :
+                   language === 'am' ? 'በCBE Birr፣ telebirr እና ሲንቄ ፔይ በኪውአር ኮድ (QR Code) በቅጽበት ይደግፉ' :
+                   'Donate via Dynamic QR Code for CBE Birr, telebirr & Siinqee Pay'}
+                </h3>
+                <p className="text-xs text-emerald-100/90 font-medium max-w-xl">
+                  {language === 'om' ? 'Appii mobaayila keessaniin koodii QR saajjaluun gumaacha keessan keessummeessaa. Maallaqa hammamii saajjaluuf fedhaan salphaatti filadhaa.' :
+                   language === 'am' ? 'የሞባይል ባንኪንግ መተግበሪያዎን በመጠቀም የኪውአR ኮድ ስካን በማድረግ በሰከንዶች ውስጥ ድጋፍዎን ያጠናቅቁ።' :
+                   'Generate custom QR codes instantly with your pledge amount for seamless mobile banking donations.'}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setQrModalAmount(formData.amount || '1000');
+                setQrModalPlatform(formData.paymentMethod === 'paypal' ? 'telebirr' : formData.paymentMethod);
+                setShowQrModal(true);
+              }}
+              className="px-6 py-3.5 rounded-2xl bg-white text-[#054823] font-black text-xs uppercase tracking-wider hover:bg-emerald-50 transition-all shadow-md hover:shadow-xl flex items-center gap-2.5 shrink-0 cursor-pointer z-10 group"
+            >
+              <QrCode className="w-4 h-4 text-[#054823] group-hover:scale-110 transition-transform" />
+              <span>{language === 'om' ? 'QR Koodii Saajjali' : language === 'am' ? 'QR ኮድ ስካን ያድርጉ' : 'Generate & Scan QR Code'}</span>
+            </button>
+          </div>
+
           {/* Active Campaigns Priority Selector (Wider, top-level layout) */}
           <div className="space-y-6" id="campaigns-progress-column">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-emerald-100 pb-3">
@@ -368,6 +538,50 @@ export default function ContributionPortal({ language }: ContributionPortalProps
                         {errors.email && <p className="text-[10px] text-red-500 font-bold">{errors.email}</p>}
                       </div>
 
+                    </div>
+
+                    {/* Contribution / Pledge Amount */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
+                          {language === 'om' ? 'Hamma Gumaacha Kee (ETB)' : language === 'am' ? 'የድጋፍ መጠን በብር (ETB)' : 'Pledge Amount (ETB)'} *
+                        </label>
+                        <span className="text-[10px] font-bold text-[#054823] bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+                          {Number(formData.amount || 0).toLocaleString()} ETB
+                        </span>
+                      </div>
+                      
+                      <div className="relative">
+                        <input 
+                          type="number" 
+                          name="amount"
+                          value={formData.amount}
+                          onChange={handleInputChange}
+                          min="10"
+                          step="50"
+                          className="w-full text-sm font-extrabold px-4 py-3.5 pl-10 rounded-xl border border-emerald-100 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all shadow-xs"
+                          placeholder="1000"
+                        />
+                        <Coins className="w-4 h-4 text-emerald-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      </div>
+
+                      {/* Amount Quick Presets */}
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {['250', '500', '1000', '2500', '5000', '10000'].map((preset) => (
+                          <button
+                            key={preset}
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, amount: preset }))}
+                            className={`text-[10.5px] font-extrabold px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                              formData.amount === preset
+                                ? 'bg-[#054823] text-white border-[#054823] shadow-xs'
+                                : 'bg-white text-emerald-900 border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50'
+                            }`}
+                          >
+                            +{Number(preset).toLocaleString()} ETB
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Reason for Funding */}
@@ -878,17 +1092,17 @@ export default function ContributionPortal({ language }: ContributionPortalProps
 
       </div>
 
-      {/* Virtual QR Code Scanner Simulator Modal */}
+      {/* Dynamic QR Code Generator & Scanner Modal */}
       <AnimatePresence>
         {showQrModal && (
           <motion.div 
-            className="fixed inset-0 bg-[#06180e]/65 backdrop-blur-xs z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-[#06180e]/75 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full border border-emerald-100 shadow-xl relative text-center"
+              className="bg-white rounded-3xl p-5 sm:p-7 max-w-lg w-full border border-emerald-100 shadow-2xl relative text-center my-auto max-h-[92vh] overflow-y-auto space-y-5"
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
@@ -896,69 +1110,192 @@ export default function ContributionPortal({ language }: ContributionPortalProps
               <button 
                 type="button"
                 onClick={() => setShowQrModal(false)}
-                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-emerald-950 hover:bg-emerald-50 rounded-full transition cursor-pointer"
+                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-emerald-950 hover:bg-emerald-50 rounded-full transition cursor-pointer z-10"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="space-y-4">
-                <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-center mx-auto">
-                  <QrCode className="w-6 h-6 text-[#054823]" />
+              {/* Modal Header */}
+              <div className="space-y-1.5 pt-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-[#054823] text-[10px] font-black uppercase tracking-wider">
+                  <QrCode className="w-3.5 h-3.5" />
+                  <span>{language === 'om' ? 'Kaffaltii QR Saffisaa' : language === 'am' ? 'ፈጣን የኪውአር ክፍያ ማመንጫ' : 'Dynamic Mobile Payment QR'}</span>
                 </div>
-                
-                <div>
-                  <h4 className="text-sm font-black text-emerald-950 uppercase tracking-wider">
-                    {formData.paymentMethod === 'cbe_birr' ? 'CBE Birr Instant Quick-Scan' : 'telebirr merchant qr code'}
-                  </h4>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">
-                    Buusaa Gonofaa Social Protection Account
-                  </p>
-                </div>
+                <h4 className="text-lg font-black text-emerald-950 tracking-tight font-sans">
+                  {language === 'om' ? 'Gumaacha QR Koodiin Kaffali' : language === 'am' ? 'በኪውአር ኮድ (QR Code) ክፍያ ይፈጽሙ' : 'Donate via Dynamic QR Code'}
+                </h4>
+                <p className="text-xs text-gray-500 font-medium max-w-sm mx-auto">
+                  {language === 'om' ? 'Appii mobaayila keessaniin saajjaluun kaffaltii qophaa\'aa raawwadhaa.' :
+                   language === 'am' ? 'የመረጡትን የባንክ መተግበሪያ በመጠቀም የኪውአር ኮዱን ስካን በማድረግ በሰከንዶች ውስጥ ድጋፍዎን ያስተላልፉ።' :
+                   'Scan with your banking app or telebirr to donate directly with pre-filled details.'}
+                </p>
+              </div>
 
-                {/* Simulated QR Pattern */}
-                <div className="bg-emerald-50/50 p-6 rounded-2xl border border-emerald-150 flex flex-col items-center justify-center relative">
-                  <div className="w-48 h-48 bg-white border border-emerald-100 rounded-xl p-3 flex flex-col items-center justify-center relative shadow-xs">
-                    {/* Corner bits styled as physical QR target alignment squares */}
-                    <div className="absolute top-3 left-3 w-8 h-8 border-t-4 border-l-4 border-emerald-900"></div>
-                    <div className="absolute top-3 right-3 w-8 h-8 border-t-4 border-r-4 border-emerald-900"></div>
-                    <div className="absolute bottom-3 left-3 w-8 h-8 border-b-4 border-l-4 border-emerald-900"></div>
-                    
-                    {/* Simulated visual barcode grid */}
-                    <div className="w-32 h-32 opacity-85 grid grid-cols-4 gap-1.5 p-2 bg-[#092e1b] rounded-md relative overflow-hidden">
-                      <div className="bg-white rounded-xs"></div>
-                      <div className="bg-white rounded-xs opacity-50"></div>
-                      <div className="bg-white rounded-xs bg-emerald-350"></div>
-                      <div className="bg-white rounded-xs"></div>
-                      <div className="bg-white rounded-xs bg-emerald-350 opacity-60"></div>
-                      <div className="bg-white rounded-xs"></div>
-                      <div className="bg-white rounded-xs bg-[#06c867]"></div>
-                      <div className="bg-white rounded-xs opacity-40"></div>
-                      <div className="bg-white rounded-xs"></div>
-                      <div className="bg-white rounded-xs bg-emerald-350"></div>
-                      <div className="bg-white rounded-xs opacity-80"></div>
-                      <div className="bg-white rounded-xs"></div>
-                    </div>
-                  </div>
-                  
-                  <span className="text-[9px] font-bold text-[#054823] bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider mt-4 block">
-                    {formData.paymentMethod === 'cbe_birr' ? 'Merchant Code: 818290' : 'Merchant ID: BG-992811'}
+              {/* Platform Selector Tabs */}
+              <div className="space-y-1.5 text-left">
+                <label className="text-[10px] font-extrabold text-gray-500 uppercase tracking-widest block">
+                  1. {language === 'om' ? 'Mobaayila Kaffaltii Filadhu' : language === 'am' ? 'የክፍያ መተግበሪያ ይምረጡ' : 'Select Mobile Payment App'}
+                </label>
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
+                  {[
+                    { id: 'telebirr', label: 'telebirr', bg: 'bg-blue-500', text: 'telebirr' },
+                    { id: 'cbe_birr', label: 'CBE Birr', bg: 'bg-emerald-700', text: 'CBE Birr' },
+                    { id: 'sinqe', label: 'Siinqee', bg: 'bg-amber-600', text: 'Siinqee' },
+                    { id: 'awash', label: 'Awash', bg: 'bg-purple-600', text: 'Awash Birr' },
+                    { id: 'boa', label: 'BOA', bg: 'bg-blue-700', text: 'BOA Mobile' },
+                  ].map((p) => {
+                    const isSelected = qrModalPlatform === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => setQrModalPlatform(p.id)}
+                        className={`p-2 rounded-xl text-center border text-[11px] font-extrabold transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
+                          isSelected
+                            ? 'bg-[#054823] text-white border-[#054823] shadow-md ring-2 ring-[#054823]/20'
+                            : 'bg-white text-slate-700 border-gray-200 hover:border-emerald-300 hover:bg-emerald-50/50'
+                        }`}
+                      >
+                        <span className="truncate">{p.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Amount Selection inside QR Modal */}
+              <div className="space-y-1.5 text-left bg-emerald-50/50 p-3.5 rounded-2xl border border-emerald-100">
+                <div className="flex justify-between items-center">
+                  <label className="text-[10px] font-extrabold text-emerald-950 uppercase tracking-widest block">
+                    2. {language === 'om' ? 'Hamma Maallaqaa (ETB)' : language === 'am' ? 'የድጋፍ መጠን በብር' : 'Set Donation Amount (ETB)'}
+                  </label>
+                  <span className="text-xs font-black text-[#054823]">
+                    {Number(qrModalAmount || 0).toLocaleString()} ETB
                   </span>
                 </div>
-
-                <div className="text-[11px] text-[#0b3c20]/75 font-semibold leading-relaxed">
-                  {language === 'om' ? 'Kameraa mobaayila keessaniin poortala CBE Birr ykn telebirr saajjalanii koodii kaffaltii fi maallaqa galchuun gahee keessan bahadhaa.' :
-                   language === 'am' ? 'የሞባይል ባንኪንግ መተግበሪያዎን (CBE Birr / telebirr App) በመክፈት ይህንን ኪውአር ኮድ (QR Code) ስካን በማድረግ ክፍያውን በቀላሉ መፈጸም ይችላሉ።' :
-                   'Launch your Commercial Bank (CBE Birr) or Ethio Telecom (telebirr) application on your smartphone, scan this dynamic QR code reader, enter your pledge value, and authenticate.'}
+                
+                <div className="flex gap-1.5 overflow-x-auto pb-1">
+                  {['250', '500', '1000', '2500', '5000', '10000'].map((amt) => (
+                    <button
+                      key={amt}
+                      type="button"
+                      onClick={() => setQrModalAmount(amt)}
+                      className={`px-2.5 py-1 rounded-lg text-[10.5px] font-black border transition-all shrink-0 cursor-pointer ${
+                        qrModalAmount === amt
+                          ? 'bg-[#054823] text-white border-[#054823]'
+                          : 'bg-white text-slate-800 border-emerald-200 hover:bg-emerald-100/50'
+                      }`}
+                    >
+                      {Number(amt).toLocaleString()} ETB
+                    </button>
+                  ))}
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setShowQrModal(false)}
-                  className="w-full bg-[#054823]/15 hover:bg-[#054823]/20 text-[#054823] font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-widest transition cursor-pointer"
-                >
-                  {language === 'om' ? 'Cufi' : language === 'am' ? 'ዝጋ' : 'Close Helper'}
-                </button>
+                <div className="pt-1">
+                  <input 
+                    type="number"
+                    value={qrModalAmount}
+                    onChange={(e) => setQrModalAmount(e.target.value)}
+                    placeholder="Enter custom amount"
+                    min="10"
+                    step="50"
+                    className="w-full text-xs font-extrabold px-3 py-2 rounded-xl border border-emerald-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
               </div>
+
+              {/* Live Vector QR Code Rendering Container */}
+              {(() => {
+                const qrInfo = getDynamicQrPayload(qrModalPlatform, qrModalAmount, formData.selectedCampaignId);
+                return (
+                  <div className="space-y-3">
+                    <div className="bg-white p-5 rounded-3xl border-2 border-emerald-200/80 shadow-md flex flex-col items-center justify-center relative">
+                      
+                      {/* Brand Label Badge above QR */}
+                      <div className="text-[10px] font-black uppercase tracking-wider text-[#054823] bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full mb-3 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
+                        <span>{qrInfo.platformName} • {Number(qrModalAmount || 1000).toLocaleString()} ETB</span>
+                      </div>
+
+                      {/* SVG Vector QR Code */}
+                      <div className="p-3 bg-white rounded-2xl border border-slate-200 shadow-inner relative group">
+                        <QRCodeSVG
+                          id="dynamic-qr-code-svg"
+                          value={qrInfo.payload}
+                          size={200}
+                          bgColor="#ffffff"
+                          fgColor={qrInfo.color}
+                          level="H"
+                          marginSize={2}
+                        />
+                        
+                        {/* Center Overlay Seal Badge */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-10 h-10 rounded-xl bg-white border-2 border-[#054823] shadow-md flex items-center justify-center text-[9px] font-black text-[#054823]">
+                            BG
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Merchant Code / ID details */}
+                      <div className="mt-3 text-center space-y-1">
+                        <span className="text-[11px] font-mono font-extrabold text-[#054823] bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200/60 inline-block">
+                          {qrModalPlatform === 'cbe_birr' ? `Merchant Code: ${qrInfo.merchantId}` : `Merchant/Account: ${qrInfo.merchantId}`}
+                        </span>
+                        <p className="text-[10px] text-gray-500 font-bold block">
+                          Account Name: {qrInfo.accountName}
+                        </p>
+                      </div>
+
+                    </div>
+
+                    {/* Action buttons inside QR Modal */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleCopyToClipboard(qrInfo.payload, 'qr_link')}
+                        className="p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100 text-[#054823] text-[11px] font-extrabold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      >
+                        {copiedText === 'qr_link' ? <><Check className="w-3.5 h-3.5 text-emerald-600" /> Copied Payload!</> : <><Copy className="w-3.5 h-3.5" /> Copy Payment Link</>}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={downloadQrCode}
+                        className="p-2.5 rounded-xl border border-emerald-200 bg-white hover:bg-emerald-50 text-emerald-900 text-[11px] font-extrabold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5 text-emerald-700" />
+                        <span>Download QR PNG</span>
+                      </button>
+                    </div>
+
+                    {/* Step to proceed with verification */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormData(prev => ({
+                          ...prev,
+                          amount: qrModalAmount,
+                          paymentMethod: qrModalPlatform
+                        }));
+                        setShowQrModal(false);
+                        setPaymentStep('verification');
+                      }}
+                      className="w-full bg-[#054823] hover:bg-[#022b14] text-white font-extrabold text-xs py-3.5 rounded-xl shadow-md uppercase tracking-wider transition flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>{language === 'om' ? 'Kaffaleera (Koodii Mirkaneessaa Galchi)' : language === 'am' ? 'ክፍያ ፈጽሜአለሁ (ወደ ማረጋገጫ ቁጥር ያስገቡ)' : 'I Have Completed Payment — Submit Ref ID'}</span>
+                    </button>
+                  </div>
+                );
+              })()}
+
+              <div className="text-[10px] text-gray-400 font-semibold leading-relaxed border-t border-emerald-100 pt-3">
+                {language === 'om' ? 'QR saajjaleen kun poortala CBE Birr, telebirr fi Siinqee Pay hundaa wajjin hojjata.' :
+                 language === 'am' ? 'ይህ የኪውአር ኮድ ለCBE Birr፣ telebirr እና ሲንቄ ፔይ በሙሉ በሚገባ ይሰራል።' :
+                 'This dynamic QR code works across CBE Birr, telebirr, Siinqee Pay and all core Ethiopian mobile banking applications.'}
+              </div>
+
             </motion.div>
           </motion.div>
         )}

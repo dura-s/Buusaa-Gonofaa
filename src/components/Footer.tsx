@@ -1,7 +1,7 @@
 import { Compass, Mail, Phone, Heart, Sprout } from 'lucide-react';
 import { Language, ActiveTab } from '../types';
 import { translations } from '../translations';
-import bgLogo from '../assets/images/photo_2026-06-30_10-48-38.jpg';
+import bgLogo from '../assets/images/bg_logo.jpeg';
 
 interface FooterProps {
   language: Language;
@@ -27,11 +27,11 @@ export default function Footer({ language, setActiveTab }: FooterProps) {
           {/* Col 1 Brand detail */}
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-transparent flex items-center justify-center overflow-hidden shrink-0">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white flex items-center justify-center overflow-hidden shrink-0 ring-2 ring-white/20 p-0.5">
                 <img 
                   src={bgLogo} 
                   alt="Buusaa Gonofaa Oromiyaa Logo" 
-                  className="w-full h-full object-cover rounded-full"
+                  className="w-full h-full object-contain rounded-full bg-white"
                   referrerPolicy="no-referrer"
                 />
               </div>

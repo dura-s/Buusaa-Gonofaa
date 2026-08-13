@@ -29,6 +29,15 @@ export interface EventItem {
   status: 'upcoming' | 'completed' | 'ongoing';
 }
 
+export interface Giver {
+  id: string;
+  name: string;
+  amount: number;
+  date: string;
+  paymentMethod?: string;
+  isAnonymous?: boolean;
+}
+
 export interface DonationCamp {
   id: string;
   title: Record<Language, string>;
@@ -37,4 +46,5 @@ export interface DonationCamp {
   raisedAmount: number;
   contributorsCount: number;
   badge: Record<Language, string>;
+  givers?: Giver[];
 }
