@@ -160,7 +160,7 @@ app.post(['/api/ai/chat', '/ai/chat', '/api/index.ts', '/api/index.ts/ai/chat', 
     }
 
     // Check multiple potential environment variable names for maximum robustness in Vercel/AI Studio
-    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.VITE_GOOGLE_API_KEY;
+    let apiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.VITE_GOOGLE_API_KEY || '').trim();
     
     if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
       const localText = getLocalResponse(message, language);
@@ -235,11 +235,11 @@ app.post(['/api/ai/chat', '/ai/chat', '/api/index.ts', '/api/index.ts/ai/chat', 
       parts: [{ text: message }]
     });
 
-    // Call generateContent with recommended model, utilizing fallback models in case of high demand (503)
+    // Call generateContent with recommended models
     let response;
     let success = false;
     let lastError: any = null;
-    const modelsToTry = ['gemini-2.5-flash', 'gemini-3.1-flash-lite', 'gemini-3.5-flash', 'gemini-flash-latest'];
+    const modelsToTry = ['gemini-3.7-flash', 'gemini-flash-latest', 'gemini-3.1-flash-lite'];
 
     for (const modelName of modelsToTry) {
       try {

@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Compass, Calendar, ArrowRight, Sprout, Heart, Users, ShieldAlert, Award, 
   History, Workflow, Building, UserCheck, Shield, HelpCircle, CheckCircle, ArrowUpRight,
-  Play, Youtube, CheckCircle2, X, Gift, Plus, Sparkles, DollarSign, Wallet
+  Play, Youtube, CheckCircle2, X, Gift, Plus, Sparkles, DollarSign, Wallet,
+  ShieldCheck, Landmark, FileText, Send, Copy, QrCode, RefreshCw, Smartphone, Coins, Check, Download, Loader2, Lock
 } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Language, ActiveTab, DonationCamp, Giver } from '../types';
 import { translations } from '../translations';
 import { mockNews, mockCampaigns } from '../data';
+import { db } from '../lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 interface HomeOverviewProps {
   language: Language;
@@ -25,13 +29,299 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
 
   const activeCampaigns = campaigns || mockCampaigns;
 
-  // Interactive quick modal state for direct contribution from Home Page
+  // Interactive full contribution modal state for direct contribution from Active Relief Campaigns
   const [quickContribCamp, setQuickContribCamp] = useState<DonationCamp | null>(null);
-  const [giverName, setGiverName] = useState('');
-  const [selectedPresetAmount, setSelectedPresetAmount] = useState<number>(1000);
-  const [customAmountInput, setCustomAmountInput] = useState<string>('1000');
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'cbe' | 'sinqee' | 'telebirr' | 'cbe_birr' | 'paypal'>('cbe');
-  const [contributionSuccess, setContributionSuccess] = useState<{ name: string; amount: number; campTitle: string } | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    reason: '',
+    amount: '1000',
+    paymentMethod: 'cbe' as 'cbe' | 'sinqe' | 'cbe_birr' | 'telebirr' | 'paypal',
+    isDiaspora: false,
+    transactionId: '',
+    receiptFile: null as File | null
+  });
+  const [paymentStep, setPaymentStep] = useState<'form' | 'verification' | 'submitting' | 'success'>('form');
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [dragActive, setDragActive] = useState(false);
+  const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [showQrModal, setShowQrModal] = useState<boolean>(false);
+  const [showUssdModal, setShowUssdModal] = useState<boolean>(false);
+  const [qrModalPlatform, setQrModalPlatform] = useState<string>('telebirr');
+  const [qrModalAmount, setQrModalAmount] = useState<string>('1000');
+  const [contributionSuccess, setContributionSuccess] = useState<{ name: string; amount: number; campTitle: string; transactionId?: string } | null>(null);
+
+  const handleCopyToClipboard = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedText(field);
+    setTimeout(() => setCopiedText(null), 2000);
+  };
+
+  // Helper to generate dynamic QR payload
+  const getDynamicQrPayload = (method: string, amountStr: string | number, campaignId: string) => {
+    const numAmount = Number(amountStr) || 1000;
+    const refCode = `BG-ADAMA-${campaignId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase()}-${numAmount}`;
+    
+    switch (method) {
+      case 'telebirr':
+        return {
+          platformName: 'telebirr Quick Pay',
+          merchantId: 'BG-992811',
+          accountName: 'Buusaa Gonofaa Oromiyaa',
+          payload: `telebirr://pay?merchant=BG-992811&amount=${numAmount}&currency=ETB&ref=${refCode}&title=Buusaa%20Gonofaa%20Adamaa`,
+          color: '#0284c7',
+          bgColor: '#e0f2fe',
+          badgeText: 'Ethio Telecom telebirr',
+          ussdCode: `*127*1*1*BG-992811*${numAmount}#`
+        };
+      case 'cbe_birr':
+      case 'cbe':
+        return {
+          platformName: 'CBE Birr Mobile',
+          merchantId: '818290',
+          accountName: 'Buusaa Gonofaa Adama',
+          payload: `cbebirr://pay?merchant=818290&amount=${numAmount}&currency=ETB&ref=${refCode}&title=Buusaa%20Gonofaa%20Adamaa`,
+          color: '#054823',
+          bgColor: '#dcfce7',
+          badgeText: 'Commercial Bank of Ethiopia',
+          ussdCode: `*889# -> Merchant: 818290 -> ${numAmount} ETB`
+        };
+      case 'sinqe':
+        return {
+          platformName: 'Siinqee Pay (Baankii Siinqee)',
+          merchantId: '1019283110293',
+          accountName: 'Buusaa Gonofaa - Siinqee',
+          payload: `sinqee://pay?account=1019283110293&amount=${numAmount}&currency=ETB&ref=${refCode}`,
+          color: '#b45309',
+          bgColor: '#fef3c7',
+          badgeText: 'Siinqee Bank',
+          ussdCode: `*869# -> Account: 1019283110293 -> ${numAmount} ETB`
+        };
+      case 'awash':
+        return {
+          platformName: 'Awash Birr',
+          merchantId: '99281',
+          accountName: 'Buusaa Gonofaa Adama',
+          payload: `awashbirr://pay?merchant=99281&amount=${numAmount}&currency=ETB&ref=${refCode}`,
+          color: '#7c3aed',
+          bgColor: '#f3e8ff',
+          badgeText: 'Awash Bank',
+          ussdCode: `*901# -> Merchant: 99281 -> ${numAmount} ETB`
+        };
+      case 'boa':
+        return {
+          platformName: 'BOA Mobile (Abyssinia)',
+          merchantId: '0029381',
+          accountName: 'Buusaa Gonofaa Branch',
+          payload: `boamobile://pay?merchant=0029381&amount=${numAmount}&currency=ETB&ref=${refCode}`,
+          color: '#2563eb',
+          bgColor: '#dbeafe',
+          badgeText: 'Bank of Abyssinia',
+          ussdCode: `*815# -> Merchant: 0029381 -> ${numAmount} ETB`
+        };
+      default:
+        return {
+          platformName: 'telebirr Quick Pay',
+          merchantId: 'BG-992811',
+          accountName: 'Buusaa Gonofaa Oromiyaa',
+          payload: `telebirr://pay?merchant=BG-992811&amount=${numAmount}&currency=ETB&ref=${refCode}`,
+          color: '#0284c7',
+          bgColor: '#e0f2fe',
+          badgeText: 'telebirr',
+          ussdCode: `*127*1*1*BG-992811*${numAmount}#`
+        };
+    }
+  };
+
+  const downloadQrCode = () => {
+    const svgElement = document.getElementById('home-dynamic-qr-code-svg');
+    if (!svgElement) return;
+    try {
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.onload = () => {
+        canvas.width = img.width + 40;
+        canvas.height = img.height + 40;
+        if (ctx) {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 20, 20);
+          const pngFile = canvas.toDataURL('image/png');
+          const downloadLink = document.createElement('a');
+          downloadLink.download = `Buusaa_Gonofaa_QR_${qrModalPlatform}_${qrModalAmount}ETB.png`;
+          downloadLink.href = pngFile;
+          downloadLink.click();
+        }
+      };
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+    } catch (err) {
+      console.error("Failed to download QR image", err);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    const isChecked = type === 'checkbox' ? (e.target as HTMLInputElement).checked : false;
+    
+    setFormData(prev => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? isChecked : value 
+    }));
+
+    if (formErrors[name]) {
+      setFormErrors(prev => {
+        const copy = { ...prev };
+        delete copy[name];
+        return copy;
+      });
+    }
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) newErrors.name = translations.valRequired[language];
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = translations.valRequired[language];
+    } else if (!/^\+?[0-9]{9,15}$/.test(formData.phone.replace(/\s/g, ''))) {
+      newErrors.phone = translations.valPhone[language];
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = translations.valRequired[language];
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = translations.valEmail[language];
+    }
+
+    if (!formData.reason.trim()) {
+      newErrors.reason = language === 'om' ? 'Sababa gumaachaa ibsuun dirqama' : language === 'am' ? 'እባክዎ መነሻ ምክንያትዎን ይግለጹ' : 'Please provide a reason or comment for funding';
+    }
+
+    setFormErrors(newErrors);
+    if (Object.keys(newErrors).length === 0) {
+      setPaymentStep('verification');
+    }
+  };
+
+  const handleVerificationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmissionError(null);
+    if (!formData.transactionId.trim()) {
+      setFormErrors({ transactionId: language === 'om' ? 'Koodii Dabarsaa (Transaction ID) galchuun dirqama' : language === 'am' ? 'እባክዎ የማስተላለፊያ መለያ ቁጥር (Transaction ID) ያስገቡ' : 'Please enter your Transaction Reference ID / Reference Number' });
+      return;
+    }
+
+    if (!quickContribCamp) return;
+
+    setFormErrors({});
+    setPaymentStep('submitting');
+    
+    try {
+      const numericAmount = Number(formData.amount) || 1000;
+      await addDoc(collection(db, 'contributions'), {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        reason: formData.reason,
+        amount: numericAmount,
+        paymentMethod: formData.paymentMethod,
+        isDiaspora: formData.isDiaspora,
+        selectedCampaignId: quickContribCamp.id,
+        transactionId: formData.transactionId,
+        receiptFileName: formData.receiptFile ? formData.receiptFile.name : null,
+        timestamp: serverTimestamp()
+      });
+
+      if (onContribute) {
+        onContribute(
+          quickContribCamp.id, 
+          numericAmount, 
+          formData.name,
+          formData.paymentMethod
+        );
+      }
+
+      setContributionSuccess({
+        name: formData.name,
+        amount: numericAmount,
+        campTitle: quickContribCamp.title[language],
+        transactionId: formData.transactionId
+      });
+      setPaymentStep('success');
+    } catch (err) {
+      console.error("Error saving contribution: ", err);
+      setSubmissionError(
+        language === 'om' 
+          ? "Gumaacha keessan galmeessuun hin danda'amne. Maaloo irra deebi'aa yaalaa." 
+          : language === 'am' 
+            ? 'ያደረጉትን የድጋፍ መረጃ ለመመዝገብ አልተቻለም። እባክዎ እንደገና ይሞክሩ።' 
+            : 'Unable to save contribution record. Please try again later.'
+      );
+      setPaymentStep('verification');
+    }
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setFormData(prev => ({ ...prev, receiptFile: e.dataTransfer.files[0] }));
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData(prev => ({ ...prev, receiptFile: e.target.files[0] }));
+    }
+  };
+
+  // Bank accounts of Buusaa Gonofaa
+  const bankDetails = {
+    cbe: {
+      bankName: "Commercial Bank of Ethiopia (CBE)",
+      accName: "Buusaa Gonofaa Oromiyaa - Damee Adamaa",
+      accNumber: "1000293102391",
+      branch: "Adama Main Branch"
+    },
+    sinqe: {
+      bankName: "Siinqee Bank (Baankii Siinqee)",
+      accName: "Buusaa Gonofaa Oromiyaa - Damee Adamaa",
+      accNumber: "1019283110293",
+      branch: "Adama Main Branch"
+    },
+    cbe_birr: {
+      bankName: "CBE Birr Mobile Banking",
+      merchantCode: "818290",
+      accName: "Buusaa Gonofaa Adama"
+    },
+    telebirr: {
+      bankName: "telebirr Quick Pay",
+      merchantId: "BG-992811",
+      accName: "Buusaa Gonofaa Oromiyaa"
+    },
+    paypal: {
+      provider: "PayPal Secured Global Gateway",
+      account: "donations@buusaagonofaa-oromiyaa.org",
+      reference: "BG-ADAMA-SOLIDARITY"
+    }
+  };
 
   // Format currency helpers for Ethiopian Birr
   const formatBirr = (amount: number) => {
@@ -1053,9 +1343,20 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                     <button
                       onClick={() => {
                         setQuickContribCamp(camp);
-                        setSelectedPresetAmount(1000);
-                        setCustomAmountInput('1000');
-                        setGiverName('');
+                        setFormData({
+                          name: '',
+                          email: '',
+                          phone: '',
+                          reason: '',
+                          amount: '1000',
+                          paymentMethod: 'cbe',
+                          isDiaspora: false,
+                          transactionId: '',
+                          receiptFile: null
+                        });
+                        setPaymentStep('form');
+                        setFormErrors({});
+                        setSubmissionError(null);
                       }}
                       className="w-full text-center bg-[#054823] hover:bg-[#022b14] text-white font-black text-xs py-3.5 rounded-xl transition shadow-sm active:scale-95 uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2"
                     >
@@ -1078,200 +1379,888 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
           })}
         </div>
 
-        {/* Quick Contribution Interactive Modal on Home Page */}
+        {/* Full Comprehensive Contribution Modal on Home Page for Active Campaigns */}
         <AnimatePresence>
           {quickContribCamp && (
             <motion.div 
-              className="fixed inset-0 bg-[#06180e]/70 backdrop-blur-xs z-50 flex items-center justify-center p-4"
+              className="fixed inset-0 bg-[#06180e]/75 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-5 overflow-y-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
               <motion.div 
-                className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-emerald-100 shadow-2xl relative text-left"
+                className="bg-white rounded-3xl max-w-3xl w-full border border-emerald-100 shadow-2xl relative text-left my-auto max-h-[92vh] flex flex-col overflow-hidden"
                 initial={{ scale: 0.95, y: 15 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.95, y: 15 }}
               >
-                <button 
-                  type="button"
-                  onClick={() => setQuickContribCamp(null)}
-                  className="absolute top-4 right-4 p-2 text-gray-400 hover:text-emerald-950 hover:bg-emerald-50 rounded-full transition cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-
-                <div className="space-y-5">
-                  <div className="flex items-center gap-3 border-b border-emerald-100 pb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-[#054823]">
-                      <Gift className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                        {language === 'om' ? 'Gumaacha Ariifachiisaa' : 'Quick Contribution'}
+                {/* Modal Header */}
+                <div className="p-5 sm:p-6 bg-gradient-to-r from-[#054823] to-[#0a6c37] text-white flex items-start justify-between gap-4 shrink-0">
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-[10px] font-black uppercase tracking-wider bg-white/20 text-emerald-100 px-2.5 py-0.5 rounded-full">
+                        {quickContribCamp.badge[language]}
                       </span>
-                      <h4 className="text-base sm:text-lg font-black text-emerald-950 uppercase tracking-tight mt-0.5 line-clamp-1">
-                        {quickContribCamp.title[language]}
-                      </h4>
+                      <span className="text-[10px] font-black uppercase tracking-wider bg-amber-400 text-emerald-950 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" />
+                        {language === 'om' ? 'Duula Gumaachaa' : language === 'am' ? 'የዕርዳታ ዘመቻ' : 'Relief Campaign'}
+                      </span>
                     </div>
+                    <h3 className="text-base sm:text-xl font-black tracking-tight text-white line-clamp-1">
+                      {quickContribCamp.title[language]}
+                    </h3>
+                    <p className="text-xs text-emerald-100/90 font-medium line-clamp-2 max-w-2xl">
+                      {quickContribCamp.description[language]}
+                    </p>
                   </div>
 
-                  {/* Secret Privacy Notice */}
-                  <div className="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-100 flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-emerald-800 shrink-0 mt-0.5" />
-                    <div className="text-xs text-emerald-950 font-medium leading-snug">
-                      <strong className="font-extrabold uppercase tracking-wide block text-[#054823]">
-                        {language === 'om' ? '🔒 Maqaan Arjoomsaa Dhoksaadha' : language === 'am' ? '🔒 የለጋሹ ስም ሚስጥራዊ ነው' : '🔒 100% Secret & Confidential Contribution'}
-                      </strong>
-                      {language === 'om' 
-                        ? 'Gumaachi keessan maallaqaa (%) fi Birr qofa irratti dabalama. Eenyummaan arjoomsaa sirna Buusaa Gonofaan dhoksaa ta\'ee eegama.' 
-                        : language === 'am'
-                          ? 'መዋጮዎ በመቶኛ (%) እና በብር መጠን ላይ ይደመራል። የለጋሹ ማንነት በቡሳ ጎኖፋ ስርዓት በጥብቅ ሚስጥር ይያዛል።'
-                          : 'Your contribution updates the percentage (%) and Birr raised instantly. Donor identity is kept 100% secret and anonymous.'
-                      }
-                    </div>
-                  </div>
-
-                  {/* Step 2: Preset Birr Amounts */}
-                  <div className="space-y-2">
-                    <label className="block text-xs font-black uppercase text-emerald-950 tracking-wider">
-                      {language === 'om' ? 'Hamma Maallaqaa (Birr)' : 'Select Contribution Amount (ETB)'}
-                    </label>
-
-                    <div className="grid grid-cols-4 gap-2">
-                      {[500, 1000, 2500, 5000].map((amt) => (
-                        <button
-                          key={amt}
-                          type="button"
-                          onClick={() => {
-                            setSelectedPresetAmount(amt);
-                            setCustomAmountInput(amt.toString());
-                          }}
-                          className={`py-2.5 px-2 rounded-xl font-mono text-xs font-black transition border cursor-pointer ${
-                            selectedPresetAmount === amt && customAmountInput === amt.toString()
-                              ? 'bg-[#054823] text-white border-[#054823] shadow-xs'
-                              : 'bg-emerald-50/50 hover:bg-emerald-100/60 text-emerald-950 border-emerald-200'
-                          }`}
-                        >
-                          {amt} ETB
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="pt-1">
-                      <div className="relative">
-                        <input 
-                          type="number" 
-                          value={customAmountInput}
-                          onChange={(e) => {
-                            setCustomAmountInput(e.target.value);
-                            setSelectedPresetAmount(Number(e.target.value) || 0);
-                          }}
-                          placeholder="Enter custom Birr amount"
-                          className="w-full bg-emerald-50/40 border border-emerald-200 rounded-xl px-4 py-3 text-xs sm:text-sm font-mono font-bold text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-600 pl-16"
-                        />
-                        <span className="absolute left-4 top-3 text-xs font-black text-emerald-700 font-mono">
-                          ETB
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Step 3: Payment Method Selection */}
-                  <div className="space-y-1.5">
-                    <label className="block text-xs font-black uppercase text-emerald-950 tracking-wider">
-                      {language === 'om' ? 'Karaa Kaffaltii / Gateway' : 'Payment Method'}
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { id: 'cbe', name: 'CBE Bank' },
-                        { id: 'sinqee', name: 'Siinqee Bank' },
-                        { id: 'telebirr', name: 'telebirr' },
-                        { id: 'cbe_birr', name: 'CBE Birr' },
-                        { id: 'paypal', name: 'PayPal' },
-                      ].map((pm) => (
-                        <button
-                          key={pm.id}
-                          type="button"
-                          onClick={() => setSelectedPaymentMethod(pm.id as any)}
-                          className={`py-2 px-2 rounded-xl text-[11px] font-extrabold transition border cursor-pointer ${
-                            selectedPaymentMethod === pm.id
-                              ? 'bg-emerald-700 text-white border-emerald-700'
-                              : 'bg-gray-50 hover:bg-emerald-50 text-gray-700 border-gray-200'
-                          }`}
-                        >
-                          {pm.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
+                  <button 
                     type="button"
-                    onClick={() => {
-                      const amount = Number(customAmountInput) || 1000;
-                      const secretLabel = language === 'om' ? 'Arjoomaa Dhoksaa' : language === 'am' ? 'ሚስጥራዊ ለጋሽ' : 'Secret Giver';
-                      if (onContribute) {
-                        onContribute(quickContribCamp.id, amount, secretLabel, selectedPaymentMethod);
-                      }
-                      setContributionSuccess({
-                        name: secretLabel,
-                        amount: amount,
-                        campTitle: quickContribCamp.title[language]
-                      });
-                      setQuickContribCamp(null);
-                    }}
-                    className="w-full bg-[#054823] hover:bg-[#022b14] text-white font-black text-xs sm:text-sm py-4 rounded-xl uppercase tracking-wider transition shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-2 mt-2"
+                    onClick={() => setQuickContribCamp(null)}
+                    className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition cursor-pointer shrink-0"
                   >
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                    <span>{language === 'om' ? 'Mirkaneessi & Gumaachi' : 'Confirm Contribution'}</span>
+                    <X className="w-5 h-5" />
                   </button>
+                </div>
+
+                {/* Progress bar in header */}
+                <div className="bg-emerald-50 px-5 sm:px-6 py-3 border-b border-emerald-100 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
+                  <div className="flex items-center gap-4">
+                    <div>
+                      <span className="text-[10px] text-gray-500 uppercase font-bold block">{language === 'om' ? 'Kan Funaaname' : 'Raised'}</span>
+                      <span className="font-mono font-black text-[#054823]">{formatBirr(quickContribCamp.raisedAmount)}</span>
+                    </div>
+                    <div className="h-6 w-px bg-emerald-200" />
+                    <div>
+                      <span className="text-[10px] text-gray-500 uppercase font-bold block">{language === 'om' ? 'Galma' : 'Target Goal'}</span>
+                      <span className="font-mono font-bold text-gray-700">{formatBirr(quickContribCamp.goalAmount)}</span>
+                    </div>
+                    <div className="h-6 w-px bg-emerald-200" />
+                    <div>
+                      <span className="text-[10px] text-gray-500 uppercase font-bold block">{language === 'om' ? 'Arjoomtota' : 'Givers'}</span>
+                      <span className="font-mono font-bold text-emerald-800">{quickContribCamp.donorsCount || 0}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-black text-xs text-[#054823]">
+                      {getCampaignProgress(quickContribCamp.raisedAmount, quickContribCamp.goalAmount)}%
+                    </span>
+                    <div className="w-24 sm:w-32 h-2.5 bg-emerald-200/70 rounded-full overflow-hidden">
+                      <div 
+                        className="bg-[#054823] h-full rounded-full transition-all"
+                        style={{ width: `${getCampaignProgress(quickContribCamp.raisedAmount, quickContribCamp.goalAmount)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Modal Scrollable Body */}
+                <div className="p-5 sm:p-7 overflow-y-auto space-y-6 flex-1">
+                  
+                  {/* Step Indicators */}
+                  <div className="flex items-center justify-between border-b border-emerald-100 pb-3">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black ${
+                        paymentStep === 'form' ? 'bg-[#054823] text-white' : 'bg-emerald-100 text-emerald-800'
+                      }`}>
+                        1
+                      </div>
+                      <span className="text-xs font-extrabold text-emerald-950">
+                        {language === 'om' ? 'Oduu Gumaachaa' : language === 'am' ? 'የለጋሽ መረጃ' : 'Donor Information'}
+                      </span>
+                    </div>
+
+                    <div className="w-8 h-px bg-emerald-200" />
+
+                    <div className="flex items-center gap-2">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black ${
+                        paymentStep === 'verification' || paymentStep === 'submitting' ? 'bg-[#054823] text-white' : 'bg-gray-100 text-gray-400'
+                      }`}>
+                        2
+                      </div>
+                      <span className="text-xs font-extrabold text-emerald-950">
+                        {language === 'om' ? 'Mirkaneessa Kaffaltii' : language === 'am' ? 'የክፍያ ማረጋገጫ' : 'Verification & Proof'}
+                      </span>
+                    </div>
+
+                    <div className="w-8 h-px bg-emerald-200" />
+
+                    <div className="flex items-center gap-2">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black ${
+                        paymentStep === 'success' ? 'bg-[#054823] text-white' : 'bg-gray-100 text-gray-400'
+                      }`}>
+                        3
+                      </div>
+                      <span className="text-xs font-extrabold text-emerald-950">
+                        {language === 'om' ? 'Xumura' : language === 'am' ? 'ማጠቃለያ' : 'Complete'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* STEP 1: Full Information Form */}
+                  {paymentStep === 'form' && (
+                    <form onSubmit={handleFormSubmit} className="space-y-5">
+                      
+                      {/* Dynamic QR and USSD Action Banner */}
+                      <div className="bg-gradient-to-r from-emerald-50 via-white to-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-[#054823] text-emerald-200 flex items-center justify-center shrink-0">
+                            <QrCode className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h5 className="text-xs font-black text-emerald-950">
+                              {language === 'om' ? 'Kaffaltii QR Koodii & USSD Saffisaa' : language === 'am' ? 'ፈጣን የኪውአር (QR) እና የUSSD ክፍያ' : 'Instant Dynamic QR & USSD Dial'}
+                            </h5>
+                            <p className="text-[11px] text-gray-500 font-medium">
+                              telebirr • CBE Birr • Siinqee Pay • Awash • BOA
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQrModalAmount(formData.amount || '1000');
+                              setQrModalPlatform(formData.paymentMethod === 'paypal' ? 'telebirr' : formData.paymentMethod);
+                              setShowQrModal(true);
+                            }}
+                            className="px-3.5 py-2 bg-[#054823] hover:bg-[#022b14] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                          >
+                            <QrCode className="w-3.5 h-3.5" />
+                            <span>{language === 'om' ? 'QR Saajjali' : language === 'am' ? 'QR ኮድ' : 'Dynamic QR'}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setShowUssdModal(true)}
+                            className="px-3.5 py-2 bg-emerald-100 hover:bg-emerald-200 text-[#054823] text-xs font-bold rounded-xl flex items-center gap-1.5 transition cursor-pointer"
+                          >
+                            <Smartphone className="w-3.5 h-3.5" />
+                            <span>{language === 'om' ? 'USSD Koodii' : language === 'am' ? 'USSD መደወያ' : 'USSD Codes'}</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Name Field */}
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
+                          {language === 'om' ? 'Maqaa Gumaachaa / Sponsor' : language === 'am' ? 'የለጋሽ/ስፖንሰር ሙሉ ስም' : 'Sponsor / Contributor Name'} *
+                        </label>
+                        <input 
+                          type="text" 
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          className="w-full text-xs font-semibold px-4 py-3 rounded-xl border border-emerald-100 focus:outline-none focus:ring-3 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all"
+                          placeholder={language === 'om' ? 'Fkn: Tolasaa Guutamaa' : language === 'am' ? 'ምሳሌ፡ ቶሎሳ ጉተማ' : 'e.g. Tolasa Gutama'}
+                        />
+                        {formErrors.name && <p className="text-[10px] text-red-500 font-bold">{formErrors.name}</p>}
+                      </div>
+
+                      {/* Phone & Email Grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
+                            {translations.contribFormPhone[language]} *
+                          </label>
+                          <input 
+                            type="text" 
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            className="w-full text-xs font-semibold px-4 py-3 rounded-xl border border-emerald-100 focus:outline-none focus:ring-3 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all"
+                            placeholder="+251 911 234 567"
+                          />
+                          {formErrors.phone && <p className="text-[10px] text-red-500 font-bold">{formErrors.phone}</p>}
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
+                            {translations.contribFormEmail[language]} *
+                          </label>
+                          <input 
+                            type="email" 
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            className="w-full text-xs font-semibold px-4 py-3 rounded-xl border border-emerald-100 focus:outline-none focus:ring-3 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all"
+                            placeholder="sponsor@example.com"
+                          />
+                          {formErrors.email && <p className="text-[10px] text-red-500 font-bold">{formErrors.email}</p>}
+                        </div>
+                      </div>
+
+                      {/* Contribution Amount & Presets */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
+                            {language === 'om' ? 'Hamma Gumaacha Kee (ETB)' : language === 'am' ? 'የድጋፍ መጠን በብር (ETB)' : 'Pledge Amount (ETB)'} *
+                          </label>
+                          <span className="text-[11px] font-mono font-black text-[#054823] bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+                            {Number(formData.amount || 0).toLocaleString()} ETB
+                          </span>
+                        </div>
+                        
+                        <div className="relative">
+                          <input 
+                            type="number" 
+                            name="amount"
+                            value={formData.amount}
+                            onChange={handleInputChange}
+                            min="10"
+                            step="50"
+                            className="w-full text-sm font-extrabold px-4 py-3 pl-10 rounded-xl border border-emerald-100 focus:outline-none focus:ring-3 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all"
+                            placeholder="1000"
+                          />
+                          <Coins className="w-4 h-4 text-emerald-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        </div>
+
+                        {/* Amount Quick Presets */}
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {['250', '500', '1000', '2500', '5000', '10000'].map((preset) => (
+                            <button
+                              key={preset}
+                              type="button"
+                              onClick={() => setFormData(prev => ({ ...prev, amount: preset }))}
+                              className={`text-[10.5px] font-extrabold px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                                formData.amount === preset
+                                  ? 'bg-[#054823] text-white border-[#054823] shadow-xs'
+                                  : 'bg-white text-emerald-900 border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50'
+                              }`}
+                            >
+                              +{Number(preset).toLocaleString()} ETB
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Reason for Funding */}
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
+                          {language === 'om' ? 'Sababa/Kaayyoo Gumaacha Kee' : language === 'am' ? 'ድጋፍ የሚያደርጉበት ዓላማ / መነሻ ምክንያት' : 'What is your purpose or reason for funding?'} *
+                        </label>
+                        <textarea 
+                          name="reason"
+                          rows={2}
+                          value={formData.reason}
+                          onChange={handleInputChange}
+                          className="w-full text-xs font-semibold px-4 py-2.5 rounded-xl border border-emerald-100 focus:outline-none focus:ring-3 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all"
+                          placeholder={language === 'om' ? 'Fkn: Lammiilee balaan lolaa qaqqabeef deeggarsa namoomaa dhiyeessuuf' : language === 'am' ? 'ምሳሌ፡ በጎርፍ አደጋ ለተጎዱ ወገኖች የሰብአዊ ድጋፍ ለማበርከት' : 'e.g. Humanitarian relief support for vulnerable communities'}
+                        />
+                        {formErrors.reason && <p className="text-[10px] text-red-500 font-bold">{formErrors.reason}</p>}
+                      </div>
+
+                      {/* Diaspora Checkbox */}
+                      <div className="p-3 bg-emerald-50 rounded-xl flex items-center gap-3 border border-emerald-100">
+                        <input 
+                          type="checkbox"
+                          name="isDiaspora"
+                          id="homeIsDiaspora"
+                          checked={formData.isDiaspora}
+                          onChange={(e) => {
+                            setFormData(prev => ({ 
+                              ...prev, 
+                              isDiaspora: e.target.checked,
+                              paymentMethod: e.target.checked ? 'paypal' : 'cbe' 
+                            }));
+                          }}
+                          className="w-4 h-4 rounded-xs border-emerald-200 text-[#054823] focus:ring-[#054823]"
+                        />
+                        <label htmlFor="homeIsDiaspora" className="text-xs font-bold text-emerald-950 cursor-pointer select-none">
+                          {language === 'om' ? 'Ani Hawaasa Diaspora dha (Biyya alaa jiru)' : language === 'am' ? 'እኔ የውጭ አካል ነኝ (ዲያስፖራ/Diaspora)' : 'Sponsoring from abroad (Diaspora Solidarity)?'}
+                        </label>
+                      </div>
+
+                      {/* Payment Channels */}
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
+                          {language === 'om' ? 'Karaa Kaffaltii Filadhu' : language === 'am' ? 'ለመደገፍ የሚጠቀሙበት የባንክ ሥርዓት ይምረጡ' : 'Select Funding Account / Payment Gateway Option'}
+                        </label>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+                          {!formData.isDiaspora ? (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'cbe' }))}
+                                className={`p-2.5 rounded-xl border text-left flex flex-col justify-between h-18 transition-all cursor-pointer ${
+                                  formData.paymentMethod === 'cbe' 
+                                    ? 'border-[#054823] bg-emerald-50 text-emerald-950 ring-2 ring-[#054823]/20 shadow-xs' 
+                                    : 'border-emerald-100 bg-white hover:border-emerald-200'
+                                }`}
+                              >
+                                <span className="text-[9px] font-bold uppercase tracking-wider bg-orange-100 text-orange-900 px-1.5 py-0.5 rounded text-center shrink-0 w-fit">CBE</span>
+                                <span className="text-[11px] font-extrabold text-slate-800 leading-tight">CBE Bank</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'sinqe' }))}
+                                className={`p-2.5 rounded-xl border text-left flex flex-col justify-between h-18 transition-all cursor-pointer ${
+                                  formData.paymentMethod === 'sinqe' 
+                                    ? 'border-[#054823] bg-emerald-50 text-emerald-950 ring-2 ring-[#054823]/20 shadow-xs' 
+                                    : 'border-emerald-100 bg-white hover:border-emerald-200'
+                                }`}
+                              >
+                                <span className="text-[9px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded text-center shrink-0 w-fit">Siinqee</span>
+                                <span className="text-[11px] font-extrabold text-slate-800 leading-tight">Siinqee Bank</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'cbe_birr' }))}
+                                className={`p-2.5 rounded-xl border text-left flex flex-col justify-between h-18 transition-all cursor-pointer ${
+                                  formData.paymentMethod === 'cbe_birr' 
+                                    ? 'border-[#054823] bg-emerald-50 text-emerald-950 ring-2 ring-[#054823]/20 shadow-xs' 
+                                    : 'border-emerald-100 bg-white hover:border-emerald-200'
+                                }`}
+                              >
+                                <span className="text-[9px] font-bold uppercase tracking-wider bg-emerald-200 text-emerald-900 px-1.5 py-0.5 rounded text-center shrink-0 w-fit">CBE Birr</span>
+                                <span className="text-[11px] font-extrabold text-slate-800 leading-tight">CBE Birr</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'telebirr' }))}
+                                className={`p-2.5 rounded-xl border text-left flex flex-col justify-between h-18 transition-all cursor-pointer ${
+                                  formData.paymentMethod === 'telebirr' 
+                                    ? 'border-[#054823] bg-emerald-50 text-emerald-950 ring-2 ring-[#054823]/20 shadow-xs' 
+                                    : 'border-emerald-100 bg-white hover:border-emerald-200'
+                                }`}
+                              >
+                                <span className="text-[9px] font-bold uppercase tracking-wider bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded text-center shrink-0 w-fit">telebirr</span>
+                                <span className="text-[11px] font-extrabold text-slate-800 leading-tight">telebirr</span>
+                              </button>
+                            </>
+                          ) : null}
+
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'paypal' }))}
+                            className={`p-2.5 rounded-xl border text-left flex flex-col justify-between h-18 transition-all cursor-pointer ${
+                              formData.paymentMethod === 'paypal' 
+                                ? 'border-[#054823] bg-emerald-50 text-emerald-950 ring-2 ring-[#054823]/20 shadow-xs' 
+                                : 'border-emerald-100 bg-white hover:border-emerald-200'
+                            } ${formData.isDiaspora ? 'col-span-full' : ''}`}
+                          >
+                            <span className="text-[9px] font-bold uppercase tracking-wider bg-blue-50 text-blue-900 px-1.5 py-0.5 rounded text-center shrink-0 w-fit">PayPal</span>
+                            <span className="text-[11px] font-extrabold text-slate-800 leading-tight">PayPal Global</span>
+                          </button>
+                        </div>
+
+                        {/* Official Bank Account Details Card with Copy */}
+                        <div className="bg-emerald-50/60 rounded-2xl p-4 border border-emerald-200 space-y-2 mt-2">
+                          <div className="flex items-center justify-between border-b border-emerald-200 pb-1.5">
+                            <div className="flex items-center gap-1.5">
+                              <Landmark className="w-3.5 h-3.5 text-[#054823]" />
+                              <span className="text-[10px] font-extrabold text-[#054823] uppercase tracking-wider">
+                                {language === 'om' ? 'Teessoo Herrega Baankii' : language === 'am' ? 'ኦፊሴላዊ የክፍያ ሂሳብ መረጃ' : 'Official Settlement Bank Details'}
+                              </span>
+                            </div>
+                            <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                              Adama Branch
+                            </span>
+                          </div>
+
+                          {formData.paymentMethod === 'cbe' && (
+                            <div className="text-[11.5px] space-y-1.5">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Bank</span>
+                                <span className="font-bold text-emerald-950">{bankDetails.cbe.bankName}</span>
+                              </div>
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Account Name</span>
+                                <span className="font-extrabold text-emerald-950">{bankDetails.cbe.accName}</span>
+                              </div>
+                              <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-200">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Account No</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-mono font-black text-[#054823] text-xs">{bankDetails.cbe.accNumber}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopyToClipboard(bankDetails.cbe.accNumber, 'cbe_acc')}
+                                    className="p-1 text-emerald-700 hover:bg-emerald-100 rounded transition cursor-pointer"
+                                    title="Copy Account Number"
+                                  >
+                                    {copiedText === 'cbe_acc' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {formData.paymentMethod === 'sinqe' && (
+                            <div className="text-[11.5px] space-y-1.5">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Bank</span>
+                                <span className="font-bold text-emerald-950">{bankDetails.sinqe.bankName}</span>
+                              </div>
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Account Name</span>
+                                <span className="font-extrabold text-emerald-950">{bankDetails.sinqe.accName}</span>
+                              </div>
+                              <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-200">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Account No</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-mono font-black text-[#054823] text-xs">{bankDetails.sinqe.accNumber}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopyToClipboard(bankDetails.sinqe.accNumber, 'sinqe_acc')}
+                                    className="p-1 text-emerald-700 hover:bg-emerald-100 rounded transition cursor-pointer"
+                                    title="Copy Account Number"
+                                  >
+                                    {copiedText === 'sinqe_acc' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {formData.paymentMethod === 'cbe_birr' && (
+                            <div className="text-[11.5px] space-y-1.5">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Channel</span>
+                                <span className="font-bold text-emerald-950">{bankDetails.cbe_birr.bankName}</span>
+                              </div>
+                              <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-200">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Merchant Code</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-mono font-black text-[#054823] text-xs">{bankDetails.cbe_birr.merchantCode}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopyToClipboard(bankDetails.cbe_birr.merchantCode, 'cbe_birr_code')}
+                                    className="p-1 text-emerald-700 hover:bg-emerald-100 rounded transition cursor-pointer"
+                                    title="Copy Merchant Code"
+                                  >
+                                    {copiedText === 'cbe_birr_code' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {formData.paymentMethod === 'telebirr' && (
+                            <div className="text-[11.5px] space-y-1.5">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Channel</span>
+                                <span className="font-bold text-emerald-950">{bankDetails.telebirr.bankName}</span>
+                              </div>
+                              <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-200">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Merchant ID</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-mono font-black text-blue-700 text-xs">{bankDetails.telebirr.merchantId}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopyToClipboard(bankDetails.telebirr.merchantId, 'telebirr_code')}
+                                    className="p-1 text-blue-700 hover:bg-blue-100 rounded transition cursor-pointer"
+                                    title="Copy Merchant ID"
+                                  >
+                                    {copiedText === 'telebirr_code' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {formData.paymentMethod === 'paypal' && (
+                            <div className="text-[11.5px] space-y-1.5">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Channel</span>
+                                <span className="font-bold text-emerald-950">{bankDetails.paypal.provider}</span>
+                              </div>
+                              <div className="flex justify-between items-center bg-white px-3 py-1.5 rounded-lg border border-emerald-200">
+                                <span className="text-gray-500 font-bold uppercase text-[9px]">Account Email</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-mono font-bold text-blue-700 text-xs">{bankDetails.paypal.account}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopyToClipboard(bankDetails.paypal.account, 'paypal_email')}
+                                    className="p-1 text-blue-700 hover:bg-blue-100 rounded transition cursor-pointer"
+                                    title="Copy PayPal Email"
+                                  >
+                                    {copiedText === 'paypal_email' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Next Step Button */}
+                      <button
+                        type="submit"
+                        className="w-full bg-[#054823] hover:bg-[#022b14] text-white font-black text-xs sm:text-sm py-3.5 rounded-xl uppercase tracking-wider transition shadow-md active:scale-95 cursor-pointer flex items-center justify-center gap-2 mt-4"
+                      >
+                        <span>{language === 'om' ? 'Itti Fufi: Mirkaneessa Kaffaltii' : language === 'am' ? 'ቀጥል፡ የክፍያ ማረጋገጫ' : 'Continue to Payment Verification'}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </form>
+                  )}
+
+                  {/* STEP 2: Payment Verification & Reference ID */}
+                  {(paymentStep === 'verification' || paymentStep === 'submitting') && (
+                    <form onSubmit={handleVerificationSubmit} className="space-y-5">
+                      
+                      {submissionError && (
+                        <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs font-bold">
+                          {submissionError}
+                        </div>
+                      )}
+
+                      {/* Summary of Pledge */}
+                      <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-200 space-y-2">
+                        <span className="text-[10px] font-black uppercase text-[#054823] tracking-wider block">
+                          {language === 'om' ? 'Cuunfaa Gumaacha Kee' : language === 'am' ? 'የድጋፍዎ ማጠቃለያ' : 'Contribution Pledge Summary'}
+                        </span>
+                        
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                          <div>
+                            <span className="text-gray-500 block text-[10px] uppercase font-bold">{language === 'om' ? 'Gumaachaa' : 'Donor'}</span>
+                            <span className="font-bold text-emerald-950 line-clamp-1">{formData.name}</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500 block text-[10px] uppercase font-bold">{language === 'om' ? 'Hamma (ETB)' : 'Amount'}</span>
+                            <span className="font-mono font-black text-[#054823]">{Number(formData.amount).toLocaleString()} ETB</span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500 block text-[10px] uppercase font-bold">{language === 'om' ? 'Karaa Kaffaltii' : 'Gateway'}</span>
+                            <span className="font-bold text-emerald-950 uppercase">{formData.paymentMethod.replace('_', ' ')}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Transaction Reference ID Input */}
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
+                          {language === 'om' ? 'Koodii Dabarsaa / Transaction Reference ID' : language === 'am' ? 'የማስተላለፊያ መለያ ቁጥር (Transaction ID / Reference)' : 'Transaction ID / Reference Number'} *
+                        </label>
+                        <div className="relative">
+                          <input 
+                            type="text" 
+                            name="transactionId"
+                            value={formData.transactionId}
+                            onChange={handleInputChange}
+                            placeholder={language === 'om' ? 'Fkn: FT2409892182 / TT1209381' : language === 'am' ? 'ምሳሌ፡ FT2409892182 / TT1209381' : 'e.g. FT2409892182 / TT1209381'}
+                            className="w-full text-xs font-mono font-bold px-4 py-3 pl-10 rounded-xl border border-emerald-100 focus:outline-none focus:ring-3 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all"
+                          />
+                          <FileText className="w-4 h-4 text-emerald-700 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        </div>
+                        <p className="text-[10.5px] text-gray-500">
+                          {language === 'om' 
+                            ? 'Koodii ergaa gabaabaa (SMS) ykn qophii baankii keessan irraa dhufe galchaa.' 
+                            : language === 'am'
+                              ? 'በባንክ ወይም በቴሌብር የደረሰዎትን የማረጋገጫ መለያ ቁጥር ያስገቡ።'
+                              : 'Enter the reference transaction code from your mobile banking receipt or SMS.'}
+                        </p>
+                        {formErrors.transactionId && <p className="text-[10px] text-red-500 font-bold">{formErrors.transactionId}</p>}
+                      </div>
+
+                      {/* Deposit Slip / Receipt File Upload */}
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-emerald-950 uppercase tracking-wider block">
+                          {language === 'om' ? 'Nagahee / Screenshot Kaffaltii (Filannoo)' : language === 'am' ? 'የክፍያ ደረሰኝ / ስክሪንሽት (አማራጭ)' : 'Deposit Slip / Payment Screenshot (Optional)'}
+                        </label>
+                        
+                        <div
+                          onDragEnter={handleDrag}
+                          onDragLeave={handleDrag}
+                          onDragOver={handleDrag}
+                          onDrop={handleDrop}
+                          className={`border-2 border-dashed rounded-2xl p-4 text-center transition-all ${
+                            dragActive ? 'border-emerald-500 bg-emerald-50' : 'border-emerald-200 hover:border-emerald-300 bg-emerald-50/20'
+                          }`}
+                        >
+                          <input
+                            type="file"
+                            id="homeReceiptFileUpload"
+                            onChange={handleFileChange}
+                            accept="image/*,.pdf"
+                            className="hidden"
+                          />
+                          <label htmlFor="homeReceiptFileUpload" className="cursor-pointer flex flex-col items-center gap-1.5">
+                            <Download className="w-6 h-6 text-emerald-700" />
+                            <span className="text-xs font-bold text-emerald-950">
+                              {formData.receiptFile ? formData.receiptFile.name : (language === 'om' ? 'Faayilii nagahee asitti fe\'aa ykn filadhaa' : language === 'am' ? 'የደረሰኝ ፋይል ይምረጡ ወይም እዚህ ይጎትቱ' : 'Click to select or drag and drop receipt file')}
+                            </span>
+                            <span className="text-[10px] text-gray-400">PNG, JPG, PDF (Max 10MB)</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Actions Buttons */}
+                      <div className="flex items-center gap-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={() => setPaymentStep('form')}
+                          disabled={paymentStep === 'submitting'}
+                          className="px-4 py-3 rounded-xl border border-gray-200 text-gray-700 font-bold text-xs hover:bg-gray-50 transition cursor-pointer"
+                        >
+                          {language === 'om' ? 'Gara Duubaa' : language === 'am' ? 'ተመለስ' : 'Back'}
+                        </button>
+
+                        <button
+                          type="submit"
+                          disabled={paymentStep === 'submitting'}
+                          className="flex-1 bg-[#054823] hover:bg-[#022b14] disabled:opacity-50 text-white font-black text-xs sm:text-sm py-3.5 rounded-xl uppercase tracking-wider transition shadow-md cursor-pointer flex items-center justify-center gap-2"
+                        >
+                          {paymentStep === 'submitting' ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+                              <span>{language === 'om' ? 'Galmeessaa jira...' : language === 'am' ? 'እየተመዘገበ ነው...' : 'Registering Contribution...'}</span>
+                            </>
+                          ) : (
+                            <>
+                              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                              <span>{language === 'om' ? 'Mirkaneessi & Xumuri' : language === 'am' ? 'አረጋግጥና አጠናቅቅ' : 'Confirm & Complete Contribution'}</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+
+                  {/* STEP 3: Complete & Celebratory Success */}
+                  {paymentStep === 'success' && contributionSuccess && (
+                    <div className="text-center py-6 space-y-5">
+                      <div className="w-16 h-16 bg-emerald-100 text-[#054823] rounded-full flex items-center justify-center mx-auto shadow-inner">
+                        <Sparkles className="w-8 h-8 animate-bounce" />
+                      </div>
+
+                      <div className="space-y-2">
+                        <span className="text-[10px] font-black text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">
+                          {language === 'om' ? 'Galatoomaa! Waaqayyo Isin Ha Eebbisu' : language === 'am' ? 'እናመሰግናለን! እግዚአብሔር ይስጥልን' : 'Thank You! Contribution Received'}
+                        </span>
+                        <h3 className="text-xl font-black text-emerald-950 uppercase tracking-tight">
+                          {language === 'om' ? 'Gumaachi Keessan Galmeeffameera!' : language === 'am' ? 'ድጋፍዎ በተሳካ ሁኔታ ተመዝግቧል!' : 'Contribution Successfully Registered!'}
+                        </h3>
+                        <p className="text-xs text-gray-600 font-semibold leading-relaxed max-w-lg mx-auto">
+                          <strong>{contributionSuccess.name}</strong>, {language === 'om' ? 'gumaachi maallaqaa keessan ' : 'your contribution of '}
+                          <strong className="text-[#054823] font-mono font-black">{formatBirr(contributionSuccess.amount)}</strong>
+                          {language === 'om' ? ' duula gumaachaa ' : ' to relief campaign '}
+                          &ldquo;{contributionSuccess.campTitle}&rdquo; {language === 'om' ? ' irratti dabalameera. Koodii Dabarsaa: ' : ' has been added. Transaction ID: '}
+                          <strong className="font-mono text-[#054823]">{contributionSuccess.transactionId}</strong>.
+                        </p>
+                      </div>
+
+                      <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 text-xs text-emerald-900 font-medium">
+                        {language === 'om'
+                          ? 'Dhibbeentaan galmaa (%), maallaqni funaaname, fi tarreen arjoomtotaa sirna Buusaa Gonofaa irratti yeroma sana haaromfameera.'
+                          : language === 'am'
+                            ? 'የልገሳው መቶኛ (%)፣ የተሰበሰበው የብር መጠን እና የለጋሾች ዝርዝር በቅጽበት ተሻሽሏል።'
+                            : 'Campaign raised total, percentage (%), and givers roster updated in real-time.'}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setQuickContribCamp(null);
+                          setContributionSuccess(null);
+                        }}
+                        className="w-full bg-[#054823] hover:bg-[#022b14] text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider transition cursor-pointer"
+                      >
+                        {language === 'om' ? 'Cufi & Haaromsa Ilaali' : language === 'am' ? 'ዝጋና የተሻሻለውን ተመልከት' : 'Done & View Live Progress'}
+                      </button>
+                    </div>
+                  )}
+
                 </div>
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Celebration Toast Modal */}
+        {/* Dynamic QR Code Modal for Home Overview */}
         <AnimatePresence>
-          {contributionSuccess && (
-            <motion.div 
-              className="fixed inset-0 bg-[#06180e]/70 backdrop-blur-xs z-50 flex items-center justify-center p-4"
+          {showQrModal && quickContribCamp && (
+            <motion.div
+              className="fixed inset-0 bg-[#06180e]/80 backdrop-blur-xs z-50 flex items-center justify-center p-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <motion.div 
-                className="bg-white rounded-3xl p-8 max-w-md w-full border border-emerald-100 shadow-2xl text-center space-y-6"
+              <motion.div
+                className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-emerald-100 shadow-2xl relative text-center space-y-5"
                 initial={{ scale: 0.9, y: 15 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 15 }}
               >
-                <div className="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto shadow-inner">
-                  <Sparkles className="w-8 h-8 animate-bounce" />
+                <button
+                  type="button"
+                  onClick={() => setShowQrModal(false)}
+                  className="absolute top-4 right-4 p-2 text-gray-400 hover:text-emerald-950 hover:bg-emerald-50 rounded-full transition cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                <div className="space-y-1">
+                  <span className="text-[10px] font-black text-[#054823] bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">
+                    {language === 'om' ? 'QR Koodii Kaffaltii Saffisaa' : language === 'am' ? 'ፈጣን የኪውአር ክፍያ' : 'Dynamic QR Payment'}
+                  </span>
+                  <h4 className="text-lg font-black text-emerald-950 uppercase tracking-tight">
+                    {language === 'om' ? 'Koodii QR Saajjali' : language === 'am' ? 'የQR ኮድ ስካን ያድርጉ' : 'Scan & Donate via QR Code'}
+                  </h4>
                 </div>
 
-                <div className="space-y-2">
-                  <span className="text-[10px] font-black text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">
-                    {language === 'om' ? 'Galatoomaa!' : 'Thank You!'}
+                {/* Platform selector */}
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'telebirr', name: 'telebirr' },
+                    { id: 'cbe_birr', name: 'CBE Birr' },
+                    { id: 'sinqe', name: 'Siinqee' },
+                    { id: 'awash', name: 'Awash' },
+                    { id: 'boa', name: 'BOA' },
+                  ].map((plat) => (
+                    <button
+                      key={plat.id}
+                      type="button"
+                      onClick={() => setQrModalPlatform(plat.id)}
+                      className={`py-2 px-2 rounded-xl text-xs font-bold transition border cursor-pointer ${
+                        qrModalPlatform === plat.id
+                          ? 'bg-[#054823] text-white border-[#054823]'
+                          : 'bg-gray-50 text-gray-700 hover:bg-emerald-50 border-gray-200'
+                      }`}
+                    >
+                      {plat.name}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Amount input for QR */}
+                <div className="flex items-center gap-2 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+                  <span className="text-xs font-bold text-gray-500 uppercase">{language === 'om' ? 'Hamma:' : 'Amount:'}</span>
+                  <input
+                    type="number"
+                    value={qrModalAmount}
+                    onChange={(e) => setQrModalAmount(e.target.value)}
+                    className="flex-1 font-mono font-black text-sm bg-white px-3 py-1.5 rounded-lg border border-emerald-200 text-[#054823]"
+                    placeholder="1000"
+                  />
+                  <span className="text-xs font-black text-emerald-800 font-mono">ETB</span>
+                </div>
+
+                {/* QR Code Container */}
+                {(() => {
+                  const qrInfo = getDynamicQrPayload(qrModalPlatform, qrModalAmount, quickContribCamp.id);
+                  return (
+                    <div className="space-y-3">
+                      <div className="p-4 bg-white rounded-2xl border-2 border-emerald-100 inline-block shadow-inner">
+                        <QRCodeSVG
+                          id="home-dynamic-qr-code-svg"
+                          value={qrInfo.payload}
+                          size={180}
+                          level="H"
+                          includeMargin={true}
+                          fgColor="#054823"
+                        />
+                      </div>
+
+                      <div className="text-xs font-bold text-emerald-950">
+                        <span>{qrInfo.platformName}</span> • <span className="font-mono text-[#054823]">{qrInfo.merchantId}</span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={downloadQrCode}
+                          className="flex-1 bg-[#054823] hover:bg-[#022b14] text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span>{language === 'om' ? 'QR Buufadhu' : language === 'am' ? 'QR አውርድ' : 'Download QR (PNG)'}</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* USSD Quick Dial Modal */}
+        <AnimatePresence>
+          {showUssdModal && (
+            <motion.div
+              className="fixed inset-0 bg-[#06180e]/80 backdrop-blur-xs z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-emerald-100 shadow-2xl relative text-left space-y-5"
+                initial={{ scale: 0.9, y: 15 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 15 }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setShowUssdModal(false)}
+                  className="absolute top-4 right-4 p-2 text-gray-400 hover:text-emerald-950 hover:bg-emerald-50 rounded-full transition cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                <div className="space-y-1">
+                  <span className="text-[10px] font-black text-[#054823] bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">
+                    {language === 'om' ? 'Qajeelfama USSD' : language === 'am' ? 'የUSSD መደወያ መመሪያ' : 'Mobile USSD Quick Codes'}
                   </span>
-                  <h3 className="text-xl font-black text-emerald-950 uppercase tracking-tight">
-                    {language === 'om' ? 'Gumaachi Keessan Galmeeffameera!' : 'Contribution Successfully Added!'}
-                  </h3>
-                  <p className="text-xs text-gray-600 font-semibold leading-relaxed">
-                    <strong>{contributionSuccess.name}</strong>, {language === 'om' ? 'gumaachi maallaqaa keessan ' : 'your contribution of '}
-                    <strong className="text-emerald-800 font-mono font-black">{formatBirr(contributionSuccess.amount)}</strong>
-                    {language === 'om' ? ' duula gumaachaa ' : ' to campaign '}
-                    &ldquo;{contributionSuccess.campTitle}&rdquo; {language === 'om' ? ' irratti dabalameera. Dhibbeentaan (%), birr, fi tarreen arjoomtotaa haaromfameera!' : ' has been registered. The percentage, Birr raised, and givers list updated in real-time!'}
-                  </p>
+                  <h4 className="text-lg font-black text-emerald-950 uppercase tracking-tight">
+                    {language === 'om' ? 'Koodii USSD Bilbilaan Kaffali' : language === 'am' ? 'በስልክዎ የUSSD ቁጥር ይደውሉ' : 'Dial USSD Directly from Phone'}
+                  </h4>
+                </div>
+
+                <div className="space-y-2.5 text-xs">
+                  <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between">
+                    <div>
+                      <strong className="block text-emerald-950">telebirr:</strong>
+                      <span className="font-mono text-[#054823] font-black">*127#</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyToClipboard('*127#', 'ussd_telebirr')}
+                      className="px-2.5 py-1 bg-white border border-emerald-200 rounded-lg text-emerald-900 font-bold hover:bg-emerald-100 cursor-pointer"
+                    >
+                      {copiedText === 'ussd_telebirr' ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
+
+                  <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between">
+                    <div>
+                      <strong className="block text-emerald-950">CBE Birr:</strong>
+                      <span className="font-mono text-[#054823] font-black">*889#</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyToClipboard('*889#', 'ussd_cbe')}
+                      className="px-2.5 py-1 bg-white border border-emerald-200 rounded-lg text-emerald-900 font-bold hover:bg-emerald-100 cursor-pointer"
+                    >
+                      {copiedText === 'ussd_cbe' ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
+
+                  <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between">
+                    <div>
+                      <strong className="block text-emerald-950">Siinqee Bank:</strong>
+                      <span className="font-mono text-[#054823] font-black">*869#</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyToClipboard('*869#', 'ussd_sinqe')}
+                      className="px-2.5 py-1 bg-white border border-emerald-200 rounded-lg text-emerald-900 font-bold hover:bg-emerald-100 cursor-pointer"
+                    >
+                      {copiedText === 'ussd_sinqe' ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
                 </div>
 
                 <button
-                  onClick={() => setContributionSuccess(null)}
-                  className="w-full bg-[#054823] text-white font-black text-xs py-3.5 rounded-xl uppercase tracking-wider transition hover:bg-[#022b14] cursor-pointer"
+                  type="button"
+                  onClick={() => setShowUssdModal(false)}
+                  className="w-full bg-[#054823] text-white font-bold text-xs py-3 rounded-xl uppercase tracking-wider cursor-pointer"
                 >
-                  {language === 'om' ? 'Cufi & Ilaali' : 'Done & View Update'}
+                  {language === 'om' ? 'Cufi' : language === 'am' ? 'ዝጋ' : 'Close'}
                 </button>
               </motion.div>
             </motion.div>
