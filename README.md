@@ -9,8 +9,7 @@ Official digital platform for **Buusaa Gonofaa Oromiyaa - Adama Branch**, showca
 - **Active Relief & Solidarity Campaigns**: Real-time crowdfunding trackers with goal targets, funds raised, donor counts, and progress indicators.
 - **Direct Multi-Gateway Contribution Portal**:
   - Commercial Bank of Ethiopia (CBE), Siinqee Bank, CBE Birr, telebirr, and PayPal Global gateway support.
-  - Dynamic QR Code generation for mobile banking apps.
-  - USSD Quick-Dial code guides.
+  - Direct account settlement and USSD Quick-Dial code guides.
   - Receipt upload and transaction reference verification.
   - Real-time cloud persistence via Firebase Firestore.
 - **Interactive Loan & Savings Calculators**: Financial modeling for agriculture, women entrepreneurs, youth solidarity, and emergency disaster relief funds.

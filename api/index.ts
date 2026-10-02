@@ -159,7 +159,7 @@ app.post(['/api/ai/chat', '/ai/chat', '/api/index.ts', '/api/index.ts/ai/chat', 
       return res.status(400).json({ error: 'Message payload is required' });
     }
 
-    // Check multiple potential environment variable names for maximum robustness in Vercel/AI Studio
+    // Check multiple potential environment variable names for maximum robustness in production
     let apiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.VITE_GEMINI_API_KEY || process.env.VITE_GOOGLE_API_KEY || '').trim();
     
     if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
@@ -175,7 +175,7 @@ app.post(['/api/ai/chat', '/ai/chat', '/api/index.ts', '/api/index.ts/ai/chat', 
       apiKey: apiKey,
       httpOptions: {
         headers: {
-          'User-Agent': 'aistudio-build',
+          'User-Agent': 'buusaa-gonofaa-platform',
         }
       }
     });

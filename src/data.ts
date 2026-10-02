@@ -201,8 +201,8 @@ export const mockCampaigns: DonationCamp[] = [
   {
     id: 'c1',
     goalAmount: 1200000,
-    raisedAmount: 824500,
-    contributorsCount: 341,
+    raisedAmount: 0,
+    contributorsCount: 0,
     title: {
       om: "Deeggarsa Duula Qonnaan Bultoota Midhamee",
       am: "ለተጎዱ የገበሬ ማህበራት የአደጋ ጊዜ የሰብል ዘር ፈንድ",
@@ -218,19 +218,13 @@ export const mockCampaigns: DonationCamp[] = [
       am: "የአደጋ ጊዜ ፈንድ",
       en: "Emergency Relief Campaign"
     },
-    givers: [
-      { id: 'g1', name: 'Anonymous Giver', isAnonymous: true, amount: 15000, date: '2026-08-07', paymentMethod: 'cbe' },
-      { id: 'g2', name: 'Secret Community Donor', isAnonymous: true, amount: 50000, date: '2026-08-06', paymentMethod: 'cbe' },
-      { id: 'g3', name: 'Anonymous Giver', isAnonymous: true, amount: 5000, date: '2026-08-05', paymentMethod: 'telebirr' },
-      { id: 'g4', name: 'Secret Contributor', isAnonymous: true, amount: 20000, date: '2026-08-04', paymentMethod: 'sinqe' },
-      { id: 'g5', name: 'Anonymous Giver', isAnonymous: true, amount: 35000, date: '2026-08-02', paymentMethod: 'cbe_birr' }
-    ]
+    givers: []
   },
   {
     id: 'c2',
     goalAmount: 800000,
-    raisedAmount: 610000,
-    contributorsCount: 198,
+    raisedAmount: 0,
+    contributorsCount: 0,
     title: {
       om: "Maayicroo-Inshuraansii maatii hiyyeeyyi",
       am: "ለደካማ ማህበረሰቦች የጤና ዋስትና ሽፋን ድጋፍ",
@@ -246,18 +240,13 @@ export const mockCampaigns: DonationCamp[] = [
       am: "ጤናና ደህንነት",
       en: "Health Mutual Coverage"
     },
-    givers: [
-      { id: 'g6', name: 'Secret Contributor', isAnonymous: true, amount: 25000, date: '2026-08-07', paymentMethod: 'sinqe' },
-      { id: 'g7', name: 'Anonymous Giver', isAnonymous: true, amount: 10000, date: '2026-08-06', paymentMethod: 'telebirr' },
-      { id: 'g8', name: 'Secret Diaspora Supporter', isAnonymous: true, amount: 18000, date: '2026-08-05', paymentMethod: 'paypal' },
-      { id: 'g9', name: 'Anonymous Giver', isAnonymous: true, amount: 3000, date: '2026-08-03', paymentMethod: 'cbe' }
-    ]
+    givers: []
   }
 ];
 
 export const branchStatistics = {
-  activeMembers: "135,460+",
-  activeFarmsSponsored: "32,850+",
-  womenEntrepreneursSupported: "48,650+",
-  emergencyDisbursementsBirr: "22.4 Million"
+  activeMembers: "0",
+  activeFarmsSponsored: "0",
+  womenEntrepreneursSupported: "0",
+  emergencyDisbursementsBirr: "0 ETB"
 };

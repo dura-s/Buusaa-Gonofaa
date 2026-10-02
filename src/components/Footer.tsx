@@ -1,4 +1,4 @@
-import { Compass, Mail, Phone, Heart, Sprout } from 'lucide-react';
+import { Compass, Mail, Phone, Sprout } from 'lucide-react';
 import { Language, ActiveTab } from '../types';
 import { translations } from '../translations';
 import bgLogo from '../assets/images/bg_logo.jpeg';
@@ -212,18 +212,9 @@ export default function Footer({ language, setActiveTab }: FooterProps) {
 
         {/* Bottom footer credit panel */}
         <div className="mt-16 pt-8 border-t border-emerald-800/30 flex flex-col sm:flex-row items-center justify-between gap-6 text-[10.5px] font-bold text-emerald-100 uppercase tracking-widest">
-          
           <div className="text-emerald-100/90 text-center sm:text-left">
             &copy; {localTimeAndDate} {translations.appName[language]} - Adama Branch. All Rights Reserved.
           </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-            <div className="flex items-center gap-1 text-emerald-100/90">
-              <span>Made with Cooperativism</span>
-              <Heart className="w-3.5 h-3.5 fill-current text-red-400 animate-pulse" />
-            </div>
-          </div>
-
         </div>
 
       </div>

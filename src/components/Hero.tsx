@@ -3,11 +3,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sprout, Users, Award, TrendingUp, ArrowUpRight, Compass, 
   ChevronLeft, ChevronRight, Maximize2, X, ZoomIn, ZoomOut, 
-  RotateCcw, Play, Pause, ScanEye 
+  RotateCcw, Play, Pause, ScanEye, ArrowRight
 } from 'lucide-react';
 import { Language, ActiveTab } from '../types';
 import { translations } from '../translations';
 import { branchStatistics } from '../data';
+import { useLiveStats } from '../lib/useLiveStats';
 import bgLogo from '../assets/images/bg_logo.jpeg';
 import wadooImage from '../assets/images/photo_2026-06-25_11-35-11.jpg';
 import latestAssemblyImage from '../assets/images/photo_2026-06-25_11-53-35.jpg';
@@ -318,10 +319,17 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
     visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 80 } }
   };
 
+  const {
+    activeMembersFormatted,
+    activeFarmsFormatted,
+    womenEntrepreneursFormatted,
+    emergencyDisbursementsFormatted
+  } = useLiveStats();
+
   const statCardList = [
     {
       icon: <Users className="w-6 h-6 text-emerald-600" />,
-      value: branchStatistics.activeMembers,
+      value: activeMembersFormatted,
       label: {
         om: "Mirkaneessitoota Hawaasaa",
         am: "ንቁ የማኅበር አባላት",
@@ -330,7 +338,7 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
     },
     {
       icon: <Sprout className="w-6 h-6 text-emerald-600" />,
-      value: branchStatistics.activeFarmsSponsored,
+      value: activeFarmsFormatted,
       label: {
         om: "Qonnaan Bultoota Gargaaraman",
         am: "የተደገፉ አርሶ አደሮች",
@@ -339,7 +347,7 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
     },
     {
       icon: <TrendingUp className="w-6 h-6 text-emerald-600" />,
-      value: branchStatistics.womenEntrepreneursSupported,
+      value: womenEntrepreneursFormatted,
       label: {
         om: "Daldala Dubartootaa",
         am: "የሴት ስራ ፈጣሪዎች ድጋፍ",
@@ -348,10 +356,10 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
     },
     {
       icon: <Award className="w-6 h-6 text-emerald-600" />,
-      value: branchStatistics.emergencyDisbursementsBirr,
+      value: emergencyDisbursementsFormatted,
       label: {
         om: "Gargaarsa Balaa Raawwatame",
-        am: "የአደጋ ጊዜ ፈጣን ድጋፍ",
+        am: "የአደጋ ጊዜ ፈጣን ድጋፍ (ብር)",
         en: "Social Protection Paid Out (ETB)"
       }
     }
@@ -626,30 +634,35 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
           </button>
         </div>
 
-        {/* Statistical Overview Grid (Desktop-first optimized layout) */}
+        {/* Statistical Overview Grid (Connected to Live Database) */}
         <motion.div 
-          className="mt-16 pt-12 border-t border-emerald-100"
+          className="mt-16 pt-10 border-t border-emerald-100"
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
           id="branch-statistics-strip"
         >
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* 4 Core Metric Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {statCardList.map((stat, i) => (
               <div 
                 key={i} 
-                className="bg-emerald-50/40 rounded-2xl p-6 border border-emerald-50 hover:bg-white hover:border-emerald-100 hover:shadow-xs transition-all duration-300"
+                className="bg-white rounded-3xl p-6 border border-emerald-100 hover:border-emerald-300 hover:shadow-md hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 flex flex-col justify-between text-left group shadow-xs"
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 rounded-lg bg-white border border-emerald-50">
-                    {stat.icon}
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-4">
+                    <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-100 text-[#054823] group-hover:bg-[#054823] group-hover:text-white transition-colors">
+                      {stat.icon}
+                    </div>
                   </div>
-                </div>
-                <div className="text-2xl md:text-3xl font-extrabold text-emerald-950 tracking-tight mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-xs font-semibold text-emerald-800/60 leading-tight uppercase tracking-wide">
-                  {stat.label[language]}
+
+                  <div className="text-2xl lg:text-3xl font-black text-emerald-950 tracking-tight mb-1 font-sans">
+                    {stat.value}
+                  </div>
+
+                  <div className="text-xs font-extrabold text-emerald-900/80 leading-tight uppercase tracking-wider font-sans">
+                    {stat.label[language]}
+                  </div>
                 </div>
               </div>
             ))}

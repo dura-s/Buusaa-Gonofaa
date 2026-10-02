@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Compass, Calendar, ArrowRight, Sprout, Heart, Users, ShieldAlert, Award, 
+  Compass, Calendar, ArrowRight, Sprout, Users, ShieldAlert, Award, 
   History, Workflow, Building, UserCheck, Shield, HelpCircle, CheckCircle, ArrowUpRight,
   Play, Youtube, CheckCircle2, X, Gift, Plus, Sparkles, DollarSign, Wallet,
-  ShieldCheck, Landmark, FileText, Send, Copy, QrCode, RefreshCw, Smartphone, Coins, Check, Download, Loader2, Lock
+  ShieldCheck, Landmark, FileText, Send, Copy, RefreshCw, Smartphone, Coins, Check, Download, Loader2, Lock
 } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
 import { Language, ActiveTab, DonationCamp, Giver } from '../types';
 import { translations } from '../translations';
 import { mockNews, mockCampaigns } from '../data';
@@ -47,120 +46,13 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [copiedText, setCopiedText] = useState<string | null>(null);
-  const [showQrModal, setShowQrModal] = useState<boolean>(false);
   const [showUssdModal, setShowUssdModal] = useState<boolean>(false);
-  const [qrModalPlatform, setQrModalPlatform] = useState<string>('telebirr');
-  const [qrModalAmount, setQrModalAmount] = useState<string>('1000');
   const [contributionSuccess, setContributionSuccess] = useState<{ name: string; amount: number; campTitle: string; transactionId?: string } | null>(null);
 
   const handleCopyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
     setCopiedText(field);
     setTimeout(() => setCopiedText(null), 2000);
-  };
-
-  // Helper to generate dynamic QR payload
-  const getDynamicQrPayload = (method: string, amountStr: string | number, campaignId: string) => {
-    const numAmount = Number(amountStr) || 1000;
-    const refCode = `BG-ADAMA-${campaignId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 6).toUpperCase()}-${numAmount}`;
-    
-    switch (method) {
-      case 'telebirr':
-        return {
-          platformName: 'telebirr Quick Pay',
-          merchantId: 'BG-992811',
-          accountName: 'Buusaa Gonofaa Oromiyaa',
-          payload: `telebirr://pay?merchant=BG-992811&amount=${numAmount}&currency=ETB&ref=${refCode}&title=Buusaa%20Gonofaa%20Adamaa`,
-          color: '#0284c7',
-          bgColor: '#e0f2fe',
-          badgeText: 'Ethio Telecom telebirr',
-          ussdCode: `*127*1*1*BG-992811*${numAmount}#`
-        };
-      case 'cbe_birr':
-      case 'cbe':
-        return {
-          platformName: 'CBE Birr Mobile',
-          merchantId: '818290',
-          accountName: 'Buusaa Gonofaa Adama',
-          payload: `cbebirr://pay?merchant=818290&amount=${numAmount}&currency=ETB&ref=${refCode}&title=Buusaa%20Gonofaa%20Adamaa`,
-          color: '#054823',
-          bgColor: '#dcfce7',
-          badgeText: 'Commercial Bank of Ethiopia',
-          ussdCode: `*889# -> Merchant: 818290 -> ${numAmount} ETB`
-        };
-      case 'sinqe':
-        return {
-          platformName: 'Siinqee Pay (Baankii Siinqee)',
-          merchantId: '1019283110293',
-          accountName: 'Buusaa Gonofaa - Siinqee',
-          payload: `sinqee://pay?account=1019283110293&amount=${numAmount}&currency=ETB&ref=${refCode}`,
-          color: '#b45309',
-          bgColor: '#fef3c7',
-          badgeText: 'Siinqee Bank',
-          ussdCode: `*869# -> Account: 1019283110293 -> ${numAmount} ETB`
-        };
-      case 'awash':
-        return {
-          platformName: 'Awash Birr',
-          merchantId: '99281',
-          accountName: 'Buusaa Gonofaa Adama',
-          payload: `awashbirr://pay?merchant=99281&amount=${numAmount}&currency=ETB&ref=${refCode}`,
-          color: '#7c3aed',
-          bgColor: '#f3e8ff',
-          badgeText: 'Awash Bank',
-          ussdCode: `*901# -> Merchant: 99281 -> ${numAmount} ETB`
-        };
-      case 'boa':
-        return {
-          platformName: 'BOA Mobile (Abyssinia)',
-          merchantId: '0029381',
-          accountName: 'Buusaa Gonofaa Branch',
-          payload: `boamobile://pay?merchant=0029381&amount=${numAmount}&currency=ETB&ref=${refCode}`,
-          color: '#2563eb',
-          bgColor: '#dbeafe',
-          badgeText: 'Bank of Abyssinia',
-          ussdCode: `*815# -> Merchant: 0029381 -> ${numAmount} ETB`
-        };
-      default:
-        return {
-          platformName: 'telebirr Quick Pay',
-          merchantId: 'BG-992811',
-          accountName: 'Buusaa Gonofaa Oromiyaa',
-          payload: `telebirr://pay?merchant=BG-992811&amount=${numAmount}&currency=ETB&ref=${refCode}`,
-          color: '#0284c7',
-          bgColor: '#e0f2fe',
-          badgeText: 'telebirr',
-          ussdCode: `*127*1*1*BG-992811*${numAmount}#`
-        };
-    }
-  };
-
-  const downloadQrCode = () => {
-    const svgElement = document.getElementById('home-dynamic-qr-code-svg');
-    if (!svgElement) return;
-    try {
-      const svgData = new XMLSerializer().serializeToString(svgElement);
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
-      img.onload = () => {
-        canvas.width = img.width + 40;
-        canvas.height = img.height + 40;
-        if (ctx) {
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(img, 20, 20);
-          const pngFile = canvas.toDataURL('image/png');
-          const downloadLink = document.createElement('a');
-          downloadLink.download = `Buusaa_Gonofaa_QR_${qrModalPlatform}_${qrModalAmount}ETB.png`;
-          downloadLink.href = pngFile;
-          downloadLink.click();
-        }
-      };
-      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
-    } catch (err) {
-      console.error("Failed to download QR image", err);
-    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -333,7 +225,12 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
   };
 
   const getCampaignProgress = (raised: number, goal: number) => {
-    return Math.min(Math.round((raised / goal) * 100), 100);
+    if (!goal || goal <= 0 || !raised || raised <= 0) return 0;
+    const pct = (raised / goal) * 100;
+    if (pct < 1) {
+      return Number(pct.toFixed(2));
+    }
+    return Math.min(Math.round(pct), 100);
   };
 
   // Major Works / Activities (Hojiiwan Gurguddoo)
@@ -1166,7 +1063,7 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
             <div className="bg-white border border-emerald-100 rounded-3xl p-6 md:p-8 space-y-6 shadow-xs hover:border-emerald-200 transition-all text-left">
               <div className="border-b border-emerald-50 pb-4">
                 <h4 className="text-base font-black text-emerald-950 uppercase tracking-widest flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-red-500 fill-current animate-pulse" />
+                  <Coins className="w-5 h-5 text-emerald-600" />
                   <span>{language === 'om' ? '1. Gumaata Mallaqaa' : language === 'am' ? '፩. የገንዘብ እጥፍ ድጋፍ (ጉማታ)' : '1. Financial Donations (Gumaata)'}</span>
                 </h4>
                 <p className="text-xs text-gray-500 font-bold uppercase mt-1">
@@ -1288,10 +1185,6 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                     <span className="text-xs font-extrabold text-[#054823] bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full uppercase tracking-widest">
                       {camp.badge[language]}
                     </span>
-                    <span className="text-xs font-bold text-[#054823] uppercase tracking-widest flex items-center gap-1.5 bg-emerald-50/80 px-3 py-1 rounded-full border border-emerald-100/60">
-                      <Heart className="w-4 h-4 fill-current text-red-500" />
-                      <span>{camp.contributorsCount} {language === 'om' ? 'Arjoomtota (Givers)' : language === 'am' ? 'ለጋሾች' : 'Givers'}</span>
-                    </span>
                   </div>
 
                   <h4 className="text-xl md:text-2xl font-black text-emerald-950 font-sans tracking-tight leading-snug">
@@ -1320,7 +1213,7 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                     <div className="w-full h-3.5 bg-gray-200/80 rounded-full overflow-hidden border border-gray-100 shadow-inner">
                       <div 
                         className="bg-gradient-to-r from-emerald-600 to-emerald-500 h-full rounded-full transition-all duration-1000"
-                        style={{ width: `${progress}%` }}
+                        style={{ width: `${Math.min(Math.max(progress, camp.raisedAmount > 0 ? 2 : 0), 100)}%` }}
                       />
                     </div>
 
@@ -1438,7 +1331,7 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                     <div className="h-6 w-px bg-emerald-200" />
                     <div>
                       <span className="text-[10px] text-gray-500 uppercase font-bold block">{language === 'om' ? 'Arjoomtota' : 'Givers'}</span>
-                      <span className="font-mono font-bold text-emerald-800">{quickContribCamp.donorsCount || 0}</span>
+                      <span className="font-mono font-bold text-emerald-800">{quickContribCamp.contributorsCount || 0}</span>
                     </div>
                   </div>
 
@@ -1449,7 +1342,7 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                     <div className="w-24 sm:w-32 h-2.5 bg-emerald-200/70 rounded-full overflow-hidden">
                       <div 
                         className="bg-[#054823] h-full rounded-full transition-all"
-                        style={{ width: `${getCampaignProgress(quickContribCamp.raisedAmount, quickContribCamp.goalAmount)}%` }}
+                        style={{ width: `${Math.min(Math.max(getCampaignProgress(quickContribCamp.raisedAmount, quickContribCamp.goalAmount), quickContribCamp.raisedAmount > 0 ? 2 : 0), 100)}%` }}
                       />
                     </div>
                   </div>
@@ -1502,36 +1395,23 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                   {paymentStep === 'form' && (
                     <form onSubmit={handleFormSubmit} className="space-y-5">
                       
-                      {/* Dynamic QR and USSD Action Banner */}
+                      {/* Direct USSD & Bank Settlement Action Banner */}
                       <div className="bg-gradient-to-r from-emerald-50 via-white to-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl bg-[#054823] text-emerald-200 flex items-center justify-center shrink-0">
-                            <QrCode className="w-5 h-5" />
+                            <Landmark className="w-5 h-5" />
                           </div>
                           <div>
                             <h5 className="text-xs font-black text-emerald-950">
-                              {language === 'om' ? 'Kaffaltii QR Koodii & USSD Saffisaa' : language === 'am' ? 'ፈጣን የኪውአር (QR) እና የUSSD ክፍያ' : 'Instant Dynamic QR & USSD Dial'}
+                              {language === 'om' ? 'Kaffaltii Herrega Baankii & USSD Saffisaa' : language === 'am' ? 'ኦፊሴላዊ የባንክ ሂሳቦች እና የUSSD ክፍያ' : 'Official Bank Accounts & USSD Dial'}
                             </h5>
                             <p className="text-[11px] text-gray-500 font-medium">
-                              telebirr • CBE Birr • Siinqee Pay • Awash • BOA
+                              CBE: 1000293102391 • Siinqee: 1019283110293 • telebirr: BG-992811
                             </p>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setQrModalAmount(formData.amount || '1000');
-                              setQrModalPlatform(formData.paymentMethod === 'paypal' ? 'telebirr' : formData.paymentMethod);
-                              setShowQrModal(true);
-                            }}
-                            className="px-3.5 py-2 bg-[#054823] hover:bg-[#022b14] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition cursor-pointer shadow-xs"
-                          >
-                            <QrCode className="w-3.5 h-3.5" />
-                            <span>{language === 'om' ? 'QR Saajjali' : language === 'am' ? 'QR ኮድ' : 'Dynamic QR'}</span>
-                          </button>
-
                           <button
                             type="button"
                             onClick={() => setShowUssdModal(true)}
@@ -2066,114 +1946,6 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                   )}
 
                 </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Dynamic QR Code Modal for Home Overview */}
-        <AnimatePresence>
-          {showQrModal && quickContribCamp && (
-            <motion.div
-              className="fixed inset-0 bg-[#06180e]/80 backdrop-blur-xs z-50 flex items-center justify-center p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <motion.div
-                className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-emerald-100 shadow-2xl relative text-center space-y-5"
-                initial={{ scale: 0.9, y: 15 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 15 }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setShowQrModal(false)}
-                  className="absolute top-4 right-4 p-2 text-gray-400 hover:text-emerald-950 hover:bg-emerald-50 rounded-full transition cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-
-                <div className="space-y-1">
-                  <span className="text-[10px] font-black text-[#054823] bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">
-                    {language === 'om' ? 'QR Koodii Kaffaltii Saffisaa' : language === 'am' ? 'ፈጣን የኪውአር ክፍያ' : 'Dynamic QR Payment'}
-                  </span>
-                  <h4 className="text-lg font-black text-emerald-950 uppercase tracking-tight">
-                    {language === 'om' ? 'Koodii QR Saajjali' : language === 'am' ? 'የQR ኮድ ስካን ያድርጉ' : 'Scan & Donate via QR Code'}
-                  </h4>
-                </div>
-
-                {/* Platform selector */}
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { id: 'telebirr', name: 'telebirr' },
-                    { id: 'cbe_birr', name: 'CBE Birr' },
-                    { id: 'sinqe', name: 'Siinqee' },
-                    { id: 'awash', name: 'Awash' },
-                    { id: 'boa', name: 'BOA' },
-                  ].map((plat) => (
-                    <button
-                      key={plat.id}
-                      type="button"
-                      onClick={() => setQrModalPlatform(plat.id)}
-                      className={`py-2 px-2 rounded-xl text-xs font-bold transition border cursor-pointer ${
-                        qrModalPlatform === plat.id
-                          ? 'bg-[#054823] text-white border-[#054823]'
-                          : 'bg-gray-50 text-gray-700 hover:bg-emerald-50 border-gray-200'
-                      }`}
-                    >
-                      {plat.name}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Amount input for QR */}
-                <div className="flex items-center gap-2 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
-                  <span className="text-xs font-bold text-gray-500 uppercase">{language === 'om' ? 'Hamma:' : 'Amount:'}</span>
-                  <input
-                    type="number"
-                    value={qrModalAmount}
-                    onChange={(e) => setQrModalAmount(e.target.value)}
-                    className="flex-1 font-mono font-black text-sm bg-white px-3 py-1.5 rounded-lg border border-emerald-200 text-[#054823]"
-                    placeholder="1000"
-                  />
-                  <span className="text-xs font-black text-emerald-800 font-mono">ETB</span>
-                </div>
-
-                {/* QR Code Container */}
-                {(() => {
-                  const qrInfo = getDynamicQrPayload(qrModalPlatform, qrModalAmount, quickContribCamp.id);
-                  return (
-                    <div className="space-y-3">
-                      <div className="p-4 bg-white rounded-2xl border-2 border-emerald-100 inline-block shadow-inner">
-                        <QRCodeSVG
-                          id="home-dynamic-qr-code-svg"
-                          value={qrInfo.payload}
-                          size={180}
-                          level="H"
-                          includeMargin={true}
-                          fgColor="#054823"
-                        />
-                      </div>
-
-                      <div className="text-xs font-bold text-emerald-950">
-                        <span>{qrInfo.platformName}</span> • <span className="font-mono text-[#054823]">{qrInfo.merchantId}</span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={downloadQrCode}
-                          className="flex-1 bg-[#054823] hover:bg-[#022b14] text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
-                        >
-                          <Download className="w-3.5 h-3.5" />
-                          <span>{language === 'om' ? 'QR Buufadhu' : language === 'am' ? 'QR አውርድ' : 'Download QR (PNG)'}</span>
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })()}
-
               </motion.div>
             </motion.div>
           )}

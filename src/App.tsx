@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Compass, Users, Heart, Award, ArrowUp, ArrowRight, Sprout } from 'lucide-react';
 
-import { Language, ActiveTab, DonationCamp, Giver } from './types';
-import { mockCampaigns as initialCampaigns } from './data';
+import { Language, ActiveTab, DonationCamp } from './types';
+import { useLiveStats } from './lib/useLiveStats';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
@@ -19,60 +19,19 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [aboutSubTab, setAboutSubTab] = useState<'mission' | 'history' | 'structure' | 'management'>('mission');
 
-  // Interactive Campaign State across Home and Contribution Portal
-  const [campaigns, setCampaigns] = useState<DonationCamp[]>(() => {
+  // Live Campaign state connected to Firestore database starting from zero
+  const { campaigns: liveCampaigns } = useLiveStats();
+
+  useEffect(() => {
     try {
-      const saved = localStorage.getItem('bg_campaigns_data');
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    } catch (e) {
-      console.error("Failed to load saved campaigns: ", e);
+      localStorage.removeItem('bg_campaigns_data');
+    } catch {
+      // Ignore if localStorage unavailable
     }
-    return initialCampaigns;
-  });
+  }, []);
 
-  const handleContribute = (campaignId: string, amount: number, giverName: string, paymentMethod?: string) => {
-    if (!amount || amount <= 0) return;
-
-    setCampaigns(prevCampaigns => {
-      const updated = prevCampaigns.map(camp => {
-        if (camp.id === campaignId) {
-          const secretGiverLabel = language === 'om' 
-            ? 'Arjoomaa Dhoksaa (Secret Giver)' 
-            : language === 'am' 
-              ? 'ሚስጥራዊ ለጋሽ (Secret Giver)' 
-              : 'Anonymous Giver';
-
-          const newGiver: Giver = {
-            id: 'g_' + Date.now(),
-            name: secretGiverLabel,
-            isAnonymous: true,
-            amount: amount,
-            date: new Date().toISOString().split('T')[0],
-            paymentMethod: paymentMethod || 'cbe'
-          };
-          const updatedGivers = [newGiver, ...(camp.givers || [])];
-          const newRaised = camp.raisedAmount + amount;
-          const newCount = camp.contributorsCount + 1;
-          return {
-            ...camp,
-            raisedAmount: newRaised,
-            contributorsCount: newCount,
-            givers: updatedGivers
-          };
-        }
-        return camp;
-      });
-
-      try {
-        localStorage.setItem('bg_campaigns_data', JSON.stringify(updated));
-      } catch (e) {
-        console.error("Failed to save updated campaigns to localStorage", e);
-      }
-
-      return updated;
-    });
+  const handleContribute = (_campaignId: string, _amount: number, _giverName: string, _paymentMethod?: string) => {
+    // Firestore listener automatically updates liveCampaigns in real-time upon database document creation
   };
 
   const scrollToTop = () => {
@@ -203,7 +162,7 @@ export default function App() {
                   setActiveTab={setActiveTab} 
                   aboutSubTab={aboutSubTab} 
                   setAboutSubTab={setAboutSubTab} 
-                  campaigns={campaigns}
+                  campaigns={liveCampaigns}
                   onContribute={handleContribute}
                 />
               </>
@@ -220,7 +179,7 @@ export default function App() {
             {activeTab === 'contribution' && (
               <ContributionPortal 
                 language={language} 
-                campaigns={campaigns}
+                campaigns={liveCampaigns}
                 onContribute={handleContribute}
               />
             )}
