@@ -541,21 +541,21 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
           </div>
 
           {/* Sub Navigation Selectors */}
-          <div className="flex flex-wrap justify-center gap-3 border-b border-emerald-100 pb-4">
+          <div className="flex flex-nowrap sm:flex-wrap items-center overflow-x-auto no-scrollbar justify-start sm:justify-center gap-2 sm:gap-3 border-b border-emerald-100 pb-3 pt-1 px-1 -mx-2 sm:mx-0">
             {subTabsList.map((tab) => {
               const isSelected = activeSubTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveSubTab(tab.id)}
-                  className={`flex items-center gap-3 px-6 py-4 rounded-xl text-sm sm:text-base md:text-lg lg:text-xl font-black uppercase tracking-wider transition-all duration-300 cursor-pointer active:scale-95 ${
+                  className={`flex items-center gap-2 sm:gap-3 px-3.5 py-2.5 sm:px-6 sm:py-3.5 rounded-xl text-xs sm:text-base font-black uppercase tracking-wider transition-all duration-300 cursor-pointer active:scale-95 shrink-0 ${
                     isSelected 
-                      ? 'bg-emerald-600 text-white shadow-md scale-105' 
+                      ? 'bg-emerald-600 text-white shadow-md' 
                       : 'bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-950 border border-emerald-100'
                   }`}
                 >
-                  {tab.icon}
-                  <span>{tab.label[language]}</span>
+                  <span className="shrink-0">{tab.icon}</span>
+                  <span className="whitespace-nowrap">{tab.label[language]}</span>
                 </button>
               );
             })}
@@ -1495,24 +1495,6 @@ export default function HomeOverview({ language, setActiveTab, aboutSubTab, setA
                             placeholder="1000"
                           />
                           <Coins className="w-4 h-4 text-emerald-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                        </div>
-
-                        {/* Amount Quick Presets */}
-                        <div className="flex flex-wrap gap-1.5 pt-1">
-                          {['250', '500', '1000', '2500', '5000', '10000'].map((preset) => (
-                            <button
-                              key={preset}
-                              type="button"
-                              onClick={() => setFormData(prev => ({ ...prev, amount: preset }))}
-                              className={`text-[10.5px] font-extrabold px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
-                                formData.amount === preset
-                                  ? 'bg-[#054823] text-white border-[#054823] shadow-xs'
-                                  : 'bg-white text-emerald-900 border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50'
-                              }`}
-                            >
-                              +{Number(preset).toLocaleString()} ETB
-                            </button>
-                          ))}
                         </div>
                       </div>
 

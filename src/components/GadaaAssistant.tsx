@@ -182,7 +182,7 @@ export default function GadaaAssistant({ language }: GadaaAssistantProps) {
   return (
     <>
       {/* Floating Launcher Action circular widget */}
-      <div className="fixed bottom-6 right-20 z-40">
+      <div className="fixed bottom-20 right-16 lg:bottom-6 lg:right-20 z-40">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}

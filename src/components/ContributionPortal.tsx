@@ -374,7 +374,7 @@ export default function ContributionPortal({ language, campaigns, onContribute }
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className="w-full text-xs font-semibold px-4 py-3.5 rounded-xl border border-emerald-100 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all shadow-xs hover:shadow-sm"
+                        className="w-full text-base sm:text-xs font-semibold px-4 py-3.5 rounded-xl border border-emerald-100 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all shadow-xs hover:shadow-sm"
                         placeholder=""
                       />
                       {errors.name && <p className="text-[10px] text-red-500 font-bold">{errors.name}</p>}
@@ -392,7 +392,7 @@ export default function ContributionPortal({ language, campaigns, onContribute }
                           name="phone"
                           value={formData.phone}
                           onChange={handleInputChange}
-                          className="w-full text-xs font-semibold px-4 py-3.5 rounded-xl border border-emerald-100 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all shadow-xs hover:shadow-sm"
+                          className="w-full text-base sm:text-xs font-semibold px-4 py-3.5 rounded-xl border border-emerald-100 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all shadow-xs hover:shadow-sm"
                           placeholder=""
                         />
                         {errors.phone && <p className="text-[10px] text-red-500 font-bold">{errors.phone}</p>}
@@ -408,7 +408,7 @@ export default function ContributionPortal({ language, campaigns, onContribute }
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className="w-full text-xs font-semibold px-4 py-3.5 rounded-xl border border-emerald-100 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all shadow-xs hover:shadow-sm"
+                          className="w-full text-base sm:text-xs font-semibold px-4 py-3.5 rounded-xl border border-emerald-100 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 focus:border-emerald-500 bg-white transition-all shadow-xs hover:shadow-sm"
                           placeholder=""
                         />
                         {errors.email && <p className="text-[10px] text-red-500 font-bold">{errors.email}</p>}
@@ -439,24 +439,6 @@ export default function ContributionPortal({ language, campaigns, onContribute }
                           placeholder="1000"
                         />
                         <Coins className="w-4 h-4 text-emerald-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                      </div>
-
-                      {/* Amount Quick Presets */}
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {['250', '500', '1000', '2500', '5000', '10000'].map((preset) => (
-                          <button
-                            key={preset}
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, amount: preset }))}
-                            className={`text-[10.5px] font-extrabold px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
-                              formData.amount === preset
-                                ? 'bg-[#054823] text-white border-[#054823] shadow-xs'
-                                : 'bg-white text-emerald-900 border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50'
-                            }`}
-                          >
-                            +{Number(preset).toLocaleString()} ETB
-                          </button>
-                        ))}
                       </div>
                     </div>
 

@@ -84,7 +84,7 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
             id="brand-logo-container"
           >
             {/* Official Buusaa Gonofaa Oromiyaa Logo Seal */}
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white p-0.5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 shrink-0 shadow-md ring-2 ring-[#732A84]/60 overflow-hidden">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full bg-white p-0.5 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 shrink-0 shadow-md ring-2 ring-[#732A84]/60 overflow-hidden">
               <img 
                 src={bgLogo} 
                 alt="Buusaa Gonofaa Oromiyaa Official Logo Seal" 
@@ -94,32 +94,32 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
             </div>
             
             {/* Top Left Text: Buusaa Gonofaa Adamaa in #732A84 (RGB: 115,42,132) */}
-            <div className="flex flex-col text-left select-none">
-              <div className="font-display tracking-tight leading-none flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <div className="flex flex-col text-left select-none min-w-0">
+              <div className="font-display tracking-tight leading-none flex flex-wrap items-baseline gap-x-1.5 sm:gap-x-2 gap-y-0.5">
                 {language === 'om' ? (
                   <>
-                    <span className="text-xl sm:text-2xl md:text-2.5xl lg:text-3xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]">
+                    <span className="text-lg sm:text-2xl md:text-2.5xl lg:text-3xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)] truncate">
                       Buusaa Gonofaa
                     </span>
-                    <span className="text-xl sm:text-2xl md:text-2.5xl lg:text-3xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]">
+                    <span className="text-lg sm:text-2xl md:text-2.5xl lg:text-3xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]">
                       Adamaa
                     </span>
                   </>
                 ) : language === 'en' ? (
                   <>
-                    <span className="text-xl sm:text-2xl md:text-2.5xl lg:text-3xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]">
+                    <span className="text-lg sm:text-2xl md:text-2.5xl lg:text-3xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)] truncate">
                       Buusaa Gonofaa
                     </span>
-                    <span className="text-xl sm:text-2xl md:text-2.5xl lg:text-3xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]">
+                    <span className="text-lg sm:text-2xl md:text-2.5xl lg:text-3xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]">
                       Adama
                     </span>
                   </>
                 ) : (
                   <>
-                    <span className="text-lg sm:text-xl md:text-2xl lg:text-2.5xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]">
+                    <span className="text-base sm:text-xl md:text-2xl lg:text-2.5xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)] truncate">
                       ቡሳ ጎኖፋ
                     </span>
-                    <span className="text-lg sm:text-xl md:text-2xl lg:text-2.5xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]">
+                    <span className="text-base sm:text-xl md:text-2xl lg:text-2.5xl font-black text-[#732A84] drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)]">
                       አዳማ ቅርንጫፍ
                     </span>
                   </>
@@ -296,7 +296,24 @@ export default function Navbar({ language, setLanguage, activeTab, setActiveTab,
             className="lg:hidden border-t border-[#0B4C28]/25 bg-[#CBEED4]/98 text-[#063118] overflow-hidden" 
             id="mobile-expanded-menu"
           >
-            <div className="px-3 pt-3 pb-6 space-y-1 sm:px-4 text-left">
+            <div className="px-3 pt-3 pb-6 space-y-2 sm:px-4 text-left">
+              {/* Quick Language Switcher Bar on Mobile Phone */}
+              <div className="flex items-center gap-1.5 p-1 bg-white/70 rounded-xl border border-emerald-900/10 mb-3">
+                {languages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => setLanguage(lang.code)}
+                    className={`flex-1 py-2 text-center rounded-lg text-xs font-black transition-all cursor-pointer ${
+                      language === lang.code
+                        ? 'bg-[#0B4C28] text-white shadow-xs'
+                        : 'text-[#063118] hover:bg-white/80'
+                    }`}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+
               {navLinks.map((link) => {
                 const isActive = activeTab === link.id;
                 const hasSubs = submenuMap[link.id]?.length > 0;

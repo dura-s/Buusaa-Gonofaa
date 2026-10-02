@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Compass, Users, Heart, Award, ArrowUp, ArrowRight, Sprout } from 'lucide-react';
+import { Compass, Users, Heart, Award, ArrowUp, ArrowRight, Sprout, Home, Briefcase, Coins, Phone } from 'lucide-react';
 
 import { Language, ActiveTab, DonationCamp } from './types';
+import { translations } from './translations';
 import { useLiveStats } from './lib/useLiveStats';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -189,7 +190,9 @@ export default function App() {
       </main>
 
       {/* Sustainable Bottom Footer containing quick pathways and legal details */}
-      <Footer language={language} setActiveTab={setActiveTab} />
+      <div className="pb-16 lg:pb-0">
+        <Footer language={language} setActiveTab={setActiveTab} />
+      </div>
 
       {/* Sustainable Floating AI Assistant */}
       <GadaaAssistant language={language} />
@@ -197,12 +200,47 @@ export default function App() {
       {/* Modern float-to-top micro-interaction shortcut */}
       <button
         onClick={scrollToTop}
-        className="fixed bottom-6 right-6 p-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl hover:shadow-2xl hover:scale-105 transition-all z-40 border border-emerald-500 cursor-pointer"
+        className="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 p-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl hover:shadow-2xl hover:scale-105 transition-all z-30 border border-emerald-500 cursor-pointer"
         aria-label="Scroll to top"
         id="scroll-to-top-btn"
       >
         <ArrowUp className="w-4.5 h-4.5" />
       </button>
+
+      {/* Native App-like Mobile Bottom Navigation Bar */}
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-emerald-100 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] px-1.5 py-1.5 flex items-center justify-around" id="mobile-bottom-nav">
+        {[
+          { id: 'home' as ActiveTab, icon: Home, label: translations.navHome[language] },
+          { id: 'services' as ActiveTab, icon: Briefcase, label: translations.navServices[language] },
+          { id: 'community' as ActiveTab, icon: Users, label: translations.navCommunity[language] },
+          { id: 'contribution' as ActiveTab, icon: Coins, label: translations.navContribution[language] },
+          { id: 'contact' as ActiveTab, icon: Phone, label: translations.navContact[language] }
+        ].map((item) => {
+          const isActive = activeTab === item.id;
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer min-w-[56px] ${
+                isActive
+                  ? 'text-[#054823]'
+                  : 'text-gray-400 hover:text-emerald-800'
+              }`}
+            >
+              <div className={`p-1 rounded-lg transition-colors ${isActive ? 'bg-emerald-100 text-[#054823]' : ''}`}>
+                <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
+              </div>
+              <span className={`text-[9.5px] uppercase tracking-tight mt-0.5 truncate max-w-[64px] ${isActive ? 'font-black text-[#054823]' : 'font-semibold'}`}>
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
+      </nav>
 
     </div>
   );

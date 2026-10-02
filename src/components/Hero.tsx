@@ -403,7 +403,7 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
               {/* Welcome Statement placed on top of the main hero title */}
               <motion.h2 
                 variants={itemVariants}
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-4.5xl font-black text-[#16803E] tracking-tight leading-tight font-display"
+                className="text-xl sm:text-3xl md:text-4xl font-black text-[#16803E] tracking-tight leading-tight font-display"
               >
                 {language === 'om' ? 'Baga Gara Buusaa Gonofaa Damee Adaamaa Nagaan Dhuftan!' :
                  language === 'am' ? 'ወደ ቡሳ ጎኖፋ የአዳማ ቅርንጫፍ በደህና መጡ!' :
@@ -413,7 +413,7 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
               {/* Title display block - styled beautifully with Outfit display font */}
               <motion.h1 
                 variants={itemVariants}
-                className="text-3.5xl sm:text-4.5xl md:text-5.5xl lg:text-6xl font-extrabold text-[#0B4C28] tracking-tight leading-tight font-display"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0B4C28] tracking-tight leading-tight font-display"
               >
                 {translations.heroTitle[language]}
               </motion.h1>
@@ -421,7 +421,7 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
               {/* Description Subtitle details */}
               <motion.p 
                 variants={itemVariants}
-                className="text-base md:text-lg text-slate-600 font-medium sm:leading-loose leading-relaxed max-w-2xl"
+                className="text-sm sm:text-base md:text-lg text-slate-600 font-medium sm:leading-loose leading-relaxed max-w-2xl"
               >
                 {translations.heroSubtitle[language]}
               </motion.p>
@@ -429,11 +429,11 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
               {/* CTA action buttons */}
               <motion.div 
                 variants={itemVariants}
-                className="flex flex-wrap items-center gap-4 pt-2"
+                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 w-full sm:w-auto"
               >
                 <button
                   onClick={() => setActiveTab('contribution')}
-                  className="group flex items-center gap-2 bg-[#0B4C28] text-white px-7 py-4 rounded-xl text-xs font-extrabold tracking-widest hover:bg-[#063118] active:scale-[0.97] hover:shadow-[0_10px_25px_rgba(11,76,40,0.25)] transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase border border-transparent"
+                  className="group flex items-center justify-center gap-2 bg-[#0B4C28] text-white px-6 sm:px-7 py-3.5 sm:py-4 rounded-xl text-xs font-extrabold tracking-widest hover:bg-[#063118] active:scale-[0.97] hover:shadow-[0_10px_25px_rgba(11,76,40,0.25)] transition-all transform hover:-translate-y-0.5 cursor-pointer uppercase border border-transparent"
                   id="hero-cta-btn-primary"
                 >
                   <span>{translations.heroCtaPrimary[language]}</span>
@@ -442,7 +442,7 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
 
                 <button
                   onClick={() => setActiveTab('services')}
-                  className="flex items-center gap-2 border-2 border-[#0B4C28]/80 text-[#0B4C28] bg-transparent px-7 py-4 rounded-xl text-xs font-extrabold tracking-widest hover:bg-emerald-50/50 active:scale-[0.97] transition-all cursor-pointer uppercase"
+                  className="flex items-center justify-center gap-2 border-2 border-[#0B4C28]/80 text-[#0B4C28] bg-transparent px-6 sm:px-7 py-3.5 sm:py-4 rounded-xl text-xs font-extrabold tracking-widest hover:bg-emerald-50/50 active:scale-[0.97] transition-all cursor-pointer uppercase"
                   id="hero-cta-btn-secondary"
                 >
                   <span>{translations.heroCtaSecondary[language]}</span>
@@ -495,7 +495,7 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
                   </div>
 
                   {/* Floating Navigation Controls */}
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-20">
                     <button 
                       onClick={prevSlide}
                       className="w-8 h-8 rounded-full bg-black/60 hover:bg-[#0B4C28] active:scale-90 text-white flex items-center justify-center transition-all border border-white/10 shadow-md cursor-pointer"
@@ -503,7 +503,7 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
                       <ChevronLeft className="w-5 h-5" />
                     </button>
                   </div>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-20">
                     <button 
                       onClick={nextSlide}
                       className="w-8 h-8 rounded-full bg-black/60 hover:bg-[#0B4C28] active:scale-90 text-white flex items-center justify-center transition-all border border-white/10 shadow-md cursor-pointer"
@@ -642,25 +642,25 @@ export default function Hero({ language, setActiveTab }: HeroProps) {
           transition={{ delay: 0.5, duration: 0.5 }}
           id="branch-statistics-strip"
         >
-          {/* 4 Core Metric Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* 4 Core Metric Cards (2-col grid on phones, 4-col on desktop) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {statCardList.map((stat, i) => (
               <div 
                 key={i} 
-                className="bg-white rounded-3xl p-6 border border-emerald-100 hover:border-emerald-300 hover:shadow-md hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 flex flex-col justify-between text-left group shadow-xs"
+                className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-emerald-100 hover:border-emerald-300 hover:shadow-md hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 flex flex-col justify-between text-left group shadow-xs"
               >
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-4">
-                    <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-100 text-[#054823] group-hover:bg-[#054823] group-hover:text-white transition-colors">
+                  <div className="flex items-center justify-between gap-2 mb-2 sm:mb-4">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-emerald-50 border border-emerald-100 text-[#054823] group-hover:bg-[#054823] group-hover:text-white transition-colors">
                       {stat.icon}
                     </div>
                   </div>
 
-                  <div className="text-2xl lg:text-3xl font-black text-emerald-950 tracking-tight mb-1 font-sans">
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950 tracking-tight mb-1 font-sans">
                     {stat.value}
                   </div>
 
-                  <div className="text-xs font-extrabold text-emerald-900/80 leading-tight uppercase tracking-wider font-sans">
+                  <div className="text-[10px] sm:text-xs font-extrabold text-emerald-900/80 leading-tight uppercase tracking-wider font-sans line-clamp-2">
                     {stat.label[language]}
                   </div>
                 </div>
