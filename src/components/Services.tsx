@@ -1,0 +1,984 @@
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+const c = { jsx: _jsx, jsxs: _jsxs, Fragment: React.Fragment };
+
+import {
+  ArrowRight,
+  ArrowUpRight,
+  ArrowUp,
+  Award,
+  Briefcase,
+  Building,
+  Calendar,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  AlertCircle,
+  CheckCircle2,
+  HelpCircle,
+  Clock,
+  Coins,
+  Compass,
+  Copy,
+  Download,
+  ExternalLink,
+  FileText,
+  Globe,
+  Heart,
+  History,
+  Home,
+  ImageIcon,
+  Landmark,
+  Loader2,
+  Lock,
+  Mail,
+  MapPin,
+  Megaphone,
+  Menu,
+  MessageSquare,
+  Phone,
+  Play,
+  Plus,
+  RotateCcw,
+  ScanEye,
+  Send,
+  ShieldAlert,
+  ShieldCheck,
+  Shield,
+  Smartphone,
+  Sparkles,
+  Sprout,
+  TrendingUp,
+  UserCheck,
+  Users,
+  Workflow,
+  X,
+  Youtube,
+  ZoomIn,
+  ZoomOut,
+} from "lucide-react";
+
+import { Language, ActiveTab, DonationCamp, NewsItem } from "../types";
+import { translations } from "../translations";
+import { mockNews, mockEvents, mockCampaigns, branchStatistics } from "../data";
+import { useLiveStats } from "../lib/useLiveStats";
+import { db } from "../lib/firebase";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  onSnapshot,
+} from "firebase/firestore";
+
+import bgLogo from "../assets/images/bg_logo.jpeg";
+import wadooImage from "../assets/images/photo_2026-06-25_11-35-11.jpg";
+import latestAssemblyImage from "../assets/images/photo_2026-06-25_11-53-35.jpg";
+import img_20_1 from "../assets/images/photo_2026-06-25_11-53-20.jpg";
+import img_20_2 from "../assets/images/photo_2026-06-25_11-53-20 (2).jpg";
+import img_21 from "../assets/images/photo_2026-06-25_11-53-21.jpg";
+import img_22_1 from "../assets/images/photo_2026-06-25_11-53-22.jpg";
+import img_22_2 from "../assets/images/photo_2026-06-25_11-53-22 (2).jpg";
+import img_23 from "../assets/images/photo_2026-06-25_11-53-23.jpg";
+import img_24_1 from "../assets/images/photo_2026-06-25_11-53-24.jpg";
+import img_24_2 from "../assets/images/photo_2026-06-25_11-53-24 (2).jpg";
+
+interface ServicesProps {
+  language: Language;
+  initialInquiryActive?: boolean;
+}
+export default function Services({
+  language: n,
+  initialInquiryActive: e,
+}: ServicesProps) {
+  var q;
+  var K;
+  const [t, s] = useState(e ? "general" : null);
+  const [r, l] = useState("savings");
+  const [d, h] = useState(false);
+  const [p, x] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    terms: false,
+    notes: "",
+  });
+  const [y, b] = useState<Record<string, any>>({});
+  const E = [
+    {
+      id: "savings",
+      icon: c.jsx(Coins, {
+        className: "w-8 h-8 text-emerald-600",
+      }),
+      titleKey: "serviceSavingsTitle",
+      descKey: "serviceSavingsDesc",
+      bgClass: "bg-emerald-50/35",
+      features: {
+        om: ["Qusannoo Maatii", "Dhalata Malee", "Saffisa Banuuf"],
+        am: ["የግል ቁጠባ", "ያለ ወለድ", "ፈጣን አሠራር"],
+        en: [
+          "Family Safe Ledger",
+          "Zero Administrative Fees",
+          "Fast Setup Account",
+        ],
+      },
+    },
+    {
+      id: "agricultural-loans",
+      icon: <Sprout className="w-8 h-8 text-emerald-600" />,
+      titleKey: "serviceLoansTitle",
+      descKey: "serviceLoansDesc",
+      bgClass: "bg-emerald-50/45",
+      features: {
+        om: ["Sanyii Misoomaa", "Liqii Yeroo Reebaa", "Wabii Gadaa Hawaasaa"],
+        am: ["የምርት ዘር ብድር", "ወቅታዊ ምቹ ብድር", "የኅብረት ዋስትና"],
+        en: [
+          "High-Yield Seed Loans",
+          "Special Harvest Flexible Terms",
+          "Collective Guarantees",
+        ],
+      },
+    },
+    {
+      id: "micro-insurance",
+      icon: <ShieldCheck className="w-8 h-8 text-emerald-600" />,
+      titleKey: "serviceInsuranceTitle",
+      descKey: "serviceInsuranceDesc",
+      bgClass: "bg-emerald-50/35",
+      features: {
+        om: [
+          "Inshuraansii Roobaa",
+          "Haguuggii Maallaqaa Fayyaa",
+          "Wabii Waldaale",
+        ],
+        am: ["የዝናብ እጥረት ሽፋን", "የሕክምና አጋዥ ፈንድ", "የአባላት ጋራ ዋስትና"],
+        en: [
+          "Weather Index Coverage",
+          "Emergency Medical Assistance",
+          "Cooperative Safety Buffer",
+        ],
+      },
+    },
+  ];
+  const T = (Q) => {
+    s(Q);
+    h(false);
+    x({
+      name: "",
+      email: "",
+      phone: "",
+      terms: false,
+      notes: "",
+    });
+    b({});
+  };
+  const j = (Q) => {
+    const { name: ne, value: fe } = Q.target;
+    x((pe) => ({
+      ...pe,
+      [ne]: fe,
+    }));
+    if (y[ne]) {
+      b((pe) => {
+        const M = {
+          ...pe,
+        };
+        delete M[ne];
+        return M;
+      });
+    }
+  };
+  const L = () => {
+    const Q: Record<string, string> = {};
+    if (!p.name.trim()) {
+      Q.name = translations.valRequired[n];
+    }
+    if (p.phone.trim()) {
+      if (!/^\+?[0-9]{9,15}$/.test(p.phone.replace(/\s/g, ""))) {
+        Q.phone = translations.valPhone[n];
+      }
+    } else {
+      Q.phone = translations.valRequired[n];
+    }
+    if (p.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) {
+      Q.email = translations.valEmail[n];
+    }
+    b(Q);
+    return Object.keys(Q).length === 0;
+  };
+  const z = (Q) => {
+    Q.preventDefault();
+    if (L()) {
+      h(true);
+    }
+  };
+  return (
+    <section
+      className="bg-gradient-to-br from-white via-emerald-50/15 to-white py-12 md:py-16 shadow-[0_0_50px_rgba(16,185,129,0.05)_inset] border-t border-emerald-100"
+      id="services-section"
+    >
+      <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16">
+        <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
+          <div className="inline-block px-3.5 py-1.5 rounded-full bg-white border border-emerald-100 text-[#0B4C28] text-xs font-bold uppercase tracking-widest shadow-xs">
+            {n === "om"
+              ? "Tajaajila Misoomaa"
+              : n === "am"
+                ? "ባለሙያ ድጋፎች"
+                : "Social Microfinance"}
+          </div>
+          <h2 className="text-2xl md:text-4xl font-extrabold text-[#0B4C28] tracking-tight font-display">
+            {translations.servicesTitle[n]}
+          </h2>
+          <p className="text-sm md:text-base text-gray-500 font-semibold leading-relaxed">
+            {translations.servicesSubtitle[n]}
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {E.map((Q, ne) => (
+            <div
+              className="bg-white rounded-3xl border border-emerald-100 p-8 hover:border-emerald-200 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
+              id={Q.id}
+              key={Q.id}
+            >
+              <div className="space-y-6">
+                <div className="w-14 h-14 rounded-2xl bg-white border border-emerald-100 flex items-center justify-center shadow-xs transition-transform duration-300 group-hover:scale-105">
+                  {Q.icon}
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-base font-bold text-emerald-950 uppercase tracking-widest">
+                    {translations[Q.titleKey][n]}
+                  </h3>
+                  <p className="text-xs text-emerald-900/70 font-semibold leading-loose">
+                    {translations[Q.descKey][n]}
+                  </p>
+                </div>
+                <div className="pt-4 border-t border-emerald-100/50 space-y-2.5">
+                  {Q.features[n].map((fe, pe) => (
+                    <div
+                      className="flex items-center gap-2 text-xs font-semibold text-emerald-800"
+                      key={pe}
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      <span>{fe}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="pt-8">
+                <button
+                  onClick={() => T(Q.id)}
+                  style={{
+                    textTransform: "uppercase",
+                    letterSpacing: "1px",
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-[#0B4C28] hover:bg-[#063118] text-white font-extrabold text-xs py-3.5 px-4 rounded-xl transition-all shadow-sm cursor-pointer uppercase border border-transparent"
+                >
+                  <span>{translations.serviceApplyBtn[n]}</span>
+                  <ArrowRight className="w-4 h-4 text-yellow-400" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div
+          className="mt-20 bg-white rounded-3xl border border-slate-200/60 p-8 md:p-10 space-y-8"
+          id="product-blueprints-section"
+        >
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-slate-100 pb-6">
+            <div className="space-y-1.5 text-left">
+              <span className="text-[10px] font-extrabold text-[#0B4C28] bg-emerald-50 px-3 py-1 rounded-md uppercase tracking-wider inline-block">
+                {n === "om"
+                  ? "Oddeeffannoo Gadi Fageenyaa"
+                  : n === "am"
+                    ? "ዝርዝር መግለጫዎች"
+                    : "Institutional Specifications"}
+              </span>
+              <h3 className="text-xl font-black text-emerald-950 font-sans uppercase tracking-wide">
+                {n === "om"
+                  ? "Qaada fi Qajeelfama Tajaajila Keenyaa"
+                  : n === "am"
+                    ? "የቁጠባ፣ የብድርና የማይክሮ ኢንሹራንስ ዝርዝር መረጃ"
+                    : "Detailed Product Handbooks & Standards"}
+              </h3>
+              <p className="text-xs text-gray-500 font-semibold">
+                {n === "om"
+                  ? "Wabii fi seera kaffaltii qoratame, ulaagaalee miseensummaa fi faayidaalee hawaasummaa asitti dubbisaa."
+                  : n === "am"
+                    ? "ለአባላት የተዘጋጁ ህጎች፣ የብድር መክፈያ ገደቦች እና የአየር ሁኔታ ዋስትና መመሪያዎች።"
+                    : "Examine deep product structures, collateral-free credit bounds, and rainfall satellite indices verified for Adama."}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 shrink-0">
+              <button
+                onClick={() => l("savings")}
+                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition ${r === "savings" ? "bg-[#0B4C28] text-white shadow-sm" : "bg-emerald-50/60 text-[#0B4C28] hover:bg-emerald-100"}`}
+              >
+                {c.jsx(Coins, {
+                  className: "w-4.5 h-4.5",
+                })}
+                <span>
+                  {n === "om"
+                    ? "Qusannoo Only"
+                    : n === "am"
+                      ? "ቁጠባ"
+                      : "Savings"}
+                </span>
+              </button>
+              <button
+                onClick={() => l("loans")}
+                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition ${r === "loans" ? "bg-[#0B4C28] text-white shadow-sm" : "bg-emerald-50/60 text-[#0B4C28] hover:bg-emerald-100"}`}
+              >
+                <Sprout className="w-4.5 h-4.5" />
+                <span>
+                  {n === "om"
+                    ? "Liqii Only"
+                    : n === "am"
+                      ? "የግብርና ብድር"
+                      : "Agriculture Loans"}
+                </span>
+              </button>
+              <button
+                onClick={() => l("insurance")}
+                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition ${r === "insurance" ? "bg-[#0B4C28] text-white shadow-sm" : "bg-emerald-50/60 text-[#0B4C28] hover:bg-emerald-100"}`}
+              >
+                <ShieldCheck className="w-4.5 h-4.5" />
+                <span>
+                  {n === "om"
+                    ? "Wabii Only"
+                    : n === "am"
+                      ? "ኢንሹራንስ"
+                      : "Micro-Insurance"}
+                </span>
+              </button>
+            </div>
+          </div>
+          <AnimatePresence mode="wait">
+            {r === "savings" && (
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-12 gap-8 text-left"
+                initial={{
+                  opacity: 0,
+                  y: 10,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                key="savings-spec"
+              >
+                <div className="md:col-span-4 space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-705 text-amber-700">
+                    {c.jsx(Coins, {
+                      className: "w-6 h-6",
+                    })}
+                  </div>
+                  <h4 className="text-base font-extrabold text-emerald-950 font-sans tracking-tight uppercase">
+                    {n === "om"
+                      ? "Miseensummaa fi Qusannannoo"
+                      : n === "am"
+                        ? "የግልና የኅብረት ቁጠባዎች"
+                        : "Secure Capital Safeguards"}
+                  </h4>
+                  <p className="text-xs text-gray-600 font-semibold leading-relaxed">
+                    {n === "om"
+                      ? "Qusannoon bu'uura dinagdee miseensota keenyati. Karaa herrega dirqamaa fi fedhii daldala keessan guddiftu."
+                      : n === "am"
+                        ? "ቁጠባ በአባላት መካከል ዋስትናን የመፍጠርና ዝቅተኛ ወለድ ያለው ብድር ለማግኘት ዋነኛው ቅድመ-ሁኔታ ነው።"
+                        : "Our savings portfolio blends disciplined community-led compliance with flexible wealth storage buffers."}
+                  </p>
+                  <div className="p-4 bg-emerald-55 bg-emerald-50 rounded-2xl border border-emerald-100/100 text-[11px] font-semibold text-emerald-950 leading-relaxed">
+                    <strong>
+                      {n === "om"
+                        ? "Wabii Dhalata Malee:"
+                        : n === "am"
+                          ? "ወለድ-አልባ የሸሪዓ አማራጭ፡"
+                          : "Interest-Free Compliance Option:"}
+                    </strong>
+                    <br />
+                    {n === "om"
+                      ? "Kaffaltiileen dhalata malee (Shari'ah compliance) daldaltoota fi hawaasa Adamaaf ni dhiyaata."
+                      : n === "am"
+                        ? "ለአዳማና ዙሪያው ሙስሊም ማህበረሰብ የሚሆን የሸሪዓ መመሪያን የተከተሉ ወለድ-አልባ የቁጠባ ዕድሎች በቅርንጫፋችን ይገኛሉ።"
+                        : "We operate fully optimized non-interest systems (Murabahah mutual pathways) for Islamic agro-enterprise cohorts in Adama."}
+                  </div>
+                </div>
+                <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="p-6 bg-emerald-50/40 rounded-2xl border border-emerald-100 space-y-3">
+                    <h5 className="text-xs font-black uppercase tracking-wider text-[#054823]">
+                      {n === "om"
+                        ? "1. Qusannoo Dirqamaa"
+                        : n === "am"
+                          ? "፩. የግዴታ ቁጠባ (Compulsory)"
+                          : "1. Compulsory Savings Plan"}
+                    </h5>
+                    <ul className="space-y-2 text-xs text-gray-700 font-semibold">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>
+                          <strong>
+                            {n === "om"
+                              ? "Kaffaltii Ji'aa:"
+                              : "Monthly Deposit:"}
+                          </strong>{" "}
+                          50 ETB{" "}
+                          {n === "om"
+                            ? "miseensota dhuunfaan"
+                            : "(Local Farmers)"}
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>
+                          <strong>
+                            {n === "om"
+                              ? "Mirga Liqii:"
+                              : "Credit Eligibility:"}
+                          </strong>{" "}
+                          {n === "om"
+                            ? "Ji'a 3 qusannaa booda deeggarsa liqii kenna"
+                            : "Unlocks loan eligibility after 3 months of consistent cycle."}
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>
+                          <strong>
+                            {n === "om"
+                              ? "Kaffaltii Banuuf:"
+                              : "Account Setup Fees:"}
+                          </strong>{" "}
+                          0 ETB ({n === "om" ? "Bilisa" : "Free"})
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="p-6 bg-emerald-50/40 rounded-2xl border border-emerald-100 space-y-3">
+                    <h5 className="text-xs font-black uppercase tracking-wider text-[#054823]">
+                      {n === "om"
+                        ? "2. Qusannoo Fedhii"
+                        : n === "am"
+                          ? "፪. የፈቃደኝነት ቁጠባ (Voluntary)"
+                          : "2. Voluntary Savings Plan"}
+                    </h5>
+                    <ul className="space-y-2 text-xs text-gray-700 font-semibold">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>
+                          <strong>
+                            {n === "om"
+                              ? "Hamma Kaffaltii:"
+                              : "Deposit Minimum:"}
+                          </strong>{" "}
+                          {n === "om"
+                            ? "Kan miseensaa"
+                            : "No strict limits. Withdraw anytime."}
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>
+                          <strong>
+                            {n === "om"
+                              ? "Bu'aa qusannaa:"
+                              : "Yield Dividends:"}
+                          </strong>{" "}
+                          {n === "om"
+                            ? "Gara qusannaa daldalaaf bu'aa fida"
+                            : "Yields yearly dividends powered by mutual cooperative projects."}
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>
+                          <strong>
+                            {n === "om"
+                              ? "Galmee Deetaa:"
+                              : "Bookkeeping Status:"}
+                          </strong>{" "}
+                          Fully paperless digital SMS ledger logs.
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="p-6 bg-emerald-50/40 rounded-2xl border border-emerald-100 space-y-3 sm:col-span-2 text-left">
+                    <h5 className="text-xs font-black uppercase tracking-wider text-[#054823] flex items-center gap-1.5">
+                      {c.jsx(Users, {
+                        className: "w-4 h-4",
+                      })}
+                      <span>
+                        {n === "om"
+                          ? "3. Qusannoo Garee (Cooperative Cluster Ledgers)"
+                          : n === "am"
+                            ? "፫. የኅብረት ቁጠባ (Cluster Savings)"
+                            : "3. Group & Cluster Ledger Solutions"}
+                      </span>
+                    </h5>
+                    <p className="text-xs text-gray-650 text-gray-600 font-semibold leading-relaxed">
+                      {n === "om"
+                        ? "Waldaalee maayicroo fi qonnaan bultoota asitti ijaaraman, herrega tokko banuun qusannoo gamtaa isaanii walitti qabu. Kunis madaallii sanyii dabalataa dhiyeessuu mijeessa."
+                        : n === "am"
+                          ? "እርስ በርስ የሚተማመኑ ከ 5 እስከ 10 የሚደርሱ አርሶ አደሮች በጥንድ በመደራጀት የጋራ የቁጠባ ሂሳብ በመክፈት ብድር እንዲያገኙ የሚያግዝ ልዩ የኅብረት መዝገብ ስርዓት።"
+                          : "Optimized for agricultural self-help clusters (5-10 smallholders). Members pool combined savings, forming the core credit pool reserve of the village, resulting in immediate leverage matching of up to 2:1 by Buusaa Gonofaa."}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            {r === "loans" && (
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-12 gap-8 text-left"
+                initial={{
+                  opacity: 0,
+                  y: 10,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                key="loans-spec"
+              >
+                <div className="md:col-span-4 space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-700">
+                    <Sprout className="w-6 h-6" />
+                  </div>
+                  <h4 className="text-base font-extrabold text-emerald-950 font-sans tracking-tight uppercase">
+                    {n === "om"
+                      ? "Misooma fi Liqii Qonnaa"
+                      : n === "am"
+                        ? "የሰብል ማምረቻ እና የዘር ብድር"
+                        : "Agricultural Inputs Credit"}
+                  </h4>
+                  <p className="text-xs text-gray-600 font-semibold leading-relaxed">
+                    {n === "om"
+                      ? "Liqiin keenya haguuggii bittaa sanyii, xaa'oo fi meeshaalee jallisiiti. Galmi keenya oomisha qonnan bultootaa dabaluudha."
+                      : n === "am"
+                        ? "ብድራችን ዝቅተኛ ወለድ የሚጠየቅበትና ይልቁንም በተለመደው የባንክ ዋስትና ፈንታ በአካባቢው የኅብረት ህግ ዋስትና የሚፈጸም ምቹ ብድር ነው።"
+                        : "High-grade micro-credits bypass formal banking bureaucracy. We deliver high-yield variety seeds directly to local smallholders."}
+                  </p>
+                  <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-[11px] font-semibold text-amber-950 flex gap-2">
+                    {c.jsx(AlertCircle, {
+                      className: "w-4 h-4 text-amber-700 shrink-0 mt-0.5",
+                    })}
+                    <div>
+                      <strong>
+                        {n === "om"
+                          ? "Wabii Qabeenya Malee:"
+                          : n === "am"
+                            ? "ያለ ሪል-ስቴት ማስያዣ፡"
+                            : "Zero Real Estate Collateral Required:"}
+                      </strong>
+                      <br />
+                      {n === "om"
+                        ? "Heera Gadaatiin, miseensonni shan walitti hidhamanii tokko tokko isaaniif ragaa ta'u."
+                        : n === "am"
+                          ? "በአዳማ ቅርንጫፋችን ምንም ዓይነት የመሬት ዋስትና ወይም ሪል-ስቴት ማስያዣ አያስፈልግም፤ አባላት እርስ በርስ የሚተማመኑበት የጋራ ዋስትና ምስክር ይበቃል!"
+                          : "We completely substitute land deeds with traditional joint-liability 5-member peer-covenants."}
+                    </div>
+                  </div>
+                </div>
+                <div className="md:col-span-8 space-y-6">
+                  <div className="bg-emerald-50/30 p-6 rounded-2xl border border-emerald-100">
+                    <h5 className="text-xs font-black uppercase tracking-wider text-[#054823] mb-4">
+                      {n === "om"
+                        ? "Sgantaa Liqii Misoomaa (Loan Specifications & Limits)"
+                        : n === "am"
+                          ? "የብድር አይነቶችና ክፍያ ዝርዝር መመሪያ"
+                          : "Specific Micro-Credit Packages"}
+                    </h5>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs font-semibold text-gray-700">
+                        <thead>
+                          <tr className="border-b border-emerald-150 text-[10px] uppercase text-gray-400">
+                            <th className="pb-3 text-left">Package Name</th>
+                            <th className="pb-3 text-center">Limit Size</th>
+                            <th className="pb-3 text-center">Service Cost</th>
+                            <th className="pb-3 text-right">Repayment Terms</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-emerald-50/50">
+                          <tr>
+                            <td className="py-3 font-bold text-emerald-950">
+                              {n === "om"
+                                ? "Sanyii Filatamaa"
+                                : "Organic Seed Cluster"}
+                            </td>
+                            <td className="py-3 text-center font-mono text-emerald-800">
+                              10,000 - 30,000 ETB
+                            </td>
+                            <td className="py-3 text-center">
+                              3.0% admin charge
+                            </td>
+                            <td className="py-3 text-right text-[#054823]">
+                              {n === "om"
+                                ? "Harvest aligned (Ji'a 6-9)"
+                                : "Aligned with Harvest (6-9 Mo.)"}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="py-3 font-bold text-emerald-950">
+                              {n === "om"
+                                ? "Meeshaalee Qonnaa"
+                                : "Micro-Irrigation Tech"}
+                            </td>
+                            <td className="py-3 text-center font-mono text-emerald-800">
+                              30,000 - 80,000 ETB
+                            </td>
+                            <td className="py-3 text-center">
+                              4.5% admin charge
+                            </td>
+                            <td className="py-3 text-right text-[#054823]">
+                              {n === "om"
+                                ? "Ji'a 12-18 dhufe"
+                                : "Cycle monthly (12-18 Mo.)"}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="py-3 font-bold text-emerald-950">
+                              {n === "om"
+                                ? "Daldala Dubartootaa"
+                                : "Female Business Credit"}
+                            </td>
+                            <td className="py-3 text-center font-mono text-emerald-800">
+                              5,000 - 25,000 ETB
+                            </td>
+                            <td className="py-3 text-center">
+                              0.0% (Zero-Fee option)
+                            </td>
+                            <td className="py-3 text-right text-[#054823]">
+                              {n === "om"
+                                ? "Salphaan (Ji'a 3-6)"
+                                : "Flexible grace (3-6 Mo.)"}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div className="bg-emerald-50/20 p-4 rounded-xl border border-emerald-100 flex items-center gap-3">
+                    {c.jsx(CheckCircle2, {
+                      className: "w-5 h-5 text-[#054823] shrink-0",
+                    })}
+                    <p className="text-[11px] text-gray-700 font-semibold leading-relaxed text-left">
+                      <strong>
+                        {n === "om"
+                          ? "Heera Maraaf Ta'u:"
+                          : n === "am"
+                            ? "ወቅታዊ ክፍያ ማመቻቸት፡"
+                            : "Climate Risk Grace Adaptability:"}
+                      </strong>
+                      <br />
+                      {n === "om"
+                        ? "Yoo beelli ykn gogiinsi hammaate, kaffaltiin liqii dafqa malee gara fulduraatti dabarsama (freeze program)."
+                        : n === "am"
+                          ? "የዝናብ መዛባት ወይም ድርቅ በሚያጋጥምበት ወቅት የብድር ክፍያው ያለምንም ቅጣት ወደ ቀጣዩ አመት ይተላለፋል።"
+                          : "In the event of weather indices demonstrating severe crop failure across East Shewa, loan payments are structured with zero penalty extensions."}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            {r === "insurance" && (
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-12 gap-8 text-left"
+                initial={{
+                  opacity: 0,
+                  y: 10,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                key="insurance-spec"
+              >
+                <div className="md:col-span-4 space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-700">
+                    <ShieldCheck className="w-6 h-6" />
+                  </div>
+                  <h4 className="text-base font-extrabold text-emerald-950 font-sans tracking-tight uppercase">
+                    {n === "om"
+                      ? "Wabii Inshuraansii Satalaayitii"
+                      : n === "am"
+                        ? "የሳተላይት የአየር ሁኔታ ኢንሹራንስ"
+                        : "Satellite Precipitation Indexing"}
+                  </h4>
+                  <p className="text-xs text-gray-600 font-semibold leading-relaxed">
+                    {n === "om"
+                      ? "Inshuraansiin keenya dhuunfaan sanyii jireenya qonnan bultootaa satalaayitiidhaan rooba hordofee kaffaltii hiika."
+                      : n === "am"
+                        ? "የአዳማ የሳተላይት ኢንሹራንስ የባለሙያዎችን የመስክ ግምገማ ሳይጠብቅ በረቀቀ የሳተላይት መረጃ መሠረት በድርቅ ቅጽበት ክፍያን መፈጸም ያስችላል።"
+                        : "This pioneering technology links community solidarity with satellite rainfall metrics."}
+                  </p>
+                  <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 text-[11px] font-semibold text-emerald-950 leading-relaxed text-left">
+                    <strong>
+                      {n === "om"
+                        ? "Gumaacha Diaspora:"
+                        : n === "am"
+                          ? "የዲያስፖራው በጎ መዋጮ አጋዥነት፡"
+                          : "Diaspora Premium Matching Support:"}
+                    </strong>
+                    <br />
+                    {n === "om"
+                      ? "Kaffaltii harki 60 gumaacha Diaspora keenyaan uwwifama; qonnan bultoonni 40% qofa kaffalani."
+                      : n === "am"
+                        ? "የአንድ ገበሬ 60% ዓመታዊ የዋስትና መዋጮ ክፍያ (Premium) በስደት ባሉ Diaspora ደጋፊዎቻችን ስለሚሸፈን ገበሬው 40% ብቻ ይከፍላል።"
+                        : "Every 100 USD contributed from the Diaspora Diaspora Match program offsets the micro-insurance premiums of approximately 10 vulnerable local family farms."}
+                  </div>
+                </div>
+                <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="p-6 bg-emerald-50/40 rounded-2xl border border-emerald-100 space-y-3">
+                    <h5 className="text-xs font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                      {c.jsx(HelpCircle, {
+                        className: "w-4 h-4 text-emerald-600",
+                      })}
+                      <span>
+                        {n === "om"
+                          ? "Ulaagaa Kaffaltii"
+                          : "Payout Trigger Indices"}
+                      </span>
+                    </h5>
+                    <p className="text-xs text-gray-600 font-semibold leading-relaxed">
+                      {n === "om"
+                        ? "Guddinni roobaa naannichaa satalaayitiidhaan ji'a ji'aan safarama. Yoo dhibbantaa 30 gadi ta'e, kaffaltiin maallaqaa battalumaan ergama."
+                        : n === "am"
+                          ? "የዝናብ እጥረት ወይም መዛባት በሳተላይት መረጃ መሠረት ከቀደመው 5 ዓመት አማካይ በ25% ሲያንስ ክፍያው በጥሬ ገንዘብ በጥቂት ቀናት ውስጥ ይፈጸማል።"
+                          : "Our satellite system measures millimeter crop moisture content monthly. Payouts trigger automatically with zero administrative lag if rainfall levels drop below 30% of normal indices."}
+                    </p>
+                  </div>
+                  <div className="p-6 bg-emerald-50/40 rounded-2xl border border-emerald-100 space-y-3 font-semibold">
+                    <h5 className="text-xs font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                      {c.jsx(HelpCircle, {
+                        className: "w-4 h-4 text-emerald-600",
+                      })}
+                      <span>
+                        {n === "om"
+                          ? "Haguuggii Fayyaa Maatii"
+                          : "Emergency Household Health Buffers"}
+                      </span>
+                    </h5>
+                    <p className="text-xs text-gray-600 font-semibold leading-relaxed">
+                      {n === "om"
+                        ? "Wabii dabalataan rooba qofa osoo hin taane, fayyaa abbaa manaa fi haadha manaa uwwisa."
+                        : n === "am"
+                          ? "የሰብል ዋስትና ብቻ ሳይሆን ማንኛውም አባል ገበሬ ድንገተኛ የሕክምና አደጋ ሲገጥመው እስከ 15,000 የኢትዮጵያ ብር የህክምና አጋዥ ፈንድ ያገኛል።"
+                          : "Beyond weather metrics, registered members access direct emergency medical grants (up to 15,000 ETB) in cases of critical illness, protecting homes against high medical expenses."}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-xs font-semibold text-amber-950 sm:col-span-2 space-y-1">
+                    <span className="font-extrabold uppercase text-[10px] tracking-wider text-amber-800 block text-left">
+                      {n === "om"
+                        ? "Mirkaneessa Teeknolojii"
+                        : "Meteorological Technology Compliance"}
+                    </span>
+                    <p className="text-xs text-gray-700 leading-normal font-semibold text-left">
+                      {n === "om"
+                        ? "Deetaan satalaayitii keenyaa sirna meteorological adunyaa fi beekamtii ministeera qonnaa Itoophiyaatiin uwwifamaa dhiyaata."
+                        : n === "am"
+                          ? "ስርዓታችን ከኢትዮጵያ ሚቲዎሮሎጂ ኤጀንሲ እና ከምስራቅ አፍሪካ የአየር ንብረት ተቋማት ጎንዮሽ የሳተላይት የዝናብ መረጃዎችን በማገናኘት የሚሰራ ፍጹም ህጋዊና እውነተኛ ቴክኖሎጂ ነው።"
+                          : "Satellite radar grids are sourced in compliance with National Meteorological Agency (NMA) feeds and synchronized through our digital portal for transparency."}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        <AnimatePresence>
+          {t && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <motion.div
+                className="fixed inset-0 bg-white/70 backdrop-blur-md ring-1 ring-emerald-400/20"
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
+                onClick={() => s(null)}
+              />
+              <motion.div
+                id="service-application-form"
+                className="relative bg-white w-full max-w-lg rounded-3xl border border-emerald-100/80 shadow-2xl overflow-hidden p-8 z-10"
+                initial={{
+                  scale: 0.95,
+                  y: 15,
+                  opacity: 0,
+                }}
+                animate={{
+                  scale: 1,
+                  y: 0,
+                  opacity: 1,
+                }}
+                exit={{
+                  scale: 0.95,
+                  y: 15,
+                  opacity: 0,
+                }}
+              >
+                <button
+                  onClick={() => s(null)}
+                  className="absolute top-4 right-4 p-2 text-emerald-900/60 hover:text-emerald-900 hover:bg-emerald-50 rounded-full transition-colors"
+                >
+                  ×
+                </button>
+                {d ? (
+                  <div className="text-center py-8 space-y-6">
+                    <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto">
+                      {c.jsx(CheckCircle2, {
+                        className: "w-10 h-10 text-emerald-600",
+                      })}
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-bold text-emerald-950 font-sans">
+                        {n === "om"
+                          ? "Iyyannoon Mirkaneeffameera"
+                          : n === "am"
+                            ? "በተሳካ ሁኔታ ተልኳል"
+                            : "Inquiry Sent Successfully"}
+                      </h3>
+                      <p className="text-xs text-emerald-800/70 font-semibold leading-relaxed max-w-sm mx-auto">
+                        {translations.applyFormSuccess[n]}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => s(null)}
+                      className="inline-flex items-center justify-center bg-emerald-50 border border-emerald-100 text-emerald-800 text-xs font-bold px-6 py-2.5 rounded-xl hover:bg-emerald-100 hover:text-emerald-950 transition-colors uppercase cursor-pointer"
+                    >
+                      {n === "om" ? "Cufi" : n === "am" ? "ዝጋ" : "Close Portal"}
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={z} className="space-y-6">
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest leading-none">
+                        {n === "om"
+                          ? "Nuyi Iyyadhu"
+                          : n === "am"
+                            ? "የቅርንጫፍ ማመልከቻ"
+                            : "Inquiry Service"}
+                      </span>
+                      <h3 className="text-lg font-extrabold text-emerald-950 font-sans tracking-tight">
+                        {translations.applyModalTitle[n]} /{" "}
+                        {(K =
+                          translations[
+                            ((q = E.find((Q) => Q.id === t)) == null
+                              ? undefined
+                              : q.titleKey) || ""
+                          ]) == null
+                          ? undefined
+                          : K[n]}
+                      </h3>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-emerald-900 uppercase tracking-wider block">
+                          {translations.contribFormName[n]} *
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={p.name}
+                          onChange={j}
+                          className="w-full text-xs font-semibold px-4 py-3 rounded-lg border border-emerald-100 focus:outline-hidden focus:border-emerald-600 bg-emerald-50/20"
+                          placeholder="Fayyisaa Kabbadaa / በላይነህ በቀለ"
+                        />
+                        {y.name && (
+                          <p className="text-[10px] text-red-500 font-semibold">
+                            {y.name}
+                          </p>
+                        )}
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-emerald-900 uppercase tracking-wider block">
+                          {translations.contribFormPhone[n]} *
+                        </label>
+                        <input
+                          type="text"
+                          name="phone"
+                          value={p.phone}
+                          onChange={j}
+                          className="w-full text-xs font-semibold px-4 py-3 rounded-lg border border-emerald-100 focus:outline-hidden focus:border-emerald-600 bg-emerald-50/20"
+                          placeholder="+251 911 ..."
+                        />
+                        {y.phone && (
+                          <p className="text-[10px] text-red-500 font-semibold">
+                            {y.phone}
+                          </p>
+                        )}
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-emerald-900 uppercase tracking-wider block">
+                          {translations.contribFormEmail[n]} (Optional)
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={p.email}
+                          onChange={j}
+                          className="w-full text-xs font-semibold px-4 py-3 rounded-lg border border-emerald-100 focus:outline-hidden focus:border-emerald-600 bg-emerald-50/20"
+                          placeholder="member@buusaagonofaa.org"
+                        />
+                        {y.email && (
+                          <p className="text-[10px] text-red-500 font-semibold">
+                            {y.email}
+                          </p>
+                        )}
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-emerald-900 uppercase tracking-wider block">
+                          {n === "om"
+                            ? "Ibsa dabalataa"
+                            : n === "am"
+                              ? "ማብራሪያ ፍላጎት"
+                              : "Inquiry Message / Special Needs"}
+                        </label>
+                        <textarea
+                          rows={3}
+                          name="notes"
+                          value={p.notes}
+                          onChange={j}
+                          className="w-full text-xs font-semibold px-4 py-3 rounded-lg border border-emerald-100 focus:outline-hidden focus:border-emerald-600 bg-emerald-50/20"
+                          placeholder={
+                            n === "om"
+                              ? "Qusannaa koo banuun barbaada..."
+                              : "የግብርና ብድር ሚያስፈልገኝ ዘር ዕርዳታ ለመግዛት ነበር..."
+                          }
+                        />
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      style={{
+                        textTransform: "uppercase",
+                        letterSpacing: "1px",
+                      }}
+                      className="w-full bg-emerald-600 text-white font-bold text-xs py-3.5 rounded-xl hover:bg-emerald-700 transition-colors cursor-pointer uppercase"
+                    >
+                      {n === "om"
+                        ? "Iyyannoo Ergi"
+                        : n === "am"
+                          ? "ማመልከቻውን ይላኩ"
+                          : "Send Service Inquiry"}
+                    </button>
+                  </form>
+                )}
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}

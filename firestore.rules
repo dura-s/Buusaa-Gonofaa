@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Contact inquiries submitted to Buusaa Gonofaa Adama Branch
+    match /contacts/{document} {
+      // Allow public read for visitors to observe live branch activity counts starting from zero
+      allow read: if true;
+      
+      // Allow public creation with field validation
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 150
+                    && (request.resource.data.email is string || request.resource.data.email == null)
+                    && (request.resource.data.subject is string || request.resource.data.subject == null)
+                    && (request.resource.data.message is string || request.resource.data.message == null);
+      
+      // Updates and deletions are forbidden from client
+      allow update, delete: if false;
+    }
+    
+    // Member & community contributions
+    match /contributions/{document} {
+      // Allow public read for live transparency metrics, donor lists, and campaign progress
+      allow read: if true;
+      
+      // Allow public contribution creation with validated fields
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 150
+                    && request.resource.data.amount is number
+                    && request.resource.data.amount > 0
+                    && (request.resource.data.phone is string || request.resource.data.phone == null)
+                    && (request.resource.data.email is string || request.resource.data.email == null)
+                    && (request.resource.data.paymentMethod is string || request.resource.data.paymentMethod == null)
+                    && (request.resource.data.transactionId is string || request.resource.data.transactionId == null);
+      
+      // Updates and deletions are forbidden from client
+      allow update, delete: if false;
+    }
+
+    // Default deny-all for all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

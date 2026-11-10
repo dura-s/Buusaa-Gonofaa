@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <!-- Outer Circular Base -->
+  <circle cx="250" cy="250" r="245" fill="#FFFFFF" stroke="#6B21A8" stroke-width="4"/>
+  
+  <!-- Outer Purple Ring (Logo Circle) -->
+  <circle cx="250" cy="250" r="230" fill="none" stroke="#6B21A8" stroke-width="16"/>
+  <circle cx="250" cy="250" r="218" fill="none" stroke="#6B21A8" stroke-width="3"/>
+  
+  <!-- Curved Text Path for Top Arc: "BUUSAA GONOFAA OROMIYAA" -->
+  <path id="topTextArc" d="M 45,250 A 205,205 0 1,1 455,250" fill="none" />
+  <text font-family="'Plus Jakarta Sans', 'Inter', Arial, sans-serif" font-weight="900" font-size="31" fill="#6B21A8" letter-spacing="4">
+    <textPath href="#topTextArc" startOffset="50%" text-anchor="middle">
+      BUUSAA GONOFAA OROMIYAA
+    </textPath>
+  </text>
+  
+  <!-- Bottom Solid Purple Arc Ribbon for Amharic Text -->
+  <path d="M 45,250 A 205,205 0 0,0 455,250 C 390,440 110,440 45,250 Z" fill="#6B21A8" />
+  
+  <!-- Inner White Graphic Frame -->
+  <circle cx="250" cy="240" r="150" fill="#FFFFFF"/>
+  
+  <!-- Curved Text Path for Bottom Amharic Text: "ኦሮሚያ ቡሳ ጎኖፋ" -->
+  <path id="bottomTextArc" d="M 85,275 A 175,175 0 0,0 415,275" fill="none" />
+  <text font-family="'Noto Sans Ethiopic', 'Abyssinica SIL', Arial, sans-serif" font-weight="900" font-size="28" fill="#FFFFFF" letter-spacing="3">
+    <textPath href="#bottomTextArc" startOffset="50%" text-anchor="middle">
+      ኦሮሚያ ቡሳ ጎኖፋ
+    </textPath>
+  </text>
+
+  <!-- Central Emblem Elements: Purple Flames/Pillars, Green Arrow & Ascending Figures -->
+  <g transform="translate(100, 70)">
+    <!-- Purple Flame Swirls & Pillars -->
+    <path d="M 60,220 L 60,270 C 60,280 78,280 78,270 L 78,220 Z" fill="#6B21A8"/>
+    <path d="M 100,170 L 100,270 C 100,280 118,280 118,270 L 118,170 Z" fill="#6B21A8"/>
+    <path d="M 140,130 L 140,270 C 140,280 158,280 158,270 L 158,130 Z" fill="#6B21A8"/>
+    <path d="M 180,90 L 180,270 C 180,280 198,280 198,270 L 198,90 Z" fill="#6B21A8"/>
+
+    <!-- Purple Curved Flame/Wave Backing -->
+    <path d="M 20,200 C 20,120 70,50 200,20 C 250,10 260,45 210,70 C 140,105 70,140 60,210 Z" fill="#6B21A8"/>
+    
+    <!-- Bold Green Arrow Pointing Upwards to Progress (#16A34A) -->
+    <path d="M 5,225 C 40,210 130,165 215,90 L 195,65 L 285,55 L 270,145 L 245,120 C 160,185 75,240 5,225 Z" fill="#16A34A" />
+
+    <!-- Human Figures Holding Hands Ascending -->
+    <!-- Person 1 -->
+    <circle cx="50" cy="155" r="9" fill="#6B21A8" />
+    <path d="M 40,168 L 50,183 L 60,168 M 50,165 L 50,192 L 40,210 M 50,192 L 60,210" stroke="#6B21A8" stroke-width="3.5" fill="none" stroke-linecap="round" />
+    
+    <!-- Person 2 -->
+    <circle cx="90" cy="125" r="9" fill="#6B21A8" />
+    <path d="M 80,138 L 90,153 L 100,138 M 90,135 L 90,162 L 80,180 M 90,162 L 100,180" stroke="#6B21A8" stroke-width="3.5" fill="none" stroke-linecap="round" />
+
+    <!-- Person 3 -->
+    <circle cx="130" cy="95" r="9" fill="#6B21A8" />
+    <path d="M 120,108 L 130,123 L 140,108 M 130,105 L 130,132 L 120,150 M 130,132 L 140,150" stroke="#6B21A8" stroke-width="3.5" fill="none" stroke-linecap="round" />
+  </g>
+</svg>

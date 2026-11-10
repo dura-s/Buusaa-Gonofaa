@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "Contact": {
+      "title": "Contact",
+      "description": "Public contact inquiry submitted to the branch",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name"]
+    },
+    "Contribution": {
+      "title": "Contribution",
+      "description": "Public community support or campaign contribution record",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "amount": { "type": "number" },
+        "reason": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "isDiaspora": { "type": "boolean" },
+        "selectedCampaignId": { "type": "string" },
+        "transactionId": { "type": "string" },
+        "receiptFileName": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "amount"]
+    }
+  },
+  "firestore": {
+    "/contacts/{contactId}": {
+      "schema": "Contact",
+      "description": "Public contact inquiries displayed as activity metrics"
+    },
+    "/contributions/{contributionId}": {
+      "schema": "Contribution",
+      "description": "Public community contributions displayed as transparent impact metrics"
+    }
+  }
+}
