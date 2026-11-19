@@ -443,7 +443,7 @@ export default function Navbar({
           - Hover/touch interactive dropdown menus for Home, Services, Community & Media, Contribution, Contact
           ========================================================================= */}
       <header
-        className="relative w-full h-16 sm:h-[68px] px-3 sm:px-6 lg:px-8 backdrop-blur-[14px] grid grid-cols-[1fr_auto_1fr] items-center transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.06)] bg-white/95"
+        className="relative w-full h-16 sm:h-[68px] px-3 sm:px-6 lg:px-8 backdrop-blur-[14px] flex items-center justify-between sm:grid sm:grid-cols-[1fr_auto_1fr] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.06)] bg-white/95"
         style={{
           borderBottom: "1px solid rgba(11, 76, 40, 0.12)",
           color: "var(--nav-text)",
@@ -464,17 +464,16 @@ export default function Navbar({
         />
 
         {/* ---------------------------------------------------------------------
-            ZONE 1 (LEFT): Logo seal icon + brand name & Adamaa in exact logo purple
-            Both have identical font size and color matching the logo
-            Placed in Column 1 (justify-self-start)
+            ZONE 1 (LEFT): Logo seal icon + brand name & Adamaa in bold purple
+            Full width on mobile before burger icon so brand text is 100% visible
             --------------------------------------------------------------------- */}
         <div
           onClick={() => handleNavClick("home")}
-          className="relative z-10 flex items-center gap-2 sm:gap-3 cursor-pointer select-none group justify-self-start min-w-0 py-1"
+          className="relative z-10 flex items-center gap-2 sm:gap-3 cursor-pointer select-none group sm:justify-self-start shrink-0 py-1"
           id="nav-zone-left"
         >
           {/* Logo Mark Seal - Prominent and crisp */}
-          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-emerald-50 border-2 border-emerald-600/30 flex items-center justify-center p-0.5 shadow-xs transition-transform duration-200 group-hover:scale-105 overflow-hidden shrink-0">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-50 border-2 border-emerald-600/30 flex items-center justify-center p-0.5 shadow-xs transition-transform duration-200 group-hover:scale-105 overflow-hidden shrink-0">
             <img
               src={bgLogo}
               alt="Buusaa Gonofaa Logo Seal"
@@ -482,13 +481,13 @@ export default function Navbar({
             />
           </div>
 
-          {/* Brand Name + Branch in Logo Purple: more visible on small screens, still bold */}
+          {/* Brand Name + Branch in Bold Visible Purple */}
           <div
-            className="flex flex-col sm:flex-row items-start sm:items-center gap-0 sm:gap-1.5 font-black text-[12.5px] sm:text-[18px] md:text-[20px] tracking-[-0.05em] leading-[0.95] sm:leading-none whitespace-normal sm:whitespace-nowrap max-w-[52vw] sm:max-w-none"
+            className="flex items-center gap-1 sm:gap-1.5 font-black text-[15px] sm:text-[17px] md:text-[18px] tracking-tight whitespace-nowrap"
             style={{ color: "#742C84" }}
           >
-            <span>{resolvedBrand}</span>
-            <span>{resolvedBranch}</span>
+            <span className="font-black">{resolvedBrand}</span>
+            <span className="font-black">{resolvedBranch}</span>
           </div>
         </div>
 
@@ -498,10 +497,10 @@ export default function Navbar({
             Active link has prestigious royal-forest green fill and crisp white text.
             Inactive link has subtle hover highlight.
             --------------------------------------------------------------------- */}
-        <div className="relative z-10 justify-self-center flex items-center justify-center">
+        <div className="relative z-10 justify-self-center hidden sm:flex items-center justify-center">
           {/* Main Navigation Pill for screens >= sm */}
           <nav
-            className="hidden sm:flex items-center gap-0.5 md:gap-1 p-1 rounded-full backdrop-blur-[12px] bg-slate-100/80 border border-slate-200/90 shadow-2xs"
+            className="flex items-center gap-0.5 md:gap-1 p-1 rounded-full backdrop-blur-[12px] bg-slate-100/80 border border-slate-200/90 shadow-2xs"
             id="nav-zone-center"
           >
             {navLinks.map((link) => {
@@ -589,14 +588,13 @@ export default function Navbar({
 
         {/* ---------------------------------------------------------------------
             ZONE 3 (RIGHT): Solid pill button "Contribute" / "Gumaacha"
-            Plus Language Switcher.
-            Placed in Column 3 (justify-self-end)
+            Plus Desktop Language Switcher (hidden on mobile -> inside burger menu).
             --------------------------------------------------------------------- */}
         <div
-          className="relative z-10 flex items-center gap-2 sm:gap-2.5 justify-self-end min-w-0"
+          className="relative z-10 flex items-center gap-2 sm:gap-2.5 sm:justify-self-end shrink-0"
           id="nav-zone-right"
         >
-          {/* Language Switcher Pill */}
+          {/* Language Switcher Pill - Desktop/Tablet only; mobile users switch language inside burger menu */}
           {setLanguage && (
             <div className="relative hidden sm:block">
               <button
@@ -681,7 +679,7 @@ export default function Navbar({
 
       {/* -----------------------------------------------------------------------
           RESPONSIVE MOBILE DROPDOWN PANEL (Under 640px)
-          Features accordion list with sub-items for every section!
+          Features Language Switcher inside Burger Menu + accordion list for every section!
           ----------------------------------------------------------------------- */}
       <AnimatePresence>
         {isMobileMenuOpen && (
@@ -693,57 +691,43 @@ export default function Navbar({
             className="sm:hidden w-full p-4 backdrop-blur-[16px] shadow-xl border-b border-slate-200 bg-white/98 text-slate-800 pointer-events-auto"
             id="mobile-glass-dropdown"
           >
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-2.5">
+              {/* Mobile Language Selector Inside Burger Menu */}
               {setLanguage && (
-                <div className="pb-1">
-                  <button
-                    onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                    className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-left text-[12.5px] font-semibold text-[#0B4C28]"
-                    aria-label="Toggle language menu"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Globe className="w-4 h-4" />
+                <div
+                  className="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100 flex flex-col gap-2"
+                  id="mobile-menu-language-switcher"
+                >
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#0B4C28] uppercase tracking-wider px-1">
+                    <Globe className="w-3.5 h-3.5" />
+                    <span>
                       {language === "om"
-                        ? "Afaan Oromoo"
+                        ? "Afaan Filadhu"
                         : language === "am"
-                          ? "አማርኛ"
-                          : "English"}
+                          ? "ቋንቋ ይምረጡ"
+                          : "Select Language"}
                     </span>
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform duration-200 ${isLangDropdownOpen ? "rotate-180" : ""}`}
-                    />
-                  </button>
-
-                  <AnimatePresence>
-                    {isLangDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -6 }}
-                        className="mt-2 rounded-xl border border-slate-200 bg-white p-1.5 shadow-md"
-                      >
-                        {languages.map((lang) => (
-                          <button
-                            key={lang.code}
-                            onClick={() => {
-                              setLanguage(lang.code);
-                              setIsLangDropdownOpen(false);
-                            }}
-                            className={`w-full flex items-center justify-between rounded-lg px-3 py-2 text-[12.5px] font-semibold transition-colors ${
-                              language === lang.code
-                                ? "bg-emerald-50 text-[#0B4C28]"
-                                : "text-slate-700 hover:bg-slate-50"
-                            }`}
-                          >
-                            <span>{lang.label}</span>
-                            {language === lang.code && (
-                              <span className="h-1.5 w-1.5 rounded-full bg-[#0B4C28]" />
-                            )}
-                          </button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {languages.map((lang) => {
+                      const isSelected = language === lang.code;
+                      return (
+                        <button
+                          key={lang.code}
+                          onClick={() => {
+                            setLanguage(lang.code);
+                          }}
+                          className={`py-2 px-2 rounded-lg text-[11.5px] font-bold transition-all cursor-pointer text-center ${
+                            isSelected
+                              ? "bg-[#0B4C28] text-white shadow-xs"
+                              : "bg-white text-slate-700 border border-slate-200 hover:border-emerald-300"
+                          }`}
+                        >
+                          {lang.label}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 

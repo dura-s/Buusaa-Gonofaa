@@ -172,68 +172,56 @@ export default function GadaaAssistant({
   const y = {
     om: [
       {
-        text: "Odeeffannoo guutuu Buusaa Gonofaa naaf kenni",
-        label: "🌟 Odeeffannoo Guutuu...",
+        text: "Buusaa Gonofaa maali?",
+        label: "Buusaa Gonofaa maali?",
       },
       {
-        text: "Liqii qonnaa fi ulaagaalee isaa naaf ibsi",
-        label: "Liqii Qonnaa...",
+        text: "Liqii qonnaa akkamiin iyyadha?",
+        label: "Liqii Qonnaa iyyachuuf...",
       },
       {
-        text: "Inshuraansii qonnaa haala qilleensaa ibsi",
-        label: "Inshuraansii Qilleensaa...",
+        text: "Inshuraansii qonnaa qabeenya ibsi",
+        label: "Inshuraansii Morkii...",
       },
       {
-        text: "Qusannoo fi Sololiyaa dubartootaa maali?",
-        label: "Qusannoo & Sololiyaa...",
-      },
-      {
-        text: "Teessoo, GPS fi lakkoofsa bilbilaa biroo?",
-        label: "Teessoo & Bilbila...",
+        text: "Teessoo fi GPS biroo keenya?",
+        label: "Teessoo Biroo...",
       },
     ],
     am: [
       {
-        text: "ስለ ቡሳ ጎኖፋ አዳማ ሙሉ መረጃ ስጠኝ",
-        label: "🌟 ሙሉ መረጃ...",
+        text: "ቡሳ ጎኖፋ ምንድን ነው?",
+        label: "ቡሳ ጎኖፋ ምንድን ነው?",
       },
       {
-        text: "የግብርና ብድር አሰጣጥ እና መስፈርቶቹ ምንድን ናቸው?",
-        label: "የግብርና ብድር...",
+        text: "የግብርና ብድር እንዴት ነው የሚሰጠው?",
+        label: "የግብርና ብድር አሰጣጥ...",
       },
       {
-        text: "የአየር ሁኔታ ኢንሹራንስ ዋስትና እንዴት ይሰራል?",
-        label: "የሰብል ኢንሹራንስ...",
+        text: "የሰብል ማይክሮ-ኢንሹራንስ ዋስትና ምንድን ነው?",
+        label: "ማይክሮ-ኢንሹራንስ...",
       },
       {
-        text: "የቁጠባ አይነቶች እና የሶሎሊያ ሴቶች ቁጠባ?",
-        label: "ቁጠባና ሶሎሊያ...",
-      },
-      {
-        text: "የቢሮው አድራሻ፣ ስልክ እና የስራ ሰዓት?",
-        label: "አድራሻና ስልክ...",
+        text: "የቢሮአችሁ አድራሻ ወይንም ጂፒኤስ የት ነው?",
+        label: "የቢሮአችን አድራሻ...",
       },
     ],
     en: [
       {
-        text: "Give me full comprehensive information about Buusaa Gonofaa Adama",
-        label: "🌟 Full Information...",
+        text: "What is the cooperative meaning of Buusaa Gonofaa?",
+        label: "What is Buusaa Gonofaa?",
       },
       {
-        text: "How do seasonal agricultural input loans work and what are the requirements?",
-        label: "Agri Input Loans...",
+        text: "How do I qualify for seasonal input loans?",
+        label: "Seasonal Loan Crops...",
       },
       {
-        text: "Explain Weather-Indexed Crop Insurance and payout triggers",
-        label: "Crop Insurance...",
+        text: "Explain Index-Based Crop Insurance benefits",
+        label: "Crop Index Insurance...",
       },
       {
-        text: "What are the savings accounts and Sololiyaa women groups?",
-        label: "Savings & Sololiyaa...",
-      },
-      {
-        text: "Adama office address, GPS, phone numbers, and hours?",
-        label: "Office & Contact...",
+        text: "Where is the Adama main office located?",
+        label: "Office Address & Hours...",
       },
     ],
   };
@@ -258,16 +246,16 @@ export default function GadaaAssistant({
     en: "Climatic Microfinance & Cultural Advisor",
   };
   useEffect(() => {
-    r([
-      {
-        id: "welcome",
-        sender: "assistant",
-        text: b[n],
-        timestamp: new Date(),
-      },
-    ]);
-    d("");
-    p(false);
+    if (s.length === 0) {
+      r([
+        {
+          id: "welcome",
+          sender: "assistant",
+          text: b[n],
+          timestamp: new Date(),
+        },
+      ]);
+    }
   }, [n]);
   useEffect(() => {
     if (e) {

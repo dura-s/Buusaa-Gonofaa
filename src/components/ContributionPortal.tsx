@@ -41,6 +41,7 @@ import {
   Phone,
   Play,
   Plus,
+  QrCode,
   RotateCcw,
   ScanEye,
   Send,
@@ -59,6 +60,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
+import { QRCodeCanvas } from "qrcode.react";
 
 import { Language, ActiveTab, DonationCamp, NewsItem } from "../types";
 import { translations } from "../translations";
@@ -89,25 +91,39 @@ interface ContributionPortalProps {
   campaigns?: any[];
   onContribute?: (...args: any[]) => void;
   preselectedCampaign?: any;
+  preselectedCampaignId?: string;
+  preselectedMethod?: string;
+  preselectedAmount?: string;
   onResetPreselectedCampaign?: () => void;
 }
 export default function ContributionPortal({
   language: n,
   campaigns: e,
   onContribute: t,
+  preselectedCampaignId,
+  preselectedMethod,
+  preselectedAmount,
 }: ContributionPortalProps) {
   var Ge;
   const s = e || mockCampaigns;
+  const validMethods = ["cbe", "sinqe", "cbe_birr", "telebirr", "paypal"];
+  const initialMethod =
+    preselectedMethod && validMethods.includes(preselectedMethod)
+      ? preselectedMethod
+      : "cbe";
+  const initialCampaign =
+    preselectedCampaignId && s.some((item) => item.id === preselectedCampaignId)
+      ? preselectedCampaignId
+      : ((Ge = s[0]) == null ? undefined : Ge.id) || mockCampaigns[0].id;
   const [r, l] = useState({
     name: "",
     email: "",
     phone: "",
     reason: "",
-    amount: "",
-    paymentMethod: "cbe",
-    isDiaspora: false,
-    selectedCampaignId:
-      ((Ge = s[0]) == null ? undefined : Ge.id) || mockCampaigns[0].id,
+    amount: preselectedAmount || "",
+    paymentMethod: initialMethod,
+    isDiaspora: initialMethod === "paypal",
+    selectedCampaignId: initialCampaign,
     transactionId: "",
     receiptFile: null,
   });
@@ -115,8 +131,31 @@ export default function ContributionPortal({
   const [p, x] = useState<Record<string, any>>({});
   const [y, b] = useState(null);
   const [E, T] = useState(false);
-  const [j, L] = useState(null);
+  const [j, L] = useState<string | null>(null);
   const [z, q] = useState(false);
+  const qrCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    if (preselectedCampaignId && s.some((item) => item.id === preselectedCampaignId)) {
+      l((prev) => ({ ...prev, selectedCampaignId: preselectedCampaignId }));
+    }
+  }, [preselectedCampaignId]);
+
+  useEffect(() => {
+    if (preselectedMethod && validMethods.includes(preselectedMethod)) {
+      l((prev) => ({
+        ...prev,
+        paymentMethod: preselectedMethod,
+        isDiaspora: preselectedMethod === "paypal",
+      }));
+    }
+  }, [preselectedMethod]);
+
+  useEffect(() => {
+    if (preselectedAmount) {
+      l((prev) => ({ ...prev, amount: preselectedAmount }));
+    }
+  }, [preselectedAmount]);
   const K = (U, le) => {
     navigator.clipboard.writeText(U);
     L(le);
@@ -986,6 +1025,128 @@ export default function ContributionPortal({
                               : "Please process the transfer directly to the official account shown above, then upload/submit your transaction details next."}
                         </div>
                       </div>
+
+                      {/* Single Real Scannable Contribution QR Code */}
+                      {(() => {
+                        const origin =
+                          typeof window !== "undefined"
+                            ? window.location.origin
+                            : "https://buusaagonofaa-adama.et";
+                        const qrValue = `${origin}/?tab=contribution&campaign=${encodeURIComponent(k.id)}&method=${encodeURIComponent(r.paymentMethod)}${r.amount ? `&amount=${encodeURIComponent(r.amount)}` : ""}#form-contribute-column`;
+                        const activeAccountSummary =
+                          r.paymentMethod === "cbe"
+                            ? `CBE • ${D.cbe.accNumber}`
+                            : r.paymentMethod === "sinqe"
+                              ? `Siinqee • ${D.sinqe.accNumber}`
+                              : r.paymentMethod === "cbe_birr"
+                                ? `CBE Birr • ${D.cbe_birr.merchantCode}`
+                                : r.paymentMethod === "telebirr"
+                                  ? `telebirr • ${D.telebirr.merchantId}`
+                                  : `PayPal • ${D.paypal.account}`;
+
+                        const handleDownloadQr = () => {
+                          const canvas = qrCanvasRef.current;
+                          if (!canvas) return;
+                          const url = canvas.toDataURL("image/png");
+                          const link = document.createElement("a");
+                          link.href = url;
+                          link.download = `buusaa-gonofaa-${k.id}-${r.paymentMethod}-qr.png`;
+                          link.click();
+                        };
+
+                        return (
+                          <div
+                            id="contribution-qr-card"
+                            className="bg-white rounded-2xl border border-emerald-200/80 p-4 sm:p-5 mt-3 shadow-xs flex flex-col sm:flex-row items-center gap-5"
+                          >
+                            <div className="bg-white p-2.5 rounded-2xl border border-emerald-100 shadow-sm shrink-0">
+                              <QRCodeCanvas
+                                ref={qrCanvasRef}
+                                value={qrValue}
+                                size={156}
+                                level="M"
+                                bgColor="#ffffff"
+                                fgColor="#032e16"
+                                includeMargin={true}
+                              />
+                            </div>
+                            <div className="flex-1 text-center sm:text-left space-y-2.5 min-w-0">
+                              <div className="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-[#054823] bg-emerald-50 px-2.5 py-1 rounded-md">
+                                <QrCode className="w-3.5 h-3.5" />
+                                <span>
+                                  {n === "om"
+                                    ? "QR Koodii Gumaachaa"
+                                    : n === "am"
+                                      ? "የድጋፍ QR ኮድ"
+                                      : "Official Contribution QR"}
+                                </span>
+                              </div>
+                              <h4 className="text-sm font-black text-emerald-950 tracking-tight">
+                                {n === "om"
+                                  ? "Iskaan Gochuun Battalatti Gumaachaa"
+                                  : n === "am"
+                                    ? "በስልክዎ ስካን በማድረግ በቀጥታ ይደግፉ"
+                                    : "Scan to Contribute Instantly"}
+                              </h4>
+                              <p className="text-[11px] text-gray-600 font-semibold leading-relaxed">
+                                {n === "om"
+                                  ? "Kaameeraa bilbilaatiin QR koodii kana iskaan gochuun fuula gumaachaa fi odeeffannoo kaffaltii kanaa kallattiin banaa."
+                                  : n === "am"
+                                    ? "ይህን የQR ኮድ በስልክዎ ካሜራ ስካን በማድረግ የተመረጠውን ዘመቻ እና የክፍያ ዘዴ በቀጥታ መክፈት ይችላሉ።"
+                                    : "Scan with any phone camera to open this exact campaign and payment gateway directly on mobile."}
+                              </p>
+                              <div className="text-[11px] font-mono font-extrabold text-[#054823] bg-emerald-50/70 border border-emerald-100 px-3 py-1.5 rounded-lg inline-block max-w-full truncate">
+                                {activeAccountSummary}
+                              </div>
+                              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                                <button
+                                  type="button"
+                                  onClick={() => K(qrValue, "qr_link")}
+                                  className="text-[10.5px] font-extrabold text-[#054823] bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 transition cursor-pointer"
+                                >
+                                  {j === "qr_link" ? (
+                                    <React.Fragment>
+                                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                      <span>
+                                        {n === "om"
+                                          ? "Liinkiin Koppii Ta'e!"
+                                          : n === "am"
+                                            ? "ሊንኩ ተቀድቷል!"
+                                            : "Link Copied!"}
+                                      </span>
+                                    </React.Fragment>
+                                  ) : (
+                                    <React.Fragment>
+                                      <Copy className="w-3.5 h-3.5" />
+                                      <span>
+                                        {n === "om"
+                                          ? "Liinkii Koppii Godhi"
+                                          : n === "am"
+                                            ? "ሊንኩን ቅዳ"
+                                            : "Copy Link"}
+                                      </span>
+                                    </React.Fragment>
+                                  )}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleDownloadQr}
+                                  className="text-[10.5px] font-extrabold text-white bg-[#054823] hover:bg-[#022b14] px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                                >
+                                  <Download className="w-3.5 h-3.5" />
+                                  <span>
+                                    {n === "om"
+                                      ? "QR Buufadhu"
+                                      : n === "am"
+                                        ? "QR አውርድ"
+                                        : "Download QR"}
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
                     <button
                       type="submit"
@@ -1241,6 +1402,7 @@ export default function ContributionPortal({
                           email: "",
                           phone: "",
                           reason: "",
+                          amount: "",
                           paymentMethod: "cbe",
                           isDiaspora: false,
                           selectedCampaignId:

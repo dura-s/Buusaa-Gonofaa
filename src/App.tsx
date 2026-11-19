@@ -17,8 +17,31 @@ import GadaaAssistant from './components/GadaaAssistant';
 
 export default function App() {
   const [language, setLanguage] = useState<Language>('om'); // Default to Afaan Oromo as cultural home branch focus
-  const [activeTab, setActiveTab] = useState<ActiveTab>('home');
+  const [activeTab, setActiveTab] = useState<ActiveTab>(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam === 'home' || tabParam === 'services' || tabParam === 'community' || tabParam === 'contribution' || tabParam === 'contact') {
+        return tabParam;
+      }
+    } catch {
+      // Ignore URL parse error
+    }
+    return 'home';
+  });
   const [aboutSubTab, setAboutSubTab] = useState<'mission' | 'history' | 'structure' | 'management'>('mission');
+  const [qrPrefill] = useState<{ campaign?: string; method?: string; amount?: string }>(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        campaign: params.get('campaign') || undefined,
+        method: params.get('method') || undefined,
+        amount: params.get('amount') || undefined,
+      };
+    } catch {
+      return {};
+    }
+  });
 
   // Live Campaign state connected to Firestore database starting from zero
   const { campaigns: liveCampaigns } = useLiveStats();
@@ -28,6 +51,22 @@ export default function App() {
       localStorage.removeItem('bg_campaigns_data');
     } catch {
       // Ignore if localStorage unavailable
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tab') === 'contribution') {
+        setTimeout(() => {
+          const el = document.getElementById('form-contribute-column') || document.getElementById('contributions-portal-section');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 350);
+      }
+    } catch {
+      // Ignore URL parse error
     }
   }, []);
 
@@ -182,6 +221,9 @@ export default function App() {
                 language={language} 
                 campaigns={liveCampaigns}
                 onContribute={handleContribute}
+                preselectedCampaignId={qrPrefill.campaign}
+                preselectedMethod={qrPrefill.method}
+                preselectedAmount={qrPrefill.amount}
               />
             )}
             {activeTab === 'contact' && <Contact language={language} />}

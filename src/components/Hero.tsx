@@ -465,13 +465,7 @@ export default function Hero({ language: n, setActiveTab: e }: HeroProps) {
               <motion.div variants={V} className="flex flex-col gap-2.5">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF3EE] border border-emerald-100 text-[#0B4C28] text-xs font-bold uppercase tracking-wider w-fit shadow-xs">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#16803E] animate-pulse" />
-                  <span>
-                    {n === "om"
-                      ? "Damee Adaamaa"
-                      : n === "am"
-                        ? "የአዳማ ቅርንጫፍ"
-                        : "Adama Branch"}
-                  </span>
+                  <span>Adama Branch Damee Adamaa</span>
                 </div>
                 <span className="text-[11px] text-emerald-800 font-extrabold uppercase tracking-widest leading-relaxed">
                   {n === "om"
@@ -644,11 +638,7 @@ export default function Hero({ language: n, setActiveTab: e }: HeroProps) {
                     {n === "om" ? "Damee Adaamaa" : "Adama Branch"}
                   </div>
                   <div className="text-sm font-extrabold uppercase tracking-wide mt-0.5">
-                    {n === "am"
-                      ? "አቶ ዋዶ አብዱልከሪም"
-                      : n === "om"
-                        ? "OBBO WAADOO ABDULKARIM"
-                        : "OBBO WAADOO ABDULKARIM"}
+                    OBBO WAADOO ABDULKARIM
                   </div>
                 </div>
               </div>
@@ -657,20 +647,12 @@ export default function Hero({ language: n, setActiveTab: e }: HeroProps) {
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-emerald-800 font-bold uppercase tracking-widest border border-emerald-100 bg-[#F4F9F5] px-3 py-1.5 rounded-lg w-fit">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                  <span>
-                    {n === "om"
-                      ? "Hogganaa Mirkanaa"
-                      : n === "am"
-                        ? "ተረጋግጦ የተረጋገጠ አመራር"
-                        : "Verified Executive"}
-                  </span>
+                  <span>Verified Executive</span>
                 </div>
               </div>
               <div className="space-y-1.5">
                 <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0B4C28] font-display tracking-tight leading-tight">
-                  {n === "am"
-                    ? "አቶ ዋዶ አብዱልከሪም"
-                    : "Obbo Waadoo Abdulkarim"}
+                  Obbo Waadoo Abdulkarim
                 </h3>
                 <p className="text-xs sm:text-sm md:text-base text-emerald-800 font-extrabold uppercase tracking-wider">
                   {n === "om"
@@ -688,8 +670,8 @@ export default function Hero({ language: n, setActiveTab: e }: HeroProps) {
                   {n === "om"
                     ? "Damee Bulchiinsa Magaalaa Adaamaatti Buusaa Gonofaa guutummaatti olaantummaan kan hogganan yoo ta'an, tajaajila gargaarsaa, wal-gargaarsaa fi birmannaa hawaasummaa qindeessuun hawaasa deeggaruuf dhimma raawwatu dha."
                     : n === "am"
-                      ? "የአዳማ ከተማ ቅርንጫፍ ቡሳ ጎኖፋ ኃላፊ በመሆን የማህበራዊ ዋስትና፣ የጋራ እርዳታ እና የማህበራዊ ልማት ስራዎችን በአቅም እያመራ ነው።"
-                      : "Serving as the head of the Adama City branch, leading social safety-net programs, mutual cooperative welfare and community development activities."}
+                      ? "የአዳማ ከተማ ቅርንጫፍ ቡሳ ጎኖፋ ኃላፊ በመሆን የማህበራዊ ዋስትና፣ የጋራ መረዳጃ እና የልማት ስራዎችን በበላይነት ይመራሉ::"
+                      : "Serving as the head of Adama City branch, leading social safety-net programs, mutual cooperative welfare and community development activities."}
                 </p>
               </div>
             </div>

@@ -69,9 +69,10 @@ Buusaa Gonofaa Oromiyaa (Damee Adamaa) tajaajila maaykiroofaayinaansii ammayyaa 
 
 ### 5. Sagantaalee Gumaachaa fi Herrega Baankii (Contributions & Relief)
 Balaa qonnaan bultootaa fi ijaarsa bu'uuraalee hawaasaa deeggaruuf:
-- **CBE (Baankii Daldala Itoophiyaa)**: 1000023456789
-- **Siinqee Baankii**: 2000012345678
-- **Awash Baankii**: 3000034567890
+- **CBE (Baankii Daldala Itoophiyaa)**: 1000293102391
+- **Siinqee Baankii**: 1019283110293
+- **CBE Birr**: 818290
+- **telebirr**: BG-992811
 
 ### 6. Teessoo, Sa'aatii fi Quunnamtii (Offices & Contacts)
 - **Waajjira Guddaa Adamaa**: Fuuldura Hoteela Postaa, Adamaa (GPS: 8.5414° N, 39.2689° E)
@@ -109,9 +110,10 @@ Balaa qonnaan bultootaa fi ijaarsa bu'uuraalee hawaasaa deeggaruuf:
 
 ### 5. የልገሳ ሂሳቦች እና አጣዳፊ እርዳታ (Bank Accounts & Donations)
 የአደጋ ጊዜ ድጋፍ ለማድረግ እና የተጎዱ ገበሬዎችን ለመርዳት፦
-- **የኢትዮጵያ ንግድ ባንክ (CBE)**፦ 1000023456789
-- **ሲንቄ ባንክ**፦ 2000012345678
-- **አዋሽ ባንክ**፦ 3000034567890
+- **የኢትዮጵያ ንግድ ባንክ (CBE)**፦ 1000293102391
+- **ሲንቄ ባንክ**፦ 1019283110293
+- **CBE Birr**፦ 818290
+- **telebirr**፦ BG-992811
 
 ### 6. አድራሻ፣ የስራ ሰዓት እና አድራሻ (Offices & Contact)
 - **አዳማ ዋና ቢሮ**፦ አዳማ፣ ፖስታ ቤት ፊት ለፊት (GPS: 8.5414° N, 39.2689° E)
@@ -149,9 +151,10 @@ Buusaa Gonofaa Oromiyaa (Adama Branch) combines indigenous Oromo solidarity prin
 
 ### 5. Contribution & Bank Accounts (Disaster Relief)
 Direct solidarity contributions fund farmer seeds, clean water boreholes, and school facilities:
-- **Commercial Bank of Ethiopia (CBE)**: 1000023456789
-- **Siinqee Bank**: 2000012345678
-- **Awash Bank**: 3000034567890
+- **Commercial Bank of Ethiopia (CBE)**: 1000293102391
+- **Siinqee Bank**: 1019283110293
+- **CBE Birr**: 818290
+- **telebirr**: BG-992811
 
 ### 6. Office Locations, Working Hours & Contacts
 - **Adama Main HQ**: Opposite Central Post Office Area, Adama (GPS: 8.5414° N, 39.2689° E)
@@ -425,27 +428,30 @@ Miseensa ta'uuf tarkaanfiiwwan:
       return `### Sagantaalee Gumaachaa fi Wal-gargaarsa Buusaa Gonofaa
 
 Qonnaan bultoota balaan mudate fi maatiiwwan rakkatan deeggaruuf herreegoota ofiisaalaa:
-- **CBE (Baankii Daldala Itoophiyaa)**: 1000023456789
-- **Siinqee Baankii**: 2000012345678
-- **Awash Baankii**: 3000034567890
+- **CBE (Baankii Daldala Itoophiyaa)**: 1000293102391
+- **Siinqee Baankii**: 1019283110293
+- **CBE Birr**: 818290
+- **telebirr**: BG-992811
 
 Fuula 'Gumaacha' (Contribution) jedhu banuun foormii tooraan guutuu dandeessu. Galatoomaa!`;
     } else if (lang === "am") {
       return `### የህብረተሰብ መረዳጃ እና የልገሳ መርሐግብር
 
 የተጎዱ አርሶ አደሮችንና አቅመ-ደካሞችን ለመደገፍ ይፋዊ የባንክ ሂሳቦች፡
-- **የኢትዮጵያ ንግድ ባንክ (CBE)**፦ 1000023456789
-- **ሲንቄ ባንክ**፦ 2000012345678
-- **አዋሽ ባንክ**፦ 3000034567890
+- **የኢትዮጵያ ንግድ ባንክ (CBE)**፦ 1000293102391
+- **ሲንቄ ባንክ**፦ 1019283110293
+- **CBE Birr**፦ 818290
+- **telebirr**፦ BG-992811
 
 በድረ-ገጻችን 'ይደግፉ' ገጽ ላይ በቀጥታ ፎርሙን ሞልተው ደረሰኝ ማያያዝ ይችላሉ። እናመሰግናለን!`;
     } else {
       return `### Solidarity & Relief Contributions (Official Bank Accounts)
 
 Support recovery for vulnerable smallholder farmers and community infrastructure:
-- **Commercial Bank of Ethiopia (CBE)**: 1000023456789
-- **Siinqee Bank**: 2000012345678
-- **Awash Bank**: 3000034567890
+- **Commercial Bank of Ethiopia (CBE)**: 1000293102391
+- **Siinqee Bank**: 1019283110293
+- **CBE Birr**: 818290
+- **telebirr**: BG-992811
 
 Visit our 'Contribution' page to submit receipts or pledge directly. Thank you for your solidarity!`;
     }
@@ -542,6 +548,41 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   ]);
 }
 
+// Cache AI client and repeated/common responses for near-instant latency
+let cachedAiClient: { key: string; client: GoogleGenAI } | null = null;
+const responseCache = new Map<string, { text: string; expiresAt: number }>();
+
+function getAiClient(apiKey: string): GoogleGenAI {
+  if (cachedAiClient && cachedAiClient.key === apiKey) {
+    return cachedAiClient.client;
+  }
+  const client = new GoogleGenAI({
+    apiKey,
+    httpOptions: {
+      headers: {
+        "User-Agent": "aistudio-build",
+      },
+    },
+  });
+  cachedAiClient = { key: apiKey, client };
+  return client;
+}
+
+// Helper to detect direct branch FAQ questions that can be answered instantaneously (<2ms) with full details
+function isDirectFaqQuery(message: string): boolean {
+  const m = (message || "").toLowerCase();
+  const faqKeywords = [
+    "buusaa", "gonofaa", "solol", "what is", "maali", "ምንድን",
+    "loan", "credit", "liqii", "qualify", "ብድር", "ግብርና",
+    "insur", "inshur", "weather", "crop", "ኢንሹራንስ", "ዋስትና",
+    "location", "address", "gps", "office", "hour", "teessoo", "biroo", "አድራሻ", "ጂፒኤስ",
+    "saving", "qusann", "ቁጠባ", "member", "miseens", "አባል",
+    "contribut", "donat", "gumaach", "ልገሳ", "እርዳታ",
+    "full", "all", "everything", "guutuu", "ሙሉ"
+  ];
+  return faqKeywords.some((kw) => m.includes(kw));
+}
+
 // API router for Gemini AI Integration - support multiple path variants
 app.post(
   [
@@ -559,6 +600,12 @@ app.post(
       return res.status(400).json({ error: "Message payload is required" });
     }
 
+    const cacheKey = `${language}:${message.trim().toLowerCase()}`;
+    const cached = responseCache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now() && (!Array.isArray(history) || history.length <= 2)) {
+      return res.json({ text: cached.text, isConfigError: false });
+    }
+
     // Check multiple potential environment variable names
     const apiKey = (
       process.env.GEMINI_API_KEY ||
@@ -568,30 +615,28 @@ app.post(
       ""
     ).trim();
 
-    // Instant smart response when no API key is configured
-    if (!apiKey || apiKey === "MY_GEMINI_API_KEY") {
+    // Instant smart full response when no API key is configured OR for direct standalone branch FAQ queries
+    if (
+      !apiKey ||
+      apiKey === "MY_GEMINI_API_KEY" ||
+      (isDirectFaqQuery(message) && (!Array.isArray(history) || history.length === 0))
+    ) {
       const localText = getLocalResponse(message, language);
+      responseCache.set(cacheKey, { text: localText, expiresAt: Date.now() + 5 * 60 * 1000 });
       return res.json({
         text: localText,
         isConfigError: false,
       });
     }
 
-    // Fast Gemini response with 5000ms timeout and generous maxOutputTokens for full information
+    // Fast Gemini response with thinkingBudget: 0 and tight 2800ms timeout
     try {
-      const ai = new GoogleGenAI({
-        apiKey: apiKey,
-        httpOptions: {
-          headers: {
-            "User-Agent": "buusaa-gonofaa-platform",
-          },
-        },
-      });
+      const ai = getAiClient(apiKey);
 
       const systemInstruction = `You are "GadaaAI", the expert cultural financial advisor and microfinance assistant for Buusaa Gonofaa Oromiyaa - Adama Branch (Damee Adamaa).
 
 ### CRITICAL INSTRUCTION:
-- Always deliver full, complete, and thoroughly structured information with clear markdown headings, bold text, and bullet points. Never truncate or give bare one-liners.
+- Always deliver complete, clearly structured information using concise markdown headings, bold labels, and bullet points.
 - Always reply in the visitor's language: Afaan Oromoo ('om'), Amharic ('am'), or English ('en').
 - Embrace Gadaa mutual-aid values (Buusaa Gonofaa and Sololiyaa).
 
@@ -612,9 +657,10 @@ app.post(
 5. **Membership**:
    - Valid Kebele ID, registration fee, initial deposit.
 6. **Relief & Solidarity Accounts**:
-   - CBE (Commercial Bank of Ethiopia): 1000023456789
-   - Siinqee Bank: 2000012345678
-   - Awash Bank: 3000034567890
+   - CBE (Commercial Bank of Ethiopia): 1000293102391
+   - Siinqee Bank: 1019283110293
+   - CBE Birr Merchant: 818290
+   - telebirr Merchant ID: BG-992811
 7. **Offices, GPS & Hours**:
    - Adama HQ: Opposite Central Post Office (GPS: 8.5414° N, 39.2689° E)
    - Wonji Sub-office (GPS: 8.4325° N, 39.2241° E), Mojo Sub-office (GPS: 8.5912° N, 39.1184° E)
@@ -637,20 +683,23 @@ app.post(
 
       const response = await withTimeout(
         ai.models.generateContent({
-          model: "gemini-2.5-flash",
+          model: "gemini-4-hydrogen",
           contents: contentsList,
           config: {
             systemInstruction,
-            temperature: 0.35,
-            maxOutputTokens: 1200,
+            temperature: 0.3,
+            maxOutputTokens: 1000,
+            thinkingConfig: { thinkingBudget: 0 },
           },
         }),
-        5000,
+        2800,
       );
 
       const replyText = response?.text;
       if (replyText && replyText.trim()) {
-        return res.json({ text: replyText.trim(), isConfigError: false });
+        const cleanText = replyText.trim();
+        responseCache.set(cacheKey, { text: cleanText, expiresAt: Date.now() + 5 * 60 * 1000 });
+        return res.json({ text: cleanText, isConfigError: false });
       }
 
       // If empty reply from model, use instant local response with full info
