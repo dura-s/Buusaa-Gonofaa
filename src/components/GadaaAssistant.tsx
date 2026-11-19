@@ -165,10 +165,11 @@ export default function GadaaAssistant({
   onHelpRequested,
 }: GadaaAssistantProps) {
   const [e, t] = useState(false);
-  const [s, r] = useState([]);
+  const [s, r] = useState<Array<{ id: string; sender: string; text: string; timestamp: Date }>>([]);
   const [l, d] = useState("");
   const [h, p] = useState(false);
-  const x = useRef(null);
+  const x = useRef<HTMLDivElement | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
   const y = {
     om: [
       {
@@ -246,16 +247,20 @@ export default function GadaaAssistant({
     en: "Climatic Microfinance & Cultural Advisor",
   };
   useEffect(() => {
-    if (s.length === 0) {
-      r([
-        {
-          id: "welcome",
-          sender: "assistant",
-          text: b[n],
-          timestamp: new Date(),
-        },
-      ]);
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
     }
+    p(false);
+    d("");
+    r([
+      {
+        id: "welcome",
+        sender: "assistant",
+        text: b[n],
+        timestamp: new Date(),
+      },
+    ]);
   }, [n]);
   useEffect(() => {
     if (e) {
@@ -283,6 +288,12 @@ export default function GadaaAssistant({
     d("");
     p(true);
     try {
+      if (abortRef.current) {
+        abortRef.current.abort();
+      }
+      const controller = new AbortController();
+      abortRef.current = controller;
+
       const ne = s
         .filter((S) => S.id !== "welcome")
         .map((S) => ({
@@ -294,6 +305,7 @@ export default function GadaaAssistant({
         headers: {
           "Content-Type": "application/json",
         },
+        signal: controller.signal,
         body: JSON.stringify({
           message: K,
           history: ne,
@@ -316,7 +328,10 @@ export default function GadaaAssistant({
         timestamp: new Date(),
       };
       r((S) => [...S, M]);
-    } catch (ne) {
+    } catch (ne: any) {
+      if (ne?.name === "AbortError") {
+        return;
+      }
       console.error("Gadaa-AI interaction notice:", ne);
       const M = {
         om: `Dhiifama, yeroo ammaa tajaajila AI deebisurratti xiqqoo tureera. Maaloo gaaffii keessan irra deebi'aa na gaafadhaa.`,
@@ -471,7 +486,13 @@ export default function GadaaAssistant({
                       {c.jsx(Sparkles, {
                         className: "w-3 h-3 text-yellow-500 fill-current",
                       })}
-                      <span>GadaaAI is writing...</span>
+                      <span>
+                        {n === "om"
+                          ? "GadaaAI barreessaa jira..."
+                          : n === "am"
+                            ? "ገዳAI እየጻፈ ነው..."
+                            : "GadaaAI is writing..."}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1 py-1 px-2">
                       <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
